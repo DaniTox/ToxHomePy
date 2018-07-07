@@ -2,6 +2,7 @@ import json
 import time
 from enum import Enum
 import inspect
+import ToxIDCreator
 
 class ObjectType(Enum):
     NONE = 0
@@ -12,17 +13,38 @@ class ObjectType(Enum):
     DOOR_LOCK = 5
     LIGHT_SENSOR = 6
 
+class ObjectColors(Enum):
+    BLACK = 0
+    RED = 1
+    BLUE = 2
+    PURPLE = 3
+    ORANGE = 4
+    GREEN = 5
+    WHITE = 6
+    GRAY = 7
 
 
 class Object:
     def __init__(self):
         self.name = ""
+        self.description = ""
+        self.color = ObjectColors.BLACK
         self.type = ObjectType.NONE
-        self.id = 0
+        self.id = ToxIDCreator().createUniqueID()
         self.priority = 0
         self.pins = None 
+        self.onActivationActionsObjects = None
+        self.onDeactivationActionsObjects = None
 
+#subclasses have to override these 2 functions adding the actions to perform and then calling the super functions
+    def activate(self): 
+        for obj in self.onActivationActionsObjects:
+            obj.activate()
 
+    def deactivate(self):
+        for obj in self.onDeactivationActionsObjects:
+            obj.deactivate()
+####################################
     def createDict(self): 
         myDict = {}
         variables = self.__dict__.keys()
@@ -112,3 +134,13 @@ class LightSensor(Object):
 
         
 
+class Timer(Object):
+    def __init__(self):
+        Object.__init__(self)
+        self.timerDuration = 0
+
+    def performAction(self):
+        self.activate()
+
+    def fireTimer(self):
+        self.activate()
