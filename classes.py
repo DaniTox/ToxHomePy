@@ -35,16 +35,26 @@ class Object:
         self.pins = None 
         self.onActivationActionsObjects = None
         self.onDeactivationActionsObjects = None
+        self.status = 0
 
 #subclasses have to override these 2 functions adding the actions to perform and then calling the super functions
-    def activate(self): 
+    def activate(self):  #private func
         for obj in self.onActivationActionsObjects:
             obj.activate()
 
-    def deactivate(self):
+    def deactivate(self): #private func
         for obj in self.onDeactivationActionsObjects:
             obj.deactivate()
 ####################################
+    def setStatus(self, code):
+        if self.status == code:
+            return
+        else:
+            if code > self.status:
+                self.activate()
+            elif code < self.status:
+                self.deactivate()
+
     def createDict(self): 
         myDict = {}
         variables = self.__dict__.keys()

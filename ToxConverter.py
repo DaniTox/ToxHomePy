@@ -19,8 +19,13 @@ class JSONSaver:
 
 class ToxConverter(JSONSaver):
 
-    def getObjectsFromJson(self):
+    def getObjectsFromJSON(self):
         j = self.getFromFile(JSON_SAVER_FILENAME)
         return j["Objects"]
+
+    def saveToFile(self, data, fileName):
+        if isinstance(data, Object):
+            newData = data.createDict()
+        JSONSaver.saveToFile(self, newData, fileName)
 
 
