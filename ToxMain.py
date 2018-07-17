@@ -1,15 +1,13 @@
 import classes
 import ToxConverter
 
-while True:
-    name = input("Name: ")
-    desc = input("Description: ")
-    pin = raw_input("Pin: ")
+class ToxMain:
+    def __init__(self):
+        toxSaver = ToxConverter()
+        self.objects = toxSaver.getObjectsFromJSON()
 
-    obj = Luce()
-    obj.name = name
-    obj.description = desc
-    obj.pins = pin
-
-    tox = ToxConverter()
-    tox.saveToFile(obj.createDict(),JSON_SAVER_FILENAME)
+    def getObjectFromID(self, id):
+        for obj in self.objects:
+            if obj.id == id:
+                return obj
+        return None

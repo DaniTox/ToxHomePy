@@ -39,24 +39,8 @@ class ToxSerialResponse:
         self.responseMsg = responseMsg
 
 
-class ToxSerial:
-    def sendSerial(self, message): #ToxSerialMessage
-        if message.isResponseRequested == False:
-            #send serial
-            return
-
-        #send serial
-        #var = read response
-        #response = ToxSerialResponse(var)
-        #response.senderMessage = message
-        #return response
-
     
-class TestSerial:
-    # def __init__(self):
-    #     self.ser = serial.Serial('/dev/cu.usbmodem14141', 9600)
-    #     time.sleep(2.5)
-    #     self.serialActivated = True
+class ToxSerial:
 
     def __init__(self):
         self.queue = deque()
@@ -115,7 +99,7 @@ class ToxMessage:
 
           
 
-asd = TestSerial()
+asd = ToxSerial()
 asd.start()
 
 def test(message):
@@ -138,18 +122,5 @@ while True:
     msg.id = 1
     asd.addToQueue(msg)
 
-    # msg2 = ToxMessage(test)
-    # msg2.args = ("A")
-    # asd.addToQueue(msg2)
-
     asd.printQueueLen()
     time.sleep(0.15)
-    # if value == "0":
-    #     msg = ToxMessage(test)
-    #     msg.args = ("B")
-    #     asd.addToQueue(msg)
-
-    # elif value == "1":
-    #     asd.printQueue()
-    # else:
-    #     print("Error input")

@@ -3,18 +3,19 @@ import os
 import random
 
 class ToxIDCreator:
-    def __init__:
-        self.currentIDs = self.getIDsFromStorage()
+    def __init__(self):
         self.FILE_NAME = ".currentIDs.json"
+        self.currentIDs = self.getIDsFromStorage()
 
     def getIDsFromStorage(self):
-        if os.path.isFile(self.FILE_NAME):
+        if os.path.isfile(self.FILE_NAME):
             with open(self.FILE_NAME) as f:
                 data = json.load(f)
-            if data != None:
-                return data
+                if data != None:
+                    return data
+            return []
         else:
-            return {}
+            return []
 
     def createUniqueID(self):
         id = 0

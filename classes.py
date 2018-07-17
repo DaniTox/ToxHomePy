@@ -2,7 +2,8 @@ import json
 import time
 from enum import Enum
 import inspect
-import ToxIDCreator
+from ToxIDCreator import ToxIDCreator
+import threading
 
 class ObjectType(Enum):
     NONE = 0
@@ -30,35 +31,17 @@ class Object:
         self.description = ""
         self.color = ObjectColors.BLACK
         self.type = ObjectType.NONE
-        self.id = ToxIDCreator().createUniqueID()
-        self.priority = 0
-        self.pins = None 
-        self.onActivationActionsObjects = None
-        self.onDeactivationActionsObjects = None
-        self.status = 0
 
-#subclasses have to override these 2 functions adding the actions to perform and then calling the super functions
-    def activate(self):  #private func
-        for obj in self.onActivationActionsObjects:
-            obj.activate()
-
-    def deactivate(self): #private func
-        for obj in self.onDeactivationActionsObjects:
-            obj.deactivate()
-####################################
-    def setStatus(self, code):
-        if self.status == code:
-            return
-        else:
-            if code > self.status:
-                self.activate()
-            elif code < self.status:
-                self.deactivate()
+        idCreator = ToxIDCreator()
+        self.id = idCreator.createUniqueID()
+        self.pin = None 
 
     def createDict(self): 
         myDict = {}
         variables = self.__dict__.keys()
         for var in variables:
+            if var == "messages": #or var == "handlers"
+                continue
             myDict[var] = self.__dict__[var]
         
         return myDict
@@ -72,85 +55,109 @@ class Object:
     def printMyProperties(self):
         print(self.__dict__)
 
+    def executeHandlers(self, message):
+        handlers = self.handlers[message] 
+        if handlers == None:
+            return
+        for handl in handlers:
+            handValues = handl.split(".")
+            objID = handValues[0]
+            funcName = handValues[1]
 
+            toxMain = ToxMain()
+            obj = toxMain.getObjectFromID(objID)
+            func = obj.messages[funcName]
+            func()
 
-class Luce(Object):
+    def addHandlerForKey(self, key, handler):
+        self.handlers[key].append(handler)
+
+    def executeMessage(self, message):
+        func = self.messages[message]
+        if func != None:
+            func()
+
+class DigitalOutputDevice(Object):
     def __init__(self):
         Object.__init__(self)
-        
-        #Old properties
-        self.priority = 1
-        self.type = ObjectType.LUCE
-
-        #New properties
         self.isOn = False
+        #IMPORTANT: DALL'APP VERRANNO CHIAMATI QUESTI MESSAGGI TRAMITE LA FUNC executeMessage(). È l'unico modo per comunicare con l'app esterna
+        self.messages = { 
+            "activate": self.activate,
+            "deactivate": self.deactivate
+        }
 
-
-    def switchOn(self):
-        self.isOn = True
-    
-    def switchOff(self):
-        self.isOn = False
-
-    def switch(self):
-        self.isOn = not self.isOn
-
-
-class Ventola(Object):
-    def __init__(self):
-        Object.__init__(self)
-        self.type = ObjectType.VENTOLA
-
-        self.isOn = False
+        self.handlers = {
+            "activate" : [],
+            "deactivate" : []
+        }
 
     def activate(self):
-        self.isOn = True
-
-
-    def disable(self):
-        self.isOn = False
-
-#call a method in a class that will connect to the arduino telling him to stop/activate the fan
-
-class DoorLock(Object):
-    def __init__(self):
-        Object.__init__(self)
-
-        #Old
-        self.type = ObjectType.DOOR_LOCK
-
-        #New
-        self.isOpen = False
-
-
-    def open(self):
-        self.isOpen = True
-
-    def close(self):
-        self.isOpen = False
-
-
-class PIRSensor(Object):
-    def __init__(self):
-        Object.__init__(self)
-
-        self.type = ObjectType.PIR
-        self.priority = 100
+        if self.isOn == True:
+            return
+        #activate the pin
+        for handler in self.handlers["activate"]:
+            if handler != None:
+                handler()
         
 
-class LightSensor(Object):
-    def __init__(self):
-        Object.__init__(self)
+    def deactivate(self):
+        if self.isOn == False:
+            return
+        #deactivate the pin
+        for handler in self.handlers["deactivate"]:
+            if handler != None:
+                handler()
+
+    
 
         
 
-class Timer(Object):
+class MonoOutputDevice(Object):
     def __init__(self):
         Object.__init__(self)
-        self.timerDuration = 0
+        self.messages = {
+            "activate": self.activate
+        }
 
-    def performAction(self):
-        self.activate()
+        self.handlers = {
+            "activate" : []
+        }
 
-    def fireTimer(self):
-        self.activate()
+    def activate(self):
+        for handler in self.handlers["activate"]:
+            if handler != None:
+                handler()
+
+
+
+
+
+
+
+class Timer(MonoOutputDevice):
+    def __init__(self):
+        MonoOutputDevice.__init__(self)
+        self.duration = 5
+        self.messages = {
+            "activate": self.activate,
+            "fire": self.startTimer
+        }
+
+    def startTimer(self):
+        t = threading.Timer(self.duration, self.activate)
+        t.start()
+
+
+
+def printT():
+    print("Done...")
+
+timer = Timer()
+timer.addHandlerForKey("activate", printT)
+
+obj1 = DigitalOutputDevice()
+obj1.addHandlerForKey("activate", timer.messages["fire"])
+
+obj1.executeMessage("activate")
+
