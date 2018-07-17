@@ -1,3 +1,4 @@
+# coding=utf-8
 import json
 import time
 from enum import Enum
@@ -55,19 +56,21 @@ class Object:
     def printMyProperties(self):
         print(self.__dict__)
 
-    def executeHandlers(self, message):
-        handlers = self.handlers[message] 
-        if handlers == None:
-            return
-        for handl in handlers:
-            handValues = handl.split(".")
-            objID = handValues[0]
-            funcName = handValues[1]
 
-            toxMain = ToxMain()
-            obj = toxMain.getObjectFromID(objID)
-            func = obj.messages[funcName]
-            func()
+#TODO: Fix this function and find a way to use it because i don't know why i wrote it
+    # def executeHandlers(self, message):
+    #     handlers = self.handlers[message] 
+    #     if handlers == None:
+    #         return
+    #     for handl in handlers:
+    #         handValues = handl.split(".")
+    #         objID = handValues[0]
+    #         funcName = handValues[1]
+
+    #         toxMain = ToxMain()
+    #         obj = toxMain.getObjectFromID(objID)
+    #         func = obj.messages[funcName]
+    #         func()
 
     def addHandlerForKey(self, key, handler):
         self.handlers[key].append(handler)
@@ -98,7 +101,11 @@ class DigitalOutputDevice(Object):
         #activate the pin
         for handler in self.handlers["activate"]:
             if handler != None:
-                handler()
+                func = handler.function
+                if handler.args != None:
+                    func(handler.args)
+                else:
+                    func()
         
 
     def deactivate(self):
@@ -107,7 +114,9 @@ class DigitalOutputDevice(Object):
         #deactivate the pin
         for handler in self.handlers["deactivate"]:
             if handler != None:
-                handler()
+                func = handler.function
+                args = handler.args
+                func(args)
 
     
 
@@ -127,10 +136,14 @@ class MonoOutputDevice(Object):
     def activate(self):
         for handler in self.handlers["activate"]:
             if handler != None:
-                handler()
+                handler.function()
 
 
 
+class ToxHandler():
+    def ___init__(self):
+        self.function = None
+        self.args = None
 
 
 
@@ -154,10 +167,16 @@ def printT():
     print("Done...")
 
 timer = Timer()
-timer.addHandlerForKey("activate", printT)
+
+completion = ToxHandler()
+completion.function = printT
+timer.addHandlerForKey("activate", completion)
 
 obj1 = DigitalOutputDevice()
-obj1.addHandlerForKey("activate", timer.messages["fire"])
+completion2 = ToxHandler()
+completion2.function = timer.messages["fire"]
+completion2.args = None
+obj1.addHandlerForKey("activate", completion2)
 
 obj1.executeMessage("activate")
 
