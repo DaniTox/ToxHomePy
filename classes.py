@@ -118,6 +118,13 @@ class DigitalOutputDevice(Object):
                 args = handler.args
                 func(args)
 
+    def update(self, value):
+        if isinstance(self, DigitalOutputDevice):
+            if value > 0:
+                self.activate()
+            elif value <= 0:
+                self.deactivate() 
+        #perform some update in pins and execute functions/messages if needed
     
 
         
@@ -140,7 +147,7 @@ class MonoOutputDevice(Object):
 
 
 
-class ToxHandler():
+class ToxHandler:
     def ___init__(self):
         self.function = None
         self.args = None
@@ -167,6 +174,7 @@ def printT():
     print("Done...")
 
 timer = Timer()
+timer.duration = 2
 
 completion = ToxHandler()
 completion.function = printT

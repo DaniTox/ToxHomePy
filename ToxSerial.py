@@ -4,6 +4,7 @@ import time
 import json
 from thread import *
 from collections import deque
+import ToxMain
 
 class ToxSerialMessageType(Enum):
     SPEGNIMENTO = 0
@@ -46,7 +47,8 @@ class ToxSerial:
         self.queue = deque()
 
     def start(self):
-        self.ser = serial.Serial("/dev/cu.usbmodem14141", 9600, timeout=0)
+        # self.ser = serial.Serial("/dev/cu.usbmodem14141", 9600, timeout=0)
+        self.ser = serial.Serial("/dev/ttyACM0", 9600, timeout=0)
         time.sleep(2.5)
         start_new_thread(self.performQueue, ())
 
@@ -78,7 +80,7 @@ class ToxSerial:
                 if args != None:
                     msg.handler(args)
                 else:
-                    msg.handler(None)
+                    msg.handler()
                 self.queue.popleft()
     
     def printQueue(self):
@@ -99,26 +101,30 @@ class ToxMessage:
 
           
 
+class ToxSerialUpdate:
+    def __init__(self):
+        self.toxMain = ToxMain.ToxMain()
+
+    def updateObjs(self):
+        asd.ser.write("B")
+        time.sleep(0.1)
+        line = asd.ser.readline()
+        asd.ser.flushInput()
+        asd.ser.flushOutput()
+        print(line)
+        self.toxMain.updateObjetctsStatus(line)
+
+
+
 asd = ToxSerial()
 asd.start()
-
-def test(message):
-    if message != None:
-        asd.ser.write(message)
-    else:
-        asd.ser.write("A")
-    time.sleep(0.1)
-    line = asd.ser.readline()
-    asd.ser.flushInput()
-    asd.ser.flushOutput()
-    print(line) 
-
 
 
 while True:
     
-    msg = ToxMessage(test)
-    msg.args = ("B")
+    updateObj = ToxSerialUpdate()
+
+    msg = ToxMessage(updateObj.updateObjs)
     msg.id = 1
     asd.addToQueue(msg)
 
