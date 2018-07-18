@@ -1,7 +1,7 @@
 {
     "Objects" : [
         {
-            "className" : "DigitalOutputDevice",
+            "className" : "MonoOutputDevice",
             "name" : "TestDevice",
             "description" : "Prova del salvataggio di un device",
             

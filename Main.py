@@ -2,9 +2,18 @@ import classes
 import ToxConverter
 
 class ToxMain:
+
+    __instance = None
+
+    @staticmethod
+    def shared():
+        if ToxMain.__instance == None:
+            ToxMain()
+        return ToxMain.__instance
+
     def __init__(self):
-        toxSaver = ToxConverter.ToxConverter()
-        self.objects = toxSaver.getObjectsFromJSON()
+        # toxSaver = ToxConverter()
+        self.objects = ToxConverter.getObjectsFromJSON()
         self.realObjects = [] 
 
         #TODO: creare gli oggetti da questo dizionario
@@ -12,7 +21,13 @@ class ToxMain:
             realObj = self.createObectFromDict(objD)
             self.realObjects.append(realObj)
 
+        if ToxMain.__instance != None:
+            raise Exception("This class is a singleton!")
+        else:
+            ToxMain.__instance = self
+
     def createObectFromDict(self, dictObj):
+        # import classes
         className = dictObj["className"]
         objClass = getattr(classes, className)
         newObj = objClass()
@@ -25,14 +40,24 @@ class ToxMain:
         newObj.messages = dictObj["messages"]
         newObj.handlers = dictObj["handlers"]
         print(newObj.createJSON())
+        
+        #TESTING ONLY. DA ELIMINARE
+        # func = getattr(newObj, "printStr")
+        # func()
+        #####
+
         return newObj
         #return the obj
 
 
+    def generateObjectsHandlers(self):
+        pass
+
     def getObjectFromID(self, id):
         for obj in self.objects:
-            if obj.id == id:
-                return obj
+            if obj["id"] == id:
+                newObj = self.createObectFromDict(obj)
+                return newObj
         return None
 
     def getObjectFromPin(self, pin, objects):
@@ -48,4 +73,5 @@ class ToxMain:
                 obj.update(value)
 
 
-main = ToxMain()
+#main = ToxMain()
+
