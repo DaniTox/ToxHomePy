@@ -3,9 +3,9 @@ import json
 import time
 from enum import Enum
 import inspect
-from ToxIDCreator import ToxIDCreator
+# from ToxIDCreator import ToxIDCreator
 import threading
-from Main import ToxMain
+# from Main import ToxMain
 
 class ObjectType(Enum):
     NONE = 0
@@ -231,16 +231,16 @@ def printT():
 
     
 
-object1 = DigitalOutputDevice()
+# object1 = DigitalOutputDevice()
 
-handler = ToxHandler()
+# handler = ToxHandler()
 
-function = ToxFunction()
-function.objectId = 17
-function.functionName = "asd"
+# function = ToxFunction()
+# function.objectId = 17
+# function.functionName = "asd"
 
-handler.function = function
-handler.args = None
+# handler.function = function
+# handler.args = None
 
-object1.addHandlerForKey("activate", handler)
-object1.executeMessage("activate")
+# object1.addHandlerForKey("activate", handler)
+# object1.executeMessage("activate")
