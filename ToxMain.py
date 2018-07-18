@@ -13,7 +13,19 @@ class ToxMain:
             self.realObjects.append(realObj)
 
     def createObectFromDict(self, dictObj):
-        pass
+        className = dictObj["className"]
+        objClass = getattr(classes, className)
+        newObj = objClass()
+        newObj.name = dictObj["name"]
+        newObj.description = dictObj["description"]
+        #newObj.color = dictObj["color"]
+        #newObj.type = dictObj["type"]
+        newObj.pin = dictObj["pin"]
+        newObj.id = dictObj["id"]
+        newObj.messages = dictObj["messages"]
+        newObj.handlers = dictObj["handlers"]
+        print(newObj.createJSON())
+        return newObj
         #return the obj
 
 
@@ -34,3 +46,6 @@ class ToxMain:
             obj = self.getObjectFromPin(index,self.objects)
             if obj != None:
                 obj.update(value)
+
+
+main = ToxMain()

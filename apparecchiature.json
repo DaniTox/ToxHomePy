@@ -1,7 +1,14 @@
 {
     "Objects" : [
         {
-            "name" : "Ciao"
+            "className" : "DigitalOutputDevice",
+            "name" : "TestDevice",
+            "description" : "Prova del salvataggio di un device",
+            
+            "pin" : "8",
+            "id" : 17,
+            "messages" : [],
+            "handlers" : []
         }
     ]
 }

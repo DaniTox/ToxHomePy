@@ -32,6 +32,8 @@ class Object:
         self.description = ""
         self.color = ObjectColors.BLACK
         self.type = ObjectType.NONE
+        self.className = None
+
 
         idCreator = ToxIDCreator()
         self.id = idCreator.createUniqueID()
@@ -57,7 +59,7 @@ class Object:
         print(self.__dict__)
 
 
-#TODO: Fix this function and find a way to use it because i don't know why i wrote it
+#TODO: Fix this function and find a way to use it because i don't know/remember why i wrote it
     # def executeHandlers(self, message):
     #     handlers = self.handlers[message] 
     #     if handlers == None:
@@ -84,6 +86,7 @@ class DigitalOutputDevice(Object):
     def __init__(self):
         Object.__init__(self)
         self.isOn = False
+        self.className = "DigitalOutputDevice"
         #IMPORTANT: DALL'APP VERRANNO CHIAMATI QUESTI MESSAGGI TRAMITE LA FUNC executeMessage(). È l'unico modo per comunicare con l'app esterna
         self.messages = { 
             "activate": self.activate,
@@ -132,6 +135,7 @@ class DigitalOutputDevice(Object):
 class MonoOutputDevice(Object):
     def __init__(self):
         Object.__init__(self)
+        self.className = "MonoOutputDevice"
         self.messages = {
             "activate": self.activate
         }
@@ -158,6 +162,7 @@ class ToxHandler:
 class Timer(MonoOutputDevice):
     def __init__(self):
         MonoOutputDevice.__init__(self)
+        self.className = "Timer"
         self.duration = 5
         self.messages = {
             "activate": self.activate,
@@ -173,18 +178,19 @@ class Timer(MonoOutputDevice):
 def printT():
     print("Done...")
 
-timer = Timer()
-timer.duration = 2
+#####       TESTING     #######
+# timer = Timer()
+# timer.duration = 2
 
-completion = ToxHandler()
-completion.function = printT
-timer.addHandlerForKey("activate", completion)
+# completion = ToxHandler()
+# completion.function = printT
+# timer.addHandlerForKey("activate", completion)
 
-obj1 = DigitalOutputDevice()
-completion2 = ToxHandler()
-completion2.function = timer.messages["fire"]
-completion2.args = None
-obj1.addHandlerForKey("activate", completion2)
+# obj1 = DigitalOutputDevice()
+# completion2 = ToxHandler()
+# completion2.function = timer.messages["fire"]
+# completion2.args = None
+# obj1.addHandlerForKey("activate", completion2)
 
-obj1.executeMessage("activate")
+# obj1.executeMessage("activate")
 
