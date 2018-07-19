@@ -9,11 +9,41 @@ import time
 import serial
 from thread import *
 from collections import deque
+import sys
 
 class ToxIDCreator:
+    __instance = None
+
+    @staticmethod
+    def shared():
+        if ToxIDCreator.__instance == None:
+            ToxIDCreator()
+        return ToxIDCreator.__instance
+
     def __init__(self):
-        self.FILE_NAME = ".currentIDs.json"
-        self.currentIDs = self.getIDsFromStorage()
+        
+        if ToxIDCreator.__instance != None:
+            raise Exception("This class is a singleton!")
+        else:
+            ToxIDCreator.__instance = self
+
+        self.currentIDs = []
+        objects = ToxConverter().getObjectsFromJSON()
+        for obj in objects:
+            self.currentIDs.append(obj["id"])
+
+        # self.FILE_NAME = ".currentIDs.json"
+        # self.currentIDs = self.getIDsFromStorage()
+
+    def setIDasUsed(self, id):
+        if id not in self.currentIDs:
+            self.currentIDs.append(id)
+    
+    def setIDasFree(self, id):
+        try:
+            self.currentIDs.remove(id)
+        except:
+            pass
 
     def getIDsFromStorage(self):
         if os.path.isfile(self.FILE_NAME):
@@ -26,8 +56,8 @@ class ToxIDCreator:
             return []
 
     def createUniqueID(self):
-        id = 0
-        while id in self.currentIDs and id == 0:
+        id = random.randint(0, 9999)
+        while id in self.currentIDs:
             id = random.randint(0, 9999)
         return id
 
@@ -71,9 +101,13 @@ class Object:
         self.className = None
 
 
-        idCreator = ToxIDCreator()
+        idCreator = ToxIDCreator.shared()
         self.id = idCreator.createUniqueID()
+        if self.id == None or self.id == 0:
+            raise Exception("Creato ID NULL o 0(zero) nell'init di un oggetto")
         self.pin = None 
+
+        ToxMain.shared().addRealObject(self)
 
     def createDict(self): 
         myDict = {}
@@ -94,8 +128,6 @@ class Object:
     def printMyProperties(self):
         print(self.__dict__)
 
-
-#TODO: Fix this function and find a way to use it because i don't know/remember why i wrote it
     def executeHandlers(self, message):
         handlers = self.handlers[message] 
         if handlers == None:
@@ -106,7 +138,12 @@ class Object:
             funcName = toxFunc.functionName
             #args = toxFunc.args
 
-            realObject = ToxMain.shared().getObjectFromID(objID)
+            realObject = ToxMain.shared().getRealObjectFromID(objID)
+            objecs = ToxMain.shared().realObjects
+                
+            if realObject == None:
+                raise Exception("ogetto ottenuto is NULL")
+                sys.exit(1)
             function = getattr(realObject, funcName)
             # if args != None:
             #     function(args)
@@ -208,9 +245,12 @@ class MonoOutputDevice(Object):
         }
 
     def activate(self):
-        for handler in self.handlers["activate"]:
-            if handler != None:
-                handler.function()
+        self.executeHandlers("activate")
+        # for handler in self.handlers["activate"]:
+        #     if handler != None:
+                #print(type(handler))
+                #handler.function()
+                # self.executeHandlers("activate")
 
     #TESTING ONLY. DA ELIMINARE
     def asd(self):
@@ -292,25 +332,24 @@ class ToxMain:
         return ToxMain.__instance
 
     def __init__(self):
-        # toxSaver = ToxConverter()
-        self.objects = ToxConverter().getObjectsFromJSON()
-        self.realObjects = [] 
-
-        #TODO: creare gli oggetti da questo dizionario
-        for objD in self.objects:
-            realObj = self.createObectFromDict(objD)
-            self.realObjects.append(realObj)
-
         if ToxMain.__instance != None:
             raise Exception("This class is a singleton!")
         else:
             ToxMain.__instance = self
 
+
+        self.objects = ToxConverter().getObjectsFromJSON()
+        self.realObjects = [] 
+
+        for objD in self.objects:
+            realObj = self.createObectFromDict(objD)
+            #self.realObjects.append(realObj)
+
+        
+
     def createObectFromDict(self, dictObj):
-        # import classes
         className = dictObj["className"]
         #objClass = getattr(CoreSoftware, className)
-        #print(globals())
         objClass = globals()[className]
         newObj = objClass()
         newObj.name = dictObj["name"]
@@ -331,6 +370,9 @@ class ToxMain:
         return newObj
         #return the obj
 
+    def addRealObject(self, obj):
+        self.realObjects.append(obj)
+        ToxIDCreator.shared().setIDasUsed(obj.id)
 
     def generateObjectsHandlers(self):
         pass
@@ -355,6 +397,11 @@ class ToxMain:
                 return obj
         return None
 
+    def getRealObjectFromID(self, id):
+        for obj in self.realObjects:
+            if obj.id == id:
+                return obj
+        return None
 
     # def updateObjetctsStatus(self, status):
     #     for index, value in enumerate(status):
@@ -489,21 +536,3 @@ class ToxSerialUpdate:
         serialObject.ser.flushOutput()
         print(line)
         ToxMain.shared().updateObjectsStatus(line)
-
-####    TESTING   #####
-
-# asd = ToxSerial()
-# asd.start()
-
-# while True:
-    
-#     updateObj = ToxSerialUpdate()
-
-#     msg = ToxMessage(updateObj.updateObjs)
-#     msg.id = 1
-#     asd.addToQueue(msg)
-
-#     asd.printQueueLen()
-#     time.sleep(0.15)
-
-######################################
