@@ -293,7 +293,7 @@ class ToxMain:
 
     def __init__(self):
         # toxSaver = ToxConverter()
-        self.objects = ToxConverter.getObjectsFromJSON()
+        self.objects = ToxConverter().getObjectsFromJSON()
         self.realObjects = [] 
 
         #TODO: creare gli oggetti da questo dizionario
@@ -309,7 +309,9 @@ class ToxMain:
     def createObectFromDict(self, dictObj):
         # import classes
         className = dictObj["className"]
-        objClass = getattr(classes, className)
+        #objClass = getattr(CoreSoftware, className)
+        #print(globals())
+        objClass = globals()[className]
         newObj = objClass()
         newObj.name = dictObj["name"]
         newObj.description = dictObj["description"]
@@ -346,13 +348,25 @@ class ToxMain:
                 return obj
         return None
 
-    def updateObjetctsStatus(self, status):
+
+    def getRealObjectFromPin(self, pin):
+        for obj in self.realObjects:
+            if obj.pin == pin:
+                return obj
+        return None
+
+
+    # def updateObjetctsStatus(self, status):
+    #     for index, value in enumerate(status):
+    #         obj = self.getObjectFromPin(index,self.objects)
+    #         if obj != None:
+    #             obj.update(value)
+
+    def updateObjectsStatus(self, status):
         for index, value in enumerate(status):
-            obj = self.getObjectFromPin(index,self.objects)
+            obj = self.getRealObjectFromPin(index)
             if obj != None:
                 obj.update(value)
-
-
 
 
 
@@ -395,12 +409,24 @@ class ToxSerialResponse:
     
 class ToxSerial:
 
+    __instance = None
+
+    @staticmethod
+    def shared():
+        if ToxSerial.__instance == None:
+            ToxSerial()
+        return ToxSerial.__instance
+
     def __init__(self):
         self.queue = deque()
+        if ToxSerial.__instance != None:
+            raise Exception("This class is a singleton!")
+        else:
+            ToxSerial.__instance = self
 
     def start(self):
-        # self.ser = serial.Serial("/dev/cu.usbmodem14141", 9600, timeout=0)
-        self.ser = serial.Serial("/dev/ttyACM0", 9600, timeout=0)
+        self.ser = serial.Serial("/dev/cu.usbmodem14141", 9600, timeout=0)
+        # self.ser = serial.Serial("/dev/ttyACM0", 9600, timeout=0)
         time.sleep(2.5)
         start_new_thread(self.performQueue, ())
 
@@ -453,17 +479,16 @@ class ToxMessage:
 
         
 class ToxSerialUpdate:
-    def __init__(self):
-        self.toxMain = ToxMain.ToxMain()
-
+    
     def updateObjs(self):
-        asd.ser.write("B")
+        serialObject = ToxSerial.shared()
+        serialObject.ser.write("B")
         time.sleep(0.1)
-        line = asd.ser.readline()
-        asd.ser.flushInput()
-        asd.ser.flushOutput()
+        line = serialObject.ser.readline()
+        serialObject.ser.flushInput()
+        serialObject.ser.flushOutput()
         print(line)
-        self.toxMain.updateObjetctsStatus(line)
+        ToxMain.shared().updateObjectsStatus(line)
 
 ####    TESTING   #####
 
