@@ -10,6 +10,8 @@ import serial
 from thread import *
 from collections import deque
 import sys
+from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+#import BaseHTTPServer
 
 class ToxIDCreator:
     __instance = None
@@ -536,3 +538,14 @@ class ToxSerialUpdate:
         serialObject.ser.flushOutput()
         print(line)
         ToxMain.shared().updateObjectsStatus(line)
+
+
+
+class ToxServer(BaseHTTPRequestHandler):
+    def do_GET(self):
+        if self.path == "/":
+            self.wfile.write("Scemotto!!!")
+
+        self.send_response(200)
+        self.send_header('Content-type', 'text/html')
+        self.end_headers()

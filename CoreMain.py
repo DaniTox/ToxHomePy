@@ -72,3 +72,11 @@ from CoreSoftware import *
 # asd = ToxIDCreator.shared()
 # print(asd.currentIDs)
 #####################
+
+
+
+####    SECTION 3   ####
+#       HTTP SERVER     #
+
+server = HTTPServer(('', 8080), ToxServer)
+server.serve_forever()
