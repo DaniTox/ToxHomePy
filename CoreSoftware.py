@@ -11,7 +11,7 @@ from thread import *
 from collections import deque
 import sys
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
-#import BaseHTTPServer
+from urlparse import urlparse, parse_qs
 
 class ToxIDCreator:
     __instance = None
@@ -542,10 +542,20 @@ class ToxSerialUpdate:
 
 
 class ToxServer(BaseHTTPRequestHandler):
-    def do_GET(self):
-        if self.path == "/":
-            self.wfile.write("Scemotto!!!")
-
+    
+    def sendToxResponse(self):
         self.send_response(200)
-        self.send_header('Content-type', 'text/html')
         self.end_headers()
+    
+    def do_GET(self):
+        components = parse_qs(urlparse(self.path).query)
+        print(self.path)
+        if self.path == "/":
+            self.sendToxResponse()
+            if "asd" in components:
+                self.wfile.write("Scemotto!")
+            else:
+                self.wfile.write("Che stupidotto!")
+
+        
+        

@@ -79,4 +79,5 @@ from CoreSoftware import *
 #       HTTP SERVER     #
 
 server = HTTPServer(('', 8080), ToxServer)
+server.allow_reuse_address = True
 server.serve_forever()
