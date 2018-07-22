@@ -12,6 +12,7 @@ from collections import deque
 import sys
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from urlparse import urlparse, parse_qs
+import socket
 
 class ToxIDCreator:
     __instance = None
@@ -541,21 +542,52 @@ class ToxSerialUpdate:
 
 
 
-class ToxServer(BaseHTTPRequestHandler):
-    
-    def sendToxResponse(self):
-        self.send_response(200)
-        self.end_headers()
-    
-    def do_GET(self):
-        components = parse_qs(urlparse(self.path).query)
-        print(self.path)
-        if self.path == "/":
-            self.sendToxResponse()
-            if "asd" in components:
-                self.wfile.write("Scemotto!")
-            else:
-                self.wfile.write("Che stupidotto!")
+class ToxSocketServer:
+    def __init__(self, port = 8080):
+        self.host = ''
+        self.port = port
 
-        
-        
+    def activate_server(self):
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+        try:
+            self.socket.bind((self.host, self.port))
+        except Exception as e:
+            print ("Error: Could not aquite port:",self.port,"\n")
+            print(str(e))
+            self.shutdown()
+            sys.exit(1)
+
+        self._wait_for_connections()
+    
+    def shutdown(self):
+        try:
+            s.socket.shutdown(socket.SHUT_RDWR)
+            s.close()
+        except Exception as e:
+            print("Errore nello spegnimento del server. Forse era già spento")
+
+
+    def _handle_request(self, conn):
+        data = conn.recv(4096)
+        try:
+            request = json.loads(data)
+            if "code" in request:
+                print("'" + request["code"] + "' <-- client")
+        except Exception as e:
+            print(str(e))
+            sys.exit()
+
+        conn.send("Scemotto! Hide and Seek\n")
+        conn.close()
+
+
+    def _wait_for_connections(self):
+        while True:
+            self.socket.listen(5)
+
+            conn, addr = self.socket.accept()
+            print("Server <-- " + addr[0])
+
+            start_new_thread(self._handle_request, (conn,))

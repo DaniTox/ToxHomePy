@@ -78,6 +78,18 @@ from CoreSoftware import *
 ####    SECTION 3   ####
 #       HTTP SERVER     #
 
-server = HTTPServer(('', 8080), ToxServer)
-server.allow_reuse_address = True
-server.serve_forever()
+# server = HTTPServer(('', 8080), ToxServer)
+# server.allow_reuse_address = True
+# server.serve_forever()
+
+
+
+
+##  SECTION 4   ####
+##  SOCKET SERVER   ##
+
+server = ToxSocketServer()
+try:
+    server.activate_server()
+except KeyboardInterrupt:
+    print("\nRicevuto segnale di chiusura. Esco...")
