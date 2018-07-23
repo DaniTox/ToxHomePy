@@ -103,6 +103,7 @@ class Object:
         self.type = ObjectType.NONE
         self.className = None
 
+        self.args = {}
 
         idCreator = ToxIDCreator.shared()
         self.id = idCreator.createUniqueID()
@@ -153,14 +154,7 @@ class Object:
             # else:
             #     funcion()
             function()
-            # handValues = handl.split(".")
-            # objID = handValues[0]
-            # funcName = handValues[1]
 
-            # toxMain = ToxMain()
-            # obj = toxMain.getObjectFromID(objID)
-            # func = obj.messages[funcName]
-            # func()
 
     def addHandlerForKey(self, key, handler):
         self.handlers[key].append(handler)
@@ -573,8 +567,28 @@ class ToxSocketServer:
         data = conn.recv(4096)
         try:
             request = json.loads(data)
-            if "code" in request:
-                print("'" + request["code"] + "' <-- client")
+            
+            requestType = request["request-type"]
+
+            if requestType == "create_new_object":
+                name = request["name"]
+                description = request["description"]
+                className = request["className"]
+                pin = request["pin"]
+
+                if name != None and description != None and className != None and pin != None:
+                    objClass = globals()[className]
+
+                    newObject = objClass()
+                    newObject.pin = pin
+                    newObject.name = name
+                    newObject.description = description
+
+                    print("Nuovo oggetto creato con successo!")
+                    
+                for obj in ToxMain.shared().realObjects:
+                    print(obj.createDict())
+
         except Exception as e:
             print(str(e))
             sys.exit()
