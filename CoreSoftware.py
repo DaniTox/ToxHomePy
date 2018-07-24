@@ -103,7 +103,7 @@ class Object:
         self.type = ObjectType.NONE
         self.className = None
 
-        self.args = {}
+        self.customVariables = {}
 
         idCreator = ToxIDCreator.shared()
         self.id = idCreator.createUniqueID()
@@ -163,6 +163,13 @@ class Object:
         func = self.messages[message]
         if func != None:
             func()
+
+    def removeAllHandlers(self):
+        for key in self.handlers:
+            del self.handlers[key][:]
+
+    def removeHandlersForKey(self, key):
+        del self.handlers[key][:]
 
 
 
@@ -571,29 +578,57 @@ class ToxSocketServer:
             requestType = request["request-type"]
 
             if requestType == "create_new_object":
-                name = request["name"]
-                description = request["description"]
-                className = request["className"]
-                pin = request["pin"]
-
-                if name != None and description != None and className != None and pin != None:
-                    objClass = globals()[className]
-
+                if "name" in request and "description" in request and "className" in request:
+                    objClass = globals()[request["className"]]
                     newObject = objClass()
-                    newObject.pin = pin
-                    newObject.name = name
-                    newObject.description = description
-
+                    newObject.name = request["name"]
+                    newObject.description = request["description"]
+                    if "pin" in request:
+                        newObject.pin = request["pin"]
+                    if "variables" in request:
+                        newObject.customVariables = request["variables"]
                     print("Nuovo oggetto creato con successo!")
-                    
-                for obj in ToxMain.shared().realObjects:
-                    print(obj.createDict())
+                    odic = newObject.createDict()
+                    odic["code"] = "OK"
+                    ojson = str(json.dumps(odic))
+                    conn.send(ojson)
+                    # for obj in ToxMain.shared().realObjects:
+                    #     print(obj.createDict())
+                else:
+                    print("Errore nella creazione oggetto. Qualche valore mancante")
+                    conn.send("Errore nella creazione oggetto. Qualche valore mancante") 
+                
+            
+            elif requestType == "modify_handler_actions":
+                all_handlers = request["handlers"]
+                handlers_key = request["handlers-obj-key"]
+                obj_id_of_object_receiver = request["objID-receiver"]
+                real_object_receiver = ToxMain.shared().getRealObjectFromID(obj_id_of_object_receiver)
+                if real_object_receiver == None:
+                    raise Exception("Ottento un oggetto NULL durante la modifica degli handlers nel ToxServer")
+                real_object_receiver.removeHandlersForKey(handlers_key)
+
+                for handler in all_handlers:
+                    tox_func = handler["function"]
+                    objID = tox_func["objectId"]
+                    func_name = tox_func["functionName"]
+
+                    newToxHandler = ToxHandler()
+                    newToxHandler.args = None
+                    newToxFunction = ToxFunction()
+                    newToxFunction.functionName = func_name
+                    newToxFunction.objectId = objID
+
+                    newToxHandler.function = newToxFunction
+
+                    real_object_receiver.addHandlerForKey(handlers_key)
+                    print("added handler successfully")
 
         except Exception as e:
             print(str(e))
             sys.exit()
 
-        conn.send("Scemotto! Hide and Seek\n")
+        #conn.send("Scemotto! Hide and Seek\n")
         conn.close()
 
 
