@@ -623,11 +623,11 @@ class ToxSocketServer:
 
                     real_object_receiver.addHandlerForKey(handlers_key)
                     print("added handler successfully")
-            elif request["show_objects"]:
+            elif requestType == "show_objects":
                 arr = list()
                 realobjs = ToxMain.shared().realObjects
                 for obj in realobjs:
-                    arr.append(onj.createDict())
+                    arr.append(obj.createDict())
                 json_str = json.dumps(arr)
                 conn.send(json_str)
 
