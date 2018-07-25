@@ -341,6 +341,18 @@ class JSONSaver:
 
 class ToxConverter(JSONSaver):
 
+    def saveObjectsToJSON(self, objects):
+        finalDict = {}
+        serializedObjects = list()
+        for obj in objects:
+            newObj = obj.createDict()
+            serializedObjects.append(newObj)
+        finalDict["Objects"] = serializedObjects
+
+        jsonData = json.dumps(finalDict)
+        JSONSaver.saveToFile(self, jsonData, JSON_SAVER_FILENAME)
+        
+
     def getObjectsFromJSON(self):
         j = self.getFromFile(JSON_SAVER_FILENAME)
         return j["Objects"]
@@ -380,6 +392,7 @@ class ToxMain:
 
         for objD in self.objects:
             realObj = self.createObectFromDict(objD)
+            #No need to add it to the array as this happen automatically in the init of the object
             #self.realObjects.append(realObj)
 
         
@@ -410,6 +423,10 @@ class ToxMain:
     def addRealObject(self, obj):
         self.realObjects.append(obj)
         ToxIDCreator.shared().setIDasUsed(obj.id)
+        self.saveRealObjectsToDisk()
+
+    def saveRealObjectsToDisk(self):
+        ToxConverter().saveObjectsToJSON(self.realObjects)
 
     def generateObjectsHandlers(self):
         pass
@@ -458,6 +475,8 @@ class ToxMain:
                 del self.realObjects[index]
                 ToxIDCreator.shared().setIDasFree(id)
                 break
+
+        self.saveRealObjectsToDisk()
 
 
 
