@@ -105,6 +105,9 @@ class Object:
 
         self.customVariables = {}
 
+        self.messages = {}
+        self.handlers = {}
+
         idCreator = ToxIDCreator.shared()
         self.id = idCreator.createUniqueID()
         if self.id == None or self.id == 0:
@@ -119,6 +122,31 @@ class Object:
         for var in variables:
             if var == "messages": #or var == "handlers"
                 continue
+            if var == "handlers" and len(self.__dict__["handlers"]) > 0:
+                print("I'M IN")
+                keyValueHandlers = self.__dict__["handlers"]
+                allKeys = list(keyValueHandlers.keys())
+
+                newDict = {}
+                for key in allKeys:
+                    arrHandlers = keyValueHandlers[key]
+                    arrHandlerForKey = list()
+                    for hand in arrHandlers:
+                        hd = {
+                        "function" : {
+                            "objectId" : hand.function.objectId,
+                            "functionName" : hand.function.functionName
+                            }
+                        }
+                        if "args" in hand.__dict__:
+                            hd["args"] = hand.args
+                        if "id" in hand.__dict__:
+                            hd["id"] = hand.id
+                        arrHandlerForKey.append(hd)
+                    newDict[key] = arrHandlerForKey
+                myDict[var] = newDict
+                continue
+                
             myDict[var] = self.__dict__[var]
         
         return myDict
@@ -265,6 +293,7 @@ class ToxHandler:
     def ___init__(self):
         self.function = None #ToxFunction
         self.args = None
+        self.id = None
 
 class ToxFunction:
     def __init__(self):
@@ -609,8 +638,18 @@ class ToxSocketServer:
                 real_object_receiver.removeHandlersForKey(handlers_key)
 
                 for handler in all_handlers:
+                    print("HANDLER: " + str(handler))
+                    if "function" not in handler:
+                        raise Exception("'function' non è nell'handler")
+                        sys.exit(1)
                     tox_func = handler["function"]
+                    if "objectId" not in tox_func:
+                        raise Exception("'objectId' non è nella func")
+                        sys.exit(1)
                     objID = tox_func["objectId"]
+                    if "functionName" not in tox_func:
+                        raise Exception("'functionName' non è nella func")
+                        sys.exit(1)
                     func_name = tox_func["functionName"]
 
                     newToxHandler = ToxHandler()
@@ -621,7 +660,7 @@ class ToxSocketServer:
 
                     newToxHandler.function = newToxFunction
 
-                    real_object_receiver.addHandlerForKey(handlers_key)
+                    real_object_receiver.addHandlerForKey(handlers_key, newToxHandler)
                     print("added handler successfully")
             elif requestType == "show_objects":
                 arr = list()
