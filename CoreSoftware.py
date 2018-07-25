@@ -46,7 +46,8 @@ class ToxIDCreator:
         try:
             self.currentIDs.remove(id)
         except:
-            pass
+            raise Exception("Non ho potuto settare l'id come free")
+            sys.exit(1)
 
     def getIDsFromStorage(self):
         if os.path.isfile(self.FILE_NAME):
@@ -198,6 +199,9 @@ class Object:
 
     def removeHandlersForKey(self, key):
         del self.handlers[key][:]
+
+    def removeMe(self):
+        ToxMain.shared().removeRealObjectForID(self.id)
 
 
 
@@ -448,6 +452,13 @@ class ToxMain:
             if obj != None:
                 obj.update(value)
 
+    def removeRealObjectForID(self, id):
+        for index, obj in enumerate(self.realObjects):
+            if obj.id == id:
+                del self.realObjects[index]
+                ToxIDCreator.shared().setIDasFree(id)
+                break
+
 
 
 
@@ -669,6 +680,18 @@ class ToxSocketServer:
                     arr.append(obj.createDict())
                 json_str = json.dumps(arr)
                 conn.send(json_str)
+            elif requestType == "remove_object":
+                objectID = request["object_id"]
+                obj = ToxMain.shared().getRealObjectFromID(objectID)
+                if obj != None:
+                    obj.removeMe()
+                    conn.send("Oggetto rimosso con successo")
+                else:
+                    conn.send("Non esiste nessun oggetto con quell'ID")
+            elif requestType == "show_ids":
+                ids = ToxIDCreator.shared().currentIDs
+                conn.send(str(ids))
+
 
 
         except Exception as e:
