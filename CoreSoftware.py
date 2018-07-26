@@ -14,6 +14,7 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from urlparse import urlparse, parse_qs
 import socket
 import traceback
+sys.dont_write_bytecode = True
 
 class ToxIDCreator:
     __instance = None
