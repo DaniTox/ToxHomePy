@@ -1,1 +1,36 @@
-{"Objects": [{"name": "", "pin": null, "handlers": {}, "color": 0, "customVariables": {}, "className": null, "type": 0, "id": 9276, "description": ""}]}
+{
+  "Objects": [
+    {
+      "className": "Timer",
+      "color": 0,
+      "customVariables": {
+        "duration": 3
+      },
+      "description": "Desctizione di prova",
+      "duration": 5,
+      "handlers": {
+        "activate": []
+      },
+      "id": 9398,
+      "name": "Timer 1",
+      "pin": 80,
+      "type": 0
+    },
+    {
+      "className": "Timer",
+      "color": 0,
+      "customVariables": {
+        "duration": 3
+      },
+      "description": "Desctizione di prova",
+      "duration": 5,
+      "handlers": {
+        "activate": []
+      },
+      "id": 5450,
+      "name": "Timer 1",
+      "pin": 80,
+      "type": 0
+    }
+  ]
+}

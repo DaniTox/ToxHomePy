@@ -13,6 +13,7 @@ import sys
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from urlparse import urlparse, parse_qs
 import socket
+import traceback
 
 class ToxIDCreator:
     __instance = None
@@ -40,6 +41,7 @@ class ToxIDCreator:
         # self.currentIDs = self.getIDsFromStorage()
 
     def setIDasUsed(self, id):
+        print(traceback.format_exc())
         if id not in self.currentIDs:
             self.currentIDs.append(id)
     
@@ -118,6 +120,21 @@ class Object:
 
         ToxMain.shared().addRealObject(self)
 
+    def generateHandlers(self):
+        allHandlers = self.handlers
+        keys = list(allHandlers.keys())
+        if len(keys) <= 0:
+            return
+        for key in keys:
+            if type(allHandlers[key]) == dict:
+                for hand in allHandlers[key]:
+                    handler = ToxHandler.createFromDict(hand)
+                    self.handlers[key].append(handler)
+                    self.handlers[key].remove(hand)
+                
+        print(self.handlers)
+
+
     def createDict(self): 
         myDict = {}
         variables = self.__dict__.keys()
@@ -134,17 +151,20 @@ class Object:
                     arrHandlers = keyValueHandlers[key]
                     arrHandlerForKey = list()
                     for hand in arrHandlers:
-                        hd = {
-                        "function" : {
-                            "objectId" : hand.function.objectId,
-                            "functionName" : hand.function.functionName
+                        if type(hand) != dict:
+                            hd = {
+                            "function" : {
+                                "objectId" : hand.function.objectId,
+                                "functionName" : hand.function.functionName
+                                }
                             }
-                        }
-                        if "args" in hand.__dict__:
-                            hd["args"] = hand.args
-                        if "id" in hand.__dict__:
-                            hd["id"] = hand.id
-                        arrHandlerForKey.append(hd)
+                            if "args" in hand.__dict__:
+                                hd["args"] = hand.args
+                            if "id" in hand.__dict__:
+                                hd["id"] = hand.id
+                            arrHandlerForKey.append(hd)
+                        else:
+                            arrHandlerForKey.append(hand)
                     newDict[key] = arrHandlerForKey
                 myDict[var] = newDict
                 continue
@@ -299,6 +319,25 @@ class ToxHandler:
         self.function = None #ToxFunction
         self.args = None
         self.id = None
+        #TODO: create an unique ID
+
+    @staticmethod
+    def createFromDict(dictObj):
+        if "function" not in dictObj:
+            raise Exception("Non ho trovato la chiave 'function' nel dict handler")
+        realFunc = ToxFunction()
+        realFunc.objectId = dictObj["function"]["objectId"]
+        realFunc.functionName = dictObj["function"]["functionName"]
+
+        realHandler = ToxHandler()
+        realHandler.function = realFunc
+        if "id" not in dictObj["id"]:
+            raise Exception("Non ho trovato l'ID handler")
+        realHandler.id = dictObj["id"]
+        if "args" in dictObj:
+            realHandler.args = dictObj["args"]
+        return realHandler
+
 
 class ToxFunction:
     def __init__(self):
@@ -332,7 +371,7 @@ class JSONSaver:
     def saveToFile(self, data, fileName):
         os.remove(fileName)
         with open(fileName, "w") as outfile:
-            json.dump(data, outfile)
+            json.dump(data, outfile, sort_keys=True, indent=2, separators=(',', ': '))
 
     def getFromFile(self, fileName):
         with open(fileName) as f:
@@ -401,8 +440,8 @@ class ToxMain:
 
         for objD in self.objects:
             realObj = self.createObectFromDict(objD)
-            #No need to add it to the array as this happen automatically in the init of the object
-            #self.realObjects.append(realObj)
+        #self.generateObjectsHandlers()
+        
 
         
 
@@ -420,7 +459,8 @@ class ToxMain:
         if "messages" in dictObj:
             newObj.messages = dictObj["messages"]
         newObj.handlers = dictObj["handlers"]
-        print(newObj.createJSON())
+        newObj.generateHandlers()
+        #print(newObj.createJSON())
         
         #TESTING ONLY. DA ELIMINARE
         # func = getattr(newObj, "printStr")
@@ -433,13 +473,17 @@ class ToxMain:
     def addRealObject(self, obj):
         self.realObjects.append(obj)
         ToxIDCreator.shared().setIDasUsed(obj.id)
+        #self.saveRealObjectsToDisk()
+
+    def commitObjects(self):
         self.saveRealObjectsToDisk()
 
     def saveRealObjectsToDisk(self):
         ToxConverter().saveObjectsToJSON(self.realObjects)
 
     def generateObjectsHandlers(self):
-        pass
+        for obj in self.realObjects:
+            obj.generateHandlers()
 
     def getObjectFromID(self, id):
         for obj in self.objects:
@@ -656,6 +700,7 @@ class ToxSocketServer:
                     newObject.pin = request["pin"]
                 if "variables" in request:
                     newObject.customVariables = request["variables"]
+                ToxMain.shared().commitObjects()
                 print("Nuovo oggetto creato con successo!")
                 odic = newObject.createDict()
                 odic["code"] = "OK"
