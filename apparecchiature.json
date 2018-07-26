@@ -1,1 +1,1 @@
-"{\"Objects\": [{\"name\": \"TestDevice\", \"pin\": \"8\", \"handlers\": [], \"color\": 0, \"customVariables\": {}, \"className\": \"MonoOutputDevice\", \"type\": 0, \"id\": 17, \"description\": \"Prova del salvataggio di un device\"}, {\"name\": \"\", \"pin\": null, \"handlers\": {}, \"color\": 0, \"customVariables\": {}, \"className\": null, \"type\": 0, \"id\": 5540, \"description\": \"\"}]}"
+{"Objects": [{"name": "", "pin": null, "handlers": {}, "color": 0, "customVariables": {}, "className": null, "type": 0, "id": 9276, "description": ""}]}
