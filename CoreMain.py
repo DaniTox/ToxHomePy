@@ -1,6 +1,8 @@
 from CoreSoftware import *
 
 
+
+
 ##  TESTING TOXSERIAL
 
 ####    SECTION 0   ####
@@ -88,8 +90,14 @@ from CoreSoftware import *
 ##  SECTION 4   ####
 ##  SOCKET SERVER   ##
 
-server = ToxSocketServer()
-try:
-    server.activate_server()
-except KeyboardInterrupt:
-    print("\nRicevuto segnale di chiusura. Esco...")
+# server = ToxSocketServer()
+# try:
+#     server.activate_server()
+# except KeyboardInterrupt:
+#     print("\nRicevuto segnale di chiusura. Esco...")
+
+
+
+##   SECTION 5  ###
+#      BOOT      #
+ToxBoot().boot()

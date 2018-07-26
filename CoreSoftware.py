@@ -14,67 +14,6 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from urlparse import urlparse, parse_qs
 import socket
 import traceback
-sys.dont_write_bytecode = True
-
-class ToxIDCreator:
-    __instance = None
-
-    @staticmethod
-    def shared():
-        if ToxIDCreator.__instance == None:
-            ToxIDCreator()
-        return ToxIDCreator.__instance
-
-    def __init__(self):
-        
-        if ToxIDCreator.__instance != None:
-            raise Exception("This class is a singleton!")
-        else:
-            ToxIDCreator.__instance = self
-
-        self.currentIDs = []
-        objects = ToxConverter().getObjectsFromJSON()
-        if len(objects) > 0:
-            for obj in objects:
-                self.currentIDs.append(obj["id"])
-
-        # self.FILE_NAME = ".currentIDs.json"
-        # self.currentIDs = self.getIDsFromStorage()
-
-    def setIDasUsed(self, id):
-        print(traceback.format_exc())
-        if id not in self.currentIDs:
-            self.currentIDs.append(id)
-    
-    def setIDasFree(self, id):
-        try:
-            self.currentIDs.remove(id)
-        except:
-            raise Exception("Non ho potuto settare l'id come free")
-            sys.exit(1)
-
-    def getIDsFromStorage(self):
-        if os.path.isfile(self.FILE_NAME):
-            with open(self.FILE_NAME) as f:
-                data = json.load(f)
-                if data != None:
-                    return data
-            return []
-        else:
-            return []
-
-    def createUniqueID(self):
-        id = random.randint(0, 9999)
-        while id in self.currentIDs:
-            id = random.randint(0, 9999)
-        return id
-
-    def isIDUnique(self, id):
-        if id in self.currentIDs:
-            return False
-        else:
-            return True
-
 
 
 
@@ -101,7 +40,7 @@ class ObjectColors(Enum):
 
 
 class Object:
-    def __init__(self):
+    def __init__(self, autoID = True):
         self.name = ""
         self.description = ""
         self.color = ObjectColors.BLACK
@@ -111,29 +50,30 @@ class Object:
         self.customVariables = {}
 
         self.messages = {}
-        self.handlers = {}
+        self.serializedMessages = {}
 
-        idCreator = ToxIDCreator.shared()
-        self.id = idCreator.createUniqueID()
-        if self.id == None or self.id == 0:
-            raise Exception("Creato ID NULL o 0(zero) nell'init di un oggetto")
+        self.handlers = {}
+        self.serializedHandlers = {}
+
+        self.id = None
+        if autoID == True:
+            self.id = ToxIDCreator.shared().createUniqueID()
+            if self.id == None or self.id == 0:
+                raise Exception("Creato ID NULL o 0(zero) nell'init di un oggetto")
         self.pin = None 
 
         ToxMain.shared().addRealObject(self)
 
     def generateHandlers(self):
-        allHandlers = self.handlers
-        keys = list(allHandlers.keys())
+        keys = self.handlers.keys()
         if len(keys) <= 0:
             return
+
         for key in keys:
-            if type(allHandlers[key]) == dict:
-                for hand in allHandlers[key]:
-                    handler = ToxHandler.createFromDict(hand)
-                    self.handlers[key].append(handler)
-                    self.handlers[key].remove(hand)
-                
-        print(self.handlers)
+            self.handlers[key] = [] #Free all handlers
+            for serializedHanlder in self.serializedHandlers[key]:
+                newHandler = ToxHandler.createFromDict(serializedHanlder)
+                self.handlers[key].append(newHandler)
 
 
     def createDict(self): 
@@ -181,7 +121,7 @@ class Object:
         self.id = customID
 
     def printMyProperties(self):
-        print(self.__dict__)
+        print("ID: " + str(self.id) + str(self.__dict__))
 
     def executeHandlers(self, message):
         handlers = self.handlers[message] 
@@ -209,6 +149,7 @@ class Object:
 
     def addHandlerForKey(self, key, handler):
         self.handlers[key].append(handler)
+        ToxMain.shared().commitObjects()#save
 
     def executeMessage(self, message):
         func = self.messages[message]
@@ -228,8 +169,8 @@ class Object:
 
 
 class DigitalOutputDevice(Object):
-    def __init__(self):
-        Object.__init__(self)
+    def __init__(self, autoID = True):
+        Object.__init__(self, autoID)
         self.isOn = False
         self.className = "DigitalOutputDevice"
         #IMPORTANT: DALL'APP VERRANNO CHIAMATI QUESTI MESSAGGI TRAMITE LA FUNC executeMessage(). È l'unico modo per comunicare con l'app esterna
@@ -291,8 +232,8 @@ class DigitalOutputDevice(Object):
         
 
 class MonoOutputDevice(Object):
-    def __init__(self):
-        Object.__init__(self)
+    def __init__(self, autoID = True):
+        Object.__init__(self, autoID)
         self.className = "MonoOutputDevice"
         self.messages = {
             "activate": self.activate
@@ -332,9 +273,12 @@ class ToxHandler:
 
         realHandler = ToxHandler()
         realHandler.function = realFunc
-        if "id" not in dictObj["id"]:
-            raise Exception("Non ho trovato l'ID handler")
-        realHandler.id = dictObj["id"]
+        if "id" not in dictObj:
+            pass
+            #TODO: MAKE SURE TO HAVE AN ID. SALTATO QUESTO CHECK PER TESTING
+            #raise Exception("Non ho trovato l'ID handler")
+        if "id" in dictObj:
+            realHandler.id = dictObj["id"]
         if "args" in dictObj:
             realHandler.args = dictObj["args"]
         return realHandler
@@ -347,8 +291,8 @@ class ToxFunction:
 
 
 class Timer(MonoOutputDevice):
-    def __init__(self):
-        MonoOutputDevice.__init__(self)
+    def __init__(self, autoID = True):
+        MonoOutputDevice.__init__(self, autoID)
         self.className = "Timer"
         self.duration = 5
         self.messages = {
@@ -362,6 +306,79 @@ class Timer(MonoOutputDevice):
 
 
 
+
+class ToxBoot:
+    @staticmethod
+    def boot():
+        arraySerializedObjects = ToxConverter.shared().getObjectsFromJSON()
+        ToxMain.shared().createRealObjects(arraySerializedObjects)
+        ToxIDCreator.shared().getUsedIDs()
+
+        server = ToxSocketServer()
+        try:
+            server.activate_server()
+        except KeyboardInterrupt:
+            print("\nRicevuto segnale di chiusura. Esco...")
+
+
+class ToxIDCreator:
+    __instance = None
+
+    @staticmethod
+    def shared():
+        if ToxIDCreator.__instance == None:
+            ToxIDCreator()
+        return ToxIDCreator.__instance
+
+    def __init__(self):
+        
+        if ToxIDCreator.__instance != None:
+            raise Exception("This class is a singleton!")
+        else:
+            ToxIDCreator.__instance = self
+
+        self.currentIDs = []
+        
+
+    def getUsedIDs(self):
+        objects = ToxConverter.shared().getObjectsFromJSON()
+        if len(objects) > 0:
+            for obj in objects:
+                self.currentIDs.append(obj["id"])
+
+    def setIDasUsed(self, id):
+        #print(traceback.format_exc())
+        if id not in self.currentIDs and id != None:
+            self.currentIDs.append(id)
+    
+    def setIDasFree(self, id):
+        try:
+            self.currentIDs.remove(id)
+        except:
+            raise Exception("Non ho potuto settare l'id come free")
+            sys.exit(1)
+
+    # def getIDsFromStorage(self):
+    #     if os.path.isfile(self.FILE_NAME):
+    #         with open(self.FILE_NAME) as f:
+    #             data = json.load(f)
+    #             if data != None:
+    #                 return data
+    #         return []
+    #     else:
+    #         return []
+
+    def createUniqueID(self):
+        id = random.randint(0, 9999)
+        while id in self.currentIDs:
+            id = random.randint(0, 9999)
+        return id
+
+    def isIDUnique(self, id):
+        if id in self.currentIDs:
+            return False
+        else:
+            return True
 
 
 ###     ToxConverter    ###
@@ -388,7 +405,22 @@ class JSONSaver:
 
 
 class ToxConverter(JSONSaver):
+    __instance = None
 
+    __objects = None
+
+    @staticmethod
+    def shared():
+        if ToxConverter.__instance == None:
+            ToxConverter()
+        return ToxConverter.__instance
+
+    def __init__(self):
+        if ToxConverter.__instance != None:
+            raise Exception("This class is a singleton!")
+        else:
+            ToxConverter.__instance = self
+            
     def saveObjectsToJSON(self, objects):
         finalDict = {}
         serializedObjects = list()
@@ -403,13 +435,19 @@ class ToxConverter(JSONSaver):
         
 
     def getObjectsFromJSON(self):
-        j = self.getFromFile(JSON_SAVER_FILENAME)
-        return j["Objects"]
+        if self.__objects == None:
+            j = self.getFromFile(JSON_SAVER_FILENAME)
+            self.__objects = j["Objects"]
+            return self.__objects
+        else:
+            return self.__objects
 
     def saveToFile(self, data, fileName):
         if isinstance(data, Object):
             newData = data.createDict()
-        JSONSaver.saveToFile(self, newData, fileName)
+            JSONSaver.saveToFile(self, newData, fileName)
+        else:
+            raise Exception("i dati che ho ottenuto non sono degli Oggetti")
 
 
 
@@ -435,22 +473,21 @@ class ToxMain:
         else:
             ToxMain.__instance = self
 
-
-        self.objects = ToxConverter().getObjectsFromJSON()
+        #self.objects = ToxConverter().getObjectsFromJSON()
         self.realObjects = [] 
 
-        for objD in self.objects:
-            realObj = self.createObectFromDict(objD)
+        
         #self.generateObjectsHandlers()
         
-
-        
+    def createRealObjects(self, fromArray):
+        for objD in fromArray:
+            realObj = self.createObectFromDict(objD)
 
     def createObectFromDict(self, dictObj):
         className = dictObj["className"]
         #objClass = getattr(CoreSoftware, className)
         objClass = globals()[className]
-        newObj = objClass()
+        newObj = objClass(autoID = False)
         newObj.name = dictObj["name"]
         newObj.description = dictObj["description"]
         #newObj.color = dictObj["color"]
@@ -459,17 +496,10 @@ class ToxMain:
         newObj.id = dictObj["id"]
         if "messages" in dictObj:
             newObj.messages = dictObj["messages"]
-        newObj.handlers = dictObj["handlers"]
+        newObj.serializedHandlers = dictObj["handlers"]
         newObj.generateHandlers()
-        #print(newObj.createJSON())
-        
-        #TESTING ONLY. DA ELIMINARE
-        # func = getattr(newObj, "printStr")
-        # func()
-        #####
-
         return newObj
-        #return the obj
+
 
     def addRealObject(self, obj):
         self.realObjects.append(obj)
@@ -480,7 +510,7 @@ class ToxMain:
         self.saveRealObjectsToDisk()
 
     def saveRealObjectsToDisk(self):
-        ToxConverter().saveObjectsToJSON(self.realObjects)
+        ToxConverter.shared().saveObjectsToJSON(self.realObjects)
 
     def generateObjectsHandlers(self):
         for obj in self.realObjects:
@@ -687,7 +717,16 @@ class ToxSocketServer:
     def _handle_request(self, conn):
         data = conn.recv(4096)
         
-        request = json.loads(data)
+        try:
+            request = json.loads(data)
+        except ValueError:
+            print("Nessun messaggio")
+            conn.close()
+            return
+        except:
+            print("Qualche errore con la richiesta dal client")
+            conn.close()
+            return
         #print(str(data))
         requestType = request["request-type"]
 
