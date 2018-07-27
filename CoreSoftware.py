@@ -55,6 +55,7 @@ class Object:
         self.handlers = {}
         self.serializedHandlers = {}
 
+
         self.id = None
         if autoID == True:
             self.id = ToxIDCreator.shared().createUniqueID()
@@ -257,11 +258,14 @@ class MonoOutputDevice(Object):
 
 
 class ToxHandler:
-    def ___init__(self):
+    def __init__(self, autoID = True):
         self.function = None #ToxFunction
         self.args = None
-        self.id = None
-        #TODO: create an unique ID
+        if autoID == True:
+            self.id = ToxIDCreator.shared().generateUniqueIDforHandlers()
+        else:
+            self.id = None
+        
 
     @staticmethod
     def createFromDict(dictObj):
@@ -271,14 +275,18 @@ class ToxHandler:
         realFunc.objectId = dictObj["function"]["objectId"]
         realFunc.functionName = dictObj["function"]["functionName"]
 
-        realHandler = ToxHandler()
-        realHandler.function = realFunc
-        if "id" not in dictObj:
-            pass
-            #TODO: MAKE SURE TO HAVE AN ID. SALTATO QUESTO CHECK PER TESTING
-            #raise Exception("Non ho trovato l'ID handler")
-        if "id" in dictObj:
+        if "id" in dictObj and dictObj["id"] != None:
+            realHandler = ToxHandler(autoID = False)
             realHandler.id = dictObj["id"]
+        else:
+            realHandler = ToxHandler(autoID = True)
+        ToxIDCreator.shared().setHandlerIDasUsed(realHandler.id)
+        
+        realHandler.function = realFunc
+        # if "id" not in dictObj:
+        #     #TODO: MAKE SURE TO HAVE AN ID. SALTATO QUESTO CHECK PER TESTING
+        #     raise Exception("Non ho trovato l'ID handler")
+        
         if "args" in dictObj:
             realHandler.args = dictObj["args"]
         return realHandler
@@ -338,7 +346,24 @@ class ToxIDCreator:
             ToxIDCreator.__instance = self
 
         self.currentIDs = []
+        self.usedHandlersIDs = []
         
+    def generateUniqueIDforHandlers(self):
+        id = random.randint(0, 9999)
+        while id in self.usedHandlersIDs:
+            id = random.randint(0, 9999)
+        return id
+        
+    def setHandlerIDasUsed(self, id):
+        if id not in self.usedHandlersIDs and id != None:
+            self.usedHandlersIDs.append(id)
+    
+    def setHandlerIDasFree(self, id):
+        try:
+            self.usedHandlersIDs.remove(id)
+        except:
+            raise Exception("Non ho potuto settare l'id handler come free")
+            sys.exit(1)
 
     def getUsedIDs(self):
         objects = ToxConverter.shared().getObjectsFromJSON()
@@ -355,7 +380,7 @@ class ToxIDCreator:
         try:
             self.currentIDs.remove(id)
         except:
-            raise Exception("Non ho potuto settare l'id come free")
+            raise Exception("Non ho potuto settare l'id object come free")
             sys.exit(1)
 
     # def getIDsFromStorage(self):
