@@ -55,7 +55,6 @@ class Object:
         self.handlers = {}
         self.serializedHandlers = {}
 
-
         self.id = None
         if autoID == True:
             self.id = ToxIDCreator.shared().createUniqueID()
@@ -76,6 +75,13 @@ class Object:
                 newHandler = ToxHandler.createFromDict(serializedHanlder)
                 self.handlers[key].append(newHandler)
 
+    def removeHandlerWithID(self, id):
+        keys = self.handlers.keys()
+        for key in keys:
+            for handler in self.handlers[key]:
+                if handler.id == id:
+                    self.handlers[key].remove(handler)
+                    ToxIDCreator.shared().setHandlerIDasFree(handler.id)
 
     def createDict(self): 
         myDict = {}
@@ -84,7 +90,6 @@ class Object:
             if var == "messages": #or var == "handlers"
                 continue
             if var == "handlers" and len(self.__dict__["handlers"]) > 0:
-                print("I'M IN")
                 keyValueHandlers = self.__dict__["handlers"]
                 allKeys = list(keyValueHandlers.keys())
 
@@ -836,6 +841,13 @@ class ToxSocketServer:
         elif requestType == "remove_handler":
             handlerIDToRemove = request["handlerID"]
             objectIDOfHandler = request["obj_id"]
+            realObject = ToxMain.shared().getRealObjectFromID(objectIDOfHandler)
+            if realObject == None:
+                conn.send("Nessun oggetto con questo ID")
+                return
+            if handlerIDToRemove not in ToxIDCreator.shared().usedHandlersIDs and handlerIDToRemove != None:
+                conn.send("Nessun handler trovato con questo ID nella lista degli handler usati. Oppure ID == NULL")
+            realObject.removeHandlerWithID(handlerIDToRemove)
             #TODO: call the toxHandlerOrganizer and tell him to remove the handler
 
         #conn.send("Scemotto! Hide and Seek\n")

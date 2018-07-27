@@ -10,11 +10,11 @@
         "activate": [
           {
             "args": null,
-            "id" : 1710,
             "function": {
               "functionName": "asd",
               "objectId": 17
-            }
+            },
+            "id": 1710
           }
         ]
       },
@@ -22,8 +22,44 @@
       "name": "Timer 1",
       "pin": 80,
       "serializedHandlers": {
-        "activate": []
+        "activate": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "asd",
+              "objectId": 17
+            },
+            "id": 1710
+          }
+        ]
       },
+      "serializedMessages": {},
+      "type": 0
+    },
+    {
+      "className": "Timer",
+      "color": 0,
+      "customVariables": {
+        "duration": 3
+      },
+      "description": "Desctizione di prova",
+      "duration": 5,
+      "handlers": {
+        "activate": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "asd",
+              "objectId": 17
+            },
+            "id": 6071
+          }
+        ]
+      },
+      "id": 8755,
+      "name": "Timer 1",
+      "pin": 80,
+      "serializedHandlers": {},
       "serializedMessages": {},
       "type": 0
     }
