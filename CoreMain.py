@@ -101,11 +101,11 @@ from CoreSoftware import *
 ##   SECTION 5  ###
 #      BOOT      #
 ToxBoot().boot()
-
-id = ToxIDCreator.shared().currentIDs[0]
-obj = ToxMain.shared().getRealObjectFromID(id)
-
-print(obj.createJSON())
+# ids = ToxIDCreator.shared().currentIDs
+# if len(ids) > 0:
+#     id = ids[0]
+#     obj = ToxMain.shared().getRealObjectFromID(id)
+#     print(obj.createJSON())
 
 while True:
     time.sleep(1)

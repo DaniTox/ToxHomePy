@@ -87,6 +87,8 @@ class Object:
         myDict = {}
         variables = self.__dict__.keys()
         for var in variables:
+            if var == "serializedHandlers" or var == "serializedMessages":
+                continue
             if var == "messages": #or var == "handlers"
                 continue
             if var == "handlers" and len(self.__dict__["handlers"]) > 0:
@@ -115,7 +117,15 @@ class Object:
                     newDict[key] = arrHandlerForKey
                 myDict[var] = newDict
                 continue
-                
+            if var == "customVariables":
+                variables = {}
+                if len(self.customVariables.keys()) <= 0:
+                    myDict[var] = {}
+                    continue
+                for key in self.customVariables:
+                    variables[key] = self.customVariables[key].createDict()
+                myDict[var] = variables
+                continue
             myDict[var] = self.__dict__[var]
         
         return myDict
@@ -308,6 +318,9 @@ class Timer(MonoOutputDevice):
         MonoOutputDevice.__init__(self, autoID)
         self.className = "Timer"
 
+        self.customVariables = {
+            "durata" : ToxVariable("Int", 5)
+        }
         self.messages = {
             "activate": self.activate,
             "fire": self.startTimer
@@ -318,7 +331,21 @@ class Timer(MonoOutputDevice):
         t.start()
 
 
+class ToxVariable:
+    def __init__(self, valueType, value):
+        self.valueType = valueType
+        self.value = value
 
+    @staticmethod
+    def createFromDict(dictObj):
+        return ToxVariable(dictObj["valueType"], dictObj["value"])
+
+    def createDict(self):
+        dictObj = {
+            "valueType" : self.valueType,
+            "value" : self.value
+        }
+        return dictObj
 
 class ToxBoot:
     @staticmethod
@@ -529,6 +556,11 @@ class ToxMain:
             newObj.messages = dictObj["messages"]
         newObj.serializedHandlers = dictObj["handlers"]
         newObj.generateHandlers()
+
+        customSerializedVariables = dictObj["customVariables"]
+        for key in customSerializedVariables.keys():
+            serVar = customSerializedVariables[key]
+            newObj.customVariables[key] = ToxVariable(serVar["valueType"], serVar["value"])
         return newObj
 
 

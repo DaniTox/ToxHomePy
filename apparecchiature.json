@@ -3,9 +3,13 @@
     {
       "className": "Timer",
       "color": 0,
-      "customVariables": {},
+      "customVariables": {
+        "durata": {
+          "value": 5,
+          "valueType": "Int"
+        }
+      },
       "description": "Desctizione di prova",
-      "duration": 5,
       "handlers": {
         "activate": [
           {
@@ -14,224 +18,67 @@
               "functionName": "asd",
               "objectId": 17
             },
-            "id": 1710
+            "id": 1206
           }
         ]
       },
-      "id": 512,
+      "id": 3583,
       "name": "Timer 1",
       "pin": 80,
-      "serializedHandlers": {
-        "activate": [
-          {
-            "args": null,
-            "function": {
-              "functionName": "asd",
-              "objectId": 17
-            },
-            "id": 1710
-          }
-        ]
-      },
-      "serializedMessages": {},
-      "type": 0
-    },
-    {
-      "className": "Timer",
-      "color": 0,
-      "customVariables": {},
-      "description": "Desctizione di prova",
-      "duration": 5,
-      "handlers": {
-        "activate": [
-          {
-            "args": null,
-            "function": {
-              "functionName": "asd",
-              "objectId": 17
-            },
-            "id": 6071
-          }
-        ]
-      },
-      "id": 8755,
-      "name": "Timer 1",
-      "pin": 80,
-      "serializedHandlers": {
-        "activate": [
-          {
-            "args": null,
-            "function": {
-              "functionName": "asd",
-              "objectId": 17
-            },
-            "id": 6071
-          }
-        ]
-      },
-      "serializedMessages": {},
-      "type": 0
-    },
-    {
-      "className": "Timer",
-      "color": 0,
-      "customVariables": {},
-      "description": "Desctizione di prova",
-      "duration": 5,
-      "handlers": {
-        "activate": []
-      },
-      "id": 2611,
-      "name": "Timer 1",
-      "pin": 80,
-      "serializedHandlers": {
-        "activate": []
-      },
-      "serializedMessages": {},
-      "type": 0
-    },
-    {
-      "className": "Timer",
-      "color": 0,
-      "customVariables": {},
-      "description": "Desctizione di prova",
-      "duration": 5,
-      "handlers": {
-        "activate": []
-      },
-      "id": 3150,
-      "name": "Timer 1",
-      "pin": 80,
-      "serializedHandlers": {
-        "activate": []
-      },
-      "serializedMessages": {},
-      "type": 0
-    },
-    {
-      "className": "Timer",
-      "color": 0,
-      "customVariables": {},
-      "description": "Desctizione di prova",
-      "duration": 5,
-      "handlers": {
-        "activate": []
-      },
-      "id": 4165,
-      "name": "Timer 1",
-      "pin": 80,
-      "serializedHandlers": {
-        "activate": []
-      },
-      "serializedMessages": {},
-      "type": 0
-    },
-    {
-      "className": "Timer",
-      "color": 0,
-      "customVariables": {},
-      "description": "Desctizione di prova",
-      "duration": 5,
-      "handlers": {
-        "activate": []
-      },
-      "id": 7361,
-      "name": "Timer 1",
-      "pin": 80,
-      "serializedHandlers": {
-        "activate": []
-      },
-      "serializedMessages": {},
       "type": 0
     },
     {
       "className": "Timer",
       "color": 0,
       "customVariables": {
-        "duration": 3
+        "durata": {
+          "value": 5,
+          "valueType": "Int"
+        }
       },
       "description": "Desctizione di prova",
-      "duration": 5,
       "handlers": {
         "activate": []
       },
-      "id": 1593,
+      "id": 9588,
       "name": "Timer 1",
       "pin": 80,
-      "serializedHandlers": {},
-      "serializedMessages": {},
       "type": 0
     },
     {
       "className": "Timer",
       "color": 0,
       "customVariables": {
-        "duration": 3
+        "durata": {
+          "value": 5,
+          "valueType": "Int"
+        }
       },
       "description": "Desctizione di prova",
-      "duration": 5,
       "handlers": {
         "activate": []
       },
-      "id": 1897,
+      "id": 3449,
       "name": "Timer 1",
       "pin": 80,
-      "serializedHandlers": {},
-      "serializedMessages": {},
       "type": 0
     },
     {
       "className": "Timer",
       "color": 0,
       "customVariables": {
-        "duration": 3
+        "durata": {
+          "value": 5,
+          "valueType": "Int"
+        }
       },
       "description": "Desctizione di prova",
-      "duration": 5,
       "handlers": {
         "activate": []
       },
-      "id": 5489,
+      "id": 6848,
       "name": "Timer 1",
       "pin": 80,
-      "serializedHandlers": {},
-      "serializedMessages": {},
-      "type": 0
-    },
-    {
-      "className": "Timer",
-      "color": 0,
-      "customVariables": {
-        "duration": 3
-      },
-      "description": "Desctizione di prova",
-      "duration": 5,
-      "handlers": {
-        "activate": []
-      },
-      "id": 7497,
-      "name": "Timer 1",
-      "pin": 80,
-      "serializedHandlers": {},
-      "serializedMessages": {},
-      "type": 0
-    },
-    {
-      "className": "Timer",
-      "color": 0,
-      "customVariables": {
-        "duration": 3
-      },
-      "description": "Desctizione di prova",
-      "duration": 5,
-      "handlers": {
-        "activate": []
-      },
-      "id": 1810,
-      "name": "Timer 1",
-      "pin": 80,
-      "serializedHandlers": {},
-      "serializedMessages": {},
       "type": 0
     }
   ]
