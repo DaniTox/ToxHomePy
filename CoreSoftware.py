@@ -307,7 +307,7 @@ class Timer(MonoOutputDevice):
     def __init__(self, autoID = True):
         MonoOutputDevice.__init__(self, autoID)
         self.className = "Timer"
-        self.duration = 5
+
         self.messages = {
             "activate": self.activate,
             "fire": self.startTimer
@@ -329,7 +329,8 @@ class ToxBoot:
 
         server = ToxSocketServer()
         try:
-            server.activate_server()
+            start_new_thread(server.activate_server, ())
+           # server.activate_server()
         except KeyboardInterrupt:
             print("\nRicevuto segnale di chiusura. Esco...")
 
@@ -768,18 +769,20 @@ class ToxSocketServer:
                 newObject.description = request["description"]
                 if "pin" in request:
                     newObject.pin = request["pin"]
-                if "variables" in request:
-                    newObject.customVariables = request["variables"]
+                # if "variables" in request:
+                #     newObject.customVariables = request["variables"]
                 ToxMain.shared().commitObjects()
                 print("Nuovo oggetto creato con successo!")
                 odic = newObject.createDict()
-                odic["code"] = "OK"
-                #print(str(odic))
-                ojson = str(json.dumps(odic))
-                #print(ojson)
+                newDict = {
+                    "code" : "OK",
+                    "response" : odic
+                }
+                
+                ojson = str(json.dumps(newDict))
+                
                 conn.send(ojson)
-                # for obj in ToxMain.shared().realObjects:
-                #     print(obj.createDict())
+                
             else:
                 print("Errore nella creazione oggetto. Qualche valore mancante")
                 conn.send("Errore nella creazione oggetto. Qualche valore mancante") 
@@ -847,9 +850,12 @@ class ToxSocketServer:
                 return
             if handlerIDToRemove not in ToxIDCreator.shared().usedHandlersIDs and handlerIDToRemove != None:
                 conn.send("Nessun handler trovato con questo ID nella lista degli handler usati. Oppure ID == NULL")
+                return
             realObject.removeHandlerWithID(handlerIDToRemove)
             #TODO: call the toxHandlerOrganizer and tell him to remove the handler
-
+        elif requestType == "show_ids_h":
+            ids = ToxIDCreator.shared().usedHandlersIDs
+            conn.send(str(ids))
         #conn.send("Scemotto! Hide and Seek\n")
         conn.close()
 
