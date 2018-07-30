@@ -64,6 +64,10 @@ class Object:
 
         ToxMain.shared().addRealObject(self)
 
+    @staticmethod
+    def class_():
+        return "Object"
+
     def generateHandlers(self):
         keys = self.handlers.keys()
         if len(keys) <= 0:
@@ -204,6 +208,10 @@ class DigitalOutputDevice(Object):
             "deactivate" : []
         }
 
+    @staticmethod
+    def class_():
+        return "DigitalOutputDevice"
+
     #TESTING ONLY. DA ELIMINARE
     def printStr(self):
         print("Prova messaggio da handler")
@@ -271,6 +279,10 @@ class MonoOutputDevice(Object):
     def asd(self):
         print("Asdddddd")
 
+    @staticmethod
+    def class_():
+        return "MonoOutputDevice"
+
 
 class ToxHandler:
     def __init__(self, autoID = True):
@@ -329,6 +341,10 @@ class Timer(MonoOutputDevice):
     def startTimer(self):
         t = threading.Timer(self.duration, self.activate)
         t.start()
+
+    @staticmethod
+    def class_():
+        return "Timer"
 
 
 class ToxVariable:
@@ -534,6 +550,12 @@ class ToxMain:
         #self.objects = ToxConverter().getObjectsFromJSON()
         self.realObjects = [] 
 
+        self.classes = [
+            Object.class_(),
+            DigitalOutputDevice.class_(),
+            MonoOutputDevice.class_(),
+            Timer.class_()
+        ]
         
         #self.generateObjectsHandlers()
         
@@ -888,6 +910,9 @@ class ToxSocketServer:
         elif requestType == "show_ids_h":
             ids = ToxIDCreator.shared().usedHandlersIDs
             conn.send(str(ids))
+        elif requestType == "show_objects_classes":
+            classes = ToxMain.shared().classes 
+            conn.send(str(classes))
         #conn.send("Scemotto! Hide and Seek\n")
         conn.close()
 
