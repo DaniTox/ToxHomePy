@@ -814,15 +814,17 @@ class ToxSocketServer:
             return
         #print(str(data))
         requestType = request["request-type"]
+        if "request-body" in request:
+            requestBody = request["request-body"]
 
         if requestType == "create_new_object":
-            if "name" in request and "description" in request and "className" in request:
-                objClass = globals()[request["className"]]
+            if "name" in requestBody and "description" in requestBody and "className" in requestBody:
+                objClass = globals()[requestBody["className"]]
                 newObject = objClass()
-                newObject.name = request["name"]
-                newObject.description = request["description"]
-                if "pin" in request:
-                    newObject.pin = request["pin"]
+                newObject.name = requestBody["name"]
+                newObject.description = requestBody["description"]
+                if "pin" in requestBody:
+                    newObject.pin = requestBody["pin"]
                 # if "variables" in request:
                 #     newObject.customVariables = request["variables"]
                 ToxMain.shared().commitObjects()
@@ -843,9 +845,9 @@ class ToxSocketServer:
             
         
         elif requestType == "modify_handler_actions":
-            all_handlers = request["handlers"]
-            handlers_key = request["handlers-obj-key"]
-            obj_id_of_object_receiver = request["objID-receiver"]
+            all_handlers = requestBody["handlers"]
+            handlers_key = requestBody["handlers-obj-key"]
+            obj_id_of_object_receiver = requestBody["objID-receiver"]
             real_object_receiver = ToxMain.shared().getRealObjectFromID(obj_id_of_object_receiver)
             if real_object_receiver == None:
                 raise Exception("Ottento un oggetto NULL durante la modifica degli handlers nel ToxServer")
@@ -885,7 +887,7 @@ class ToxSocketServer:
             json_str = json.dumps(arr)
             conn.send(json_str)
         elif requestType == "remove_object":
-            objectID = request["object_id"]
+            objectID = requestBody["object_id"]
             obj = ToxMain.shared().getRealObjectFromID(objectID)
             if obj != None:
                 obj.removeMe()
@@ -896,8 +898,8 @@ class ToxSocketServer:
             ids = ToxIDCreator.shared().currentIDs
             conn.send(str(ids))
         elif requestType == "remove_handler":
-            handlerIDToRemove = request["handlerID"]
-            objectIDOfHandler = request["obj_id"]
+            handlerIDToRemove = requestBody["handlerID"]
+            objectIDOfHandler = requestBody["obj_id"]
             realObject = ToxMain.shared().getRealObjectFromID(objectIDOfHandler)
             if realObject == None:
                 conn.send("Nessun oggetto con questo ID")
