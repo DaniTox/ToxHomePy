@@ -94,6 +94,7 @@ class Object:
             if var == "serializedHandlers" or var == "serializedMessages":
                 continue
             if var == "messages": #or var == "handlers"
+                myDict[var] = self.__dict__["messages"].keys()
                 continue
             if var == "handlers" and len(self.__dict__["handlers"]) > 0:
                 keyValueHandlers = self.__dict__["handlers"]
@@ -800,10 +801,11 @@ class ToxSocketServer:
 
 
     def _handle_request(self, conn):
-        data = conn.recv(4096)
+        data = conn.recv(8192)
         
         try:
             request = json.loads(data)
+            print(str(request))
         except ValueError:
             print("Nessun messaggio")
             conn.close()
@@ -816,6 +818,7 @@ class ToxSocketServer:
         requestType = request["request-type"]
         if "request-body" in request:
             requestBody = request["request-body"]
+        
 
         if requestType == "create_new_object":
             if "name" in requestBody and "description" in requestBody and "className" in requestBody:
@@ -884,7 +887,11 @@ class ToxSocketServer:
             realobjs = ToxMain.shared().realObjects
             for obj in realobjs:
                 arr.append(obj.createDict())
-            json_str = json.dumps(arr)
+            returnDict = {
+                "code" : "OK",
+                "response" : arr
+            }
+            json_str = json.dumps(returnDict)
             conn.send(json_str)
         elif requestType == "remove_object":
             objectID = requestBody["object_id"]

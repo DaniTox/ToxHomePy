@@ -80,6 +80,126 @@
       "name": "Timer 1",
       "pin": 80,
       "type": 0
+    },
+    {
+      "className": "DigitalOutputDevice",
+      "color": 0,
+      "customVariables": {},
+      "description": "Descrizioneeeee",
+      "handlers": {
+        "activate": [],
+        "deactivate": []
+      },
+      "id": 4694,
+      "isOn": false,
+      "name": "Test",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "DigitalOutputDevice",
+      "color": 0,
+      "customVariables": {},
+      "description": "Descrizioneeeee",
+      "handlers": {
+        "activate": [],
+        "deactivate": []
+      },
+      "id": 1103,
+      "isOn": false,
+      "name": "Test",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "DigitalOutputDevice",
+      "color": 0,
+      "customVariables": {},
+      "description": "Descrizioneeeee",
+      "handlers": {
+        "activate": [],
+        "deactivate": []
+      },
+      "id": 6221,
+      "isOn": false,
+      "name": "Test",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "DigitalOutputDevice",
+      "color": 0,
+      "customVariables": {},
+      "description": "Descrizioneeeee",
+      "handlers": {
+        "activate": [],
+        "deactivate": []
+      },
+      "id": 8456,
+      "isOn": false,
+      "name": "Test",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "DigitalOutputDevice",
+      "color": 0,
+      "customVariables": {},
+      "description": "Descrizioneeeee",
+      "handlers": {
+        "activate": [],
+        "deactivate": []
+      },
+      "id": 5559,
+      "isOn": false,
+      "name": "Test",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "DigitalOutputDevice",
+      "color": 0,
+      "customVariables": {},
+      "description": "Descrizioneeeee",
+      "handlers": {
+        "activate": [],
+        "deactivate": []
+      },
+      "id": 7495,
+      "isOn": false,
+      "name": "Test",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "DigitalOutputDevice",
+      "color": 0,
+      "customVariables": {},
+      "description": "Descrizioneeeee",
+      "handlers": {
+        "activate": [],
+        "deactivate": []
+      },
+      "id": 6817,
+      "isOn": false,
+      "name": "Test",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "DigitalOutputDevice",
+      "color": 0,
+      "customVariables": {},
+      "description": "Descrizioneeeee",
+      "handlers": {
+        "activate": [],
+        "deactivate": []
+      },
+      "id": 8184,
+      "isOn": false,
+      "name": "Test",
+      "pin": null,
+      "type": 0
     }
   ]
 }
