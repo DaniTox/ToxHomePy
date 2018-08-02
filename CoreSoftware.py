@@ -147,15 +147,16 @@ class Object:
     def executeHandlers(self, message):
         handlers = self.handlers[message] 
         if handlers == None:
+            raise Exception("handlers == NULL")
             return
         for handl in handlers:
             toxFunc = handl.function
             objID = toxFunc.objectId
             funcName = toxFunc.functionName
             #args = toxFunc.args
-
+            print("ExecuteHandlers(" + message + "): " + str(objID) + "-->" + str(funcName))
             realObject = ToxMain.shared().getRealObjectFromID(objID)
-            objecs = ToxMain.shared().realObjects
+            # objecs = ToxMain.shared().realObjects
                 
             if realObject == None:
                 raise Exception("ogetto ottenuto is NULL")
@@ -176,6 +177,10 @@ class Object:
         func = self.messages[message]
         if func != None:
             func()
+            print("Eseguito il messaggio: " + message)
+            return 0
+        print("Errore nell'eseguire il messaggio: " + message)
+        return 1
 
     def removeAllHandlers(self):
         for key in self.handlers:
@@ -332,7 +337,7 @@ class Timer(MonoOutputDevice):
         self.className = "Timer"
 
         self.customVariables = {
-            "durata" : ToxVariable("Int", 5)
+            "durata" : ToxVariable("Float", 5)
         }
         self.messages = {
             "activate": self.activate,
@@ -340,7 +345,12 @@ class Timer(MonoOutputDevice):
         }
 
     def startTimer(self):
-        t = threading.Timer(self.duration, self.activate)
+        if "durata" in self.customVariables:
+            duration = self.customVariables["durata"].value
+        else:
+            duration = 0.0
+        duration = float(duration)
+        t = threading.Timer(duration, self.activate)
         t.start()
 
     @staticmethod
@@ -922,6 +932,32 @@ class ToxSocketServer:
         elif requestType == "show_objects_classes":
             classes = ToxMain.shared().classes 
             conn.send(str(classes))
+        elif requestType == "execute_message":
+            objID = requestBody["objID"]
+            messageName = requestBody["messageName"]
+            realObject = ToxMain.shared().getRealObjectFromID(objID)
+            if realObject == None:
+                returnDict = {
+                    "code" : "NO",
+                    "response" : "Oggetto non trovato con questo ID"
+                }
+                conn.send(json.dumps(returnDict))
+                conn.close()
+                return
+            if realObject.executeMessage(messageName) != 0:
+                returnDict = {
+                    "code" : "NO",
+                    "response" : "Funzione nel messaggio == NULL"
+                }
+                conn.send(json.dumps(returnDict))
+                conn.close()
+                return
+            else:
+                returnDict = {
+                    "code" : "OK",
+                    "response" : "Funzione eseguita con successo"
+                }
+                conn.send(json.dumps(returnDict))
         #conn.send("Scemotto! Hide and Seek\n")
         conn.close()
 
