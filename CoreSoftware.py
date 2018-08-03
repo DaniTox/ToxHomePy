@@ -832,7 +832,13 @@ class ToxSocketServer:
         requestType = request["request-type"]
         if "request-body" in request:
             requestBody = request["request-body"]
-        
+        else:
+            returnDict = {
+                "code" : "NO",
+                "response" : "Nessun request-body nella tua richiesta"
+            }
+            conn.send(json.dumps(returnDict))
+            return
 
         if requestType == "create_new_object":
             if "name" in requestBody and "description" in requestBody and "className" in requestBody:
@@ -904,6 +910,8 @@ class ToxSocketServer:
                 real_object_receiver.addHandlerForKey(handlers_key, newToxHandler)
                 conn.send("Handlers changed correctly")
                 print("added handler successfully")
+        elif requestType == "add_handler":
+            pass
         elif requestType == "show_objects":
             arr = list()
             realobjs = ToxMain.shared().realObjects
