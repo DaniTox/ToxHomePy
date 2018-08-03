@@ -659,7 +659,11 @@ class ToxMain:
 
         self.saveRealObjectsToDisk()
 
-
+    def isObjectNameUnique(self, name):
+        for obj in self.realObjects:
+            if obj.name == name:
+                return False
+        return True
 
 
 
@@ -833,6 +837,14 @@ class ToxSocketServer:
         if requestType == "create_new_object":
             if "name" in requestBody and "description" in requestBody and "className" in requestBody:
                 objClass = globals()[requestBody["className"]]
+                if ToxMain.shared().isObjectNameUnique(requestBody["name"]) == False:
+                    returnDict = {
+                        "code" : "NO",
+                        "response": "Il nome dell'oggetto non è unique"
+                    } 
+                    conn.send(json.dumps(returnDict))
+                    conn.close()
+                    return
                 newObject = objClass()
                 newObject.name = requestBody["name"]
                 newObject.description = requestBody["description"]
@@ -919,12 +931,26 @@ class ToxSocketServer:
             objectIDOfHandler = requestBody["obj_id"]
             realObject = ToxMain.shared().getRealObjectFromID(objectIDOfHandler)
             if realObject == None:
-                conn.send("Nessun oggetto con questo ID")
+                returnDict = {
+                    "code" : "NO",
+                    "response" : "Nessun oggetto con questo ID"
+                }
+                conn.send(json.dumps(returnDict))
                 return
             if handlerIDToRemove not in ToxIDCreator.shared().usedHandlersIDs and handlerIDToRemove != None:
-                conn.send("Nessun handler trovato con questo ID nella lista degli handler usati. Oppure ID == NULL")
+                returnDict = {
+                    "code" : "NO",
+                    "response" : "Nessun handler trovato con questo ID nella lista degli handler usati. Oppure ID == NULL"
+                }
+                conn.send(json.dumps(returnDict))
                 return
             realObject.removeHandlerWithID(handlerIDToRemove)
+            returnDict = {
+                "code" : "OK",
+                "response" : "Handler rimosso con successo"
+            }
+            conn.send(json.dumps(returnDict))
+            
             #TODO: call the toxHandlerOrganizer and tell him to remove the handler
         elif requestType == "show_ids_h":
             ids = ToxIDCreator.shared().usedHandlersIDs
