@@ -77,6 +77,7 @@ class Object:
             self.handlers[key] = [] #Free all handlers
             for serializedHanlder in self.serializedHandlers[key]:
                 newHandler = ToxHandler.createFromDict(serializedHanlder)
+                newHandler.id_object_owner = self.id
                 self.handlers[key].append(newHandler)
 
     def removeHandlerWithID(self, id):
@@ -86,6 +87,7 @@ class Object:
                 if handler.id == id:
                     self.handlers[key].remove(handler)
                     ToxIDCreator.shared().setHandlerIDasFree(handler.id)
+                    ToxMain.shared().commitObjects()
 
     def createDict(self): 
         myDict = {}
@@ -94,6 +96,7 @@ class Object:
             if var == "serializedHandlers" or var == "serializedMessages":
                 continue
             if var == "messages": #or var == "handlers"
+                #print(str(self.__dict__["messages"]))
                 myDict[var] = self.__dict__["messages"].keys()
                 continue
             if var == "handlers" and len(self.__dict__["handlers"]) > 0:
@@ -294,6 +297,7 @@ class ToxHandler:
     def __init__(self, autoID = True):
         self.function = None #ToxFunction
         self.args = None
+        self.id_object_owner = None
         if autoID == True:
             self.id = ToxIDCreator.shared().generateUniqueIDforHandlers()
         else:
@@ -314,7 +318,7 @@ class ToxHandler:
         else:
             realHandler = ToxHandler(autoID = True)
         ToxIDCreator.shared().setHandlerIDasUsed(realHandler.id)
-        
+
         realHandler.function = realFunc
         # if "id" not in dictObj:
         #     #TODO: MAKE SURE TO HAVE AN ID. SALTATO QUESTO CHECK PER TESTING
@@ -585,8 +589,8 @@ class ToxMain:
         #newObj.type = dictObj["type"]
         newObj.pin = dictObj["pin"]
         newObj.id = dictObj["id"]
-        if "messages" in dictObj:
-            newObj.messages = dictObj["messages"]
+        # if "messages" in dictObj:
+        #     newObj.messages = dictObj["messages"]
         newObj.serializedHandlers = dictObj["handlers"]
         newObj.generateHandlers()
 
@@ -816,7 +820,6 @@ class ToxSocketServer:
 
     def _handle_request(self, conn):
         data = conn.recv(8192)
-        
         try:
             request = json.loads(data)
             print(str(request))
@@ -838,6 +841,7 @@ class ToxSocketServer:
                 "response" : "Nessun request-body nella tua richiesta"
             }
             conn.send(json.dumps(returnDict))
+            conn.close()
             return
 
         if requestType == "create_new_object":
@@ -911,10 +915,94 @@ class ToxSocketServer:
                 conn.send("Handlers changed correctly")
                 print("added handler successfully")
         elif requestType == "add_handler":
-            pass
+            handler = requestBody
+            if "id_object_owner" not in handler:
+                returnDict = {
+                    "code" : "NO",
+                    "response" : "Manca l'id_object_owner"
+                }
+                conn.send(json.dumps(returnDict))
+                conn.close()
+                return
+            
+            if "key" not in handler:
+                returnDict = {
+                    "code" : "NO",
+                    "response" : "key non trovata nella richiesta che mi hai mandato"
+                }
+                conn.send(json.dumps(returnDict))
+                conn.close()
+                return
+
+            if "function" not in handler:
+                returnDict = {
+                    "code" : "NO",
+                    "response" : "Manca la function"
+                }
+                conn.send(json.dumps(returnDict))
+                conn.close()
+                return
+
+            key = handler["key"]
+            id_obj_owner = handler["id_object_owner"]
+            objOwner = ToxMain.shared().getRealObjectFromID(id_obj_owner)
+
+            if objOwner == None:
+                returnDict = {
+                    "code" : "NO",
+                    "response" : "Non ho trovato nessun oggetto con l'ID che mi hai dato"
+                }
+                conn.send(json.dumps(returnDict))
+                conn.close()
+                return
+
+            handlerFunction = handler["function"]
+
+            if "objectId" not in handlerFunction:
+                returnDict = {
+                    "code" : "NO",
+                    "response" : "ObjectID della funzione non inviato"
+                }
+                conn.send(json.dumps(returnDict))
+                conn.close()
+                return
+
+            idObjectFunction = handlerFunction["objectId"]
+
+            
+            if "functionName" not in handlerFunction:
+                returnDict = {
+                    "code" : "NO",
+                    "response" : "Non ho trovato nessuna functionName nella tua richiesta"
+                }
+                conn.send(json.dumps(returnDict))
+                conn.close()
+                return
+            
+            functionName = handlerFunction["functionName"]
+
+            realFunction = ToxFunction()
+            realFunction.functionName = functionName
+            realFunction.objectId = idObjectFunction
+
+            realHandler = ToxHandler()
+            realHandler.function = realFunction
+            realHandler.id_object_owner = objOwner.id
+            realHandler.args = None
+
+            objOwner.addHandlerForKey(key, realHandler) 
+
+            returnDict = {
+                "code" : "OK",
+                "response" : "Handler aggiunto con successo"
+            }
+            conn.send(json.dumps(returnDict))
+
+
         elif requestType == "show_objects":
             arr = list()
             realobjs = ToxMain.shared().realObjects
+            print("realObjs.count = " + str(len(realobjs)))
             for obj in realobjs:
                 arr.append(obj.createDict())
             returnDict = {
