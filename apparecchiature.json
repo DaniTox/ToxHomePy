@@ -257,6 +257,180 @@
       "name": "Test",
       "pin": null,
       "type": 0
+    },
+    {
+      "className": "MonoOutputDevice",
+      "color": 0,
+      "customVariables": {},
+      "description": "Asd",
+      "handlers": {
+        "activate": []
+      },
+      "id": 8406,
+      "messages": [
+        "activate"
+      ],
+      "name": "Mono",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "MonoOutputDevice",
+      "color": 0,
+      "customVariables": {},
+      "description": "Best TV Show I\u2019ve ever seen",
+      "handlers": {
+        "activate": []
+      },
+      "id": 4095,
+      "messages": [
+        "activate"
+      ],
+      "name": "Merlin",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "Timer",
+      "color": 0,
+      "customVariables": {
+        "durata": {
+          "value": 5,
+          "valueType": "Float"
+        }
+      },
+      "description": "Merlin!",
+      "handlers": {
+        "activate": []
+      },
+      "id": 1726,
+      "messages": [
+        "fire",
+        "activate"
+      ],
+      "name": "The feels :(",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "DigitalOutputDevice",
+      "color": 0,
+      "customVariables": {},
+      "description": "TARRAANANANNANA",
+      "handlers": {
+        "activate": [],
+        "deactivate": []
+      },
+      "id": 8319,
+      "isOn": false,
+      "messages": [
+        "deactivate",
+        "activate"
+      ],
+      "name": "Merlino!",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "Timer",
+      "color": 0,
+      "customVariables": {
+        "durata": {
+          "value": 5,
+          "valueType": "Float"
+        }
+      },
+      "description": "TARAAAAANANNANARARA",
+      "handlers": {
+        "activate": []
+      },
+      "id": 3496,
+      "messages": [
+        "fire",
+        "activate"
+      ],
+      "name": "Merlino!!",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "Timer",
+      "color": 0,
+      "customVariables": {
+        "durata": {
+          "value": 5,
+          "valueType": "Float"
+        }
+      },
+      "description": "TARAAAAANANNANARARA",
+      "handlers": {
+        "activate": []
+      },
+      "id": 7238,
+      "messages": [
+        "fire",
+        "activate"
+      ],
+      "name": "Merlino!!!",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "DigitalOutputDevice",
+      "color": 0,
+      "customVariables": {},
+      "description": "ATRARARARRAR",
+      "handlers": {
+        "activate": [],
+        "deactivate": []
+      },
+      "id": 4426,
+      "isOn": false,
+      "messages": [
+        "deactivate",
+        "activate"
+      ],
+      "name": "Merlino!!!!",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "DigitalOutputDevice",
+      "color": 0,
+      "customVariables": {},
+      "description": "ATRARARARRAR",
+      "handlers": {
+        "activate": [],
+        "deactivate": []
+      },
+      "id": 981,
+      "isOn": false,
+      "messages": [
+        "deactivate",
+        "activate"
+      ],
+      "name": "Merlino!!!!!",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "DigitalOutputDevice",
+      "color": 0,
+      "customVariables": {},
+      "description": "ATRARARARRAR",
+      "handlers": {
+        "activate": [],
+        "deactivate": []
+      },
+      "id": 9582,
+      "isOn": false,
+      "messages": [
+        "deactivate",
+        "activate"
+      ],
+      "name": "Merlino!!!!!!",
+      "pin": null,
+      "type": 0
     }
   ]
 }

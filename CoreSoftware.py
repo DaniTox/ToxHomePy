@@ -55,6 +55,8 @@ class Object:
         self.handlers = {}
         self.serializedHandlers = {}
 
+        self.className = "Object"
+
         self.id = None
         if autoID == True:
             self.id = ToxIDCreator.shared().createUniqueID()
@@ -170,7 +172,6 @@ class Object:
             # else:
             #     funcion()
             function()
-
 
     def addHandlerForKey(self, key, handler):
         self.handlers[key].append(handler)
@@ -566,7 +567,6 @@ class ToxMain:
         self.realObjects = [] 
 
         self.classes = [
-            Object.class_(),
             DigitalOutputDevice.class_(),
             MonoOutputDevice.class_(),
             Timer.class_()
@@ -851,7 +851,8 @@ class ToxSocketServer:
                     returnDict = {
                         "code" : "NO",
                         "response": "Il nome dell'oggetto non è unique"
-                    } 
+                    }
+                    print("Nome non unique")
                     conn.send(json.dumps(returnDict))
                     conn.close()
                     return
@@ -867,7 +868,7 @@ class ToxSocketServer:
                 odic = newObject.createDict()
                 newDict = {
                     "code" : "OK",
-                    "response" : odic
+                    "response" : "Oggetto creato con successo!"
                 }
                 
                 ojson = str(json.dumps(newDict))
@@ -1052,8 +1053,20 @@ class ToxSocketServer:
             ids = ToxIDCreator.shared().usedHandlersIDs
             conn.send(str(ids))
         elif requestType == "show_objects_classes":
-            classes = ToxMain.shared().classes 
-            conn.send(str(classes))
+            classes = ToxMain.shared().classes
+            if classes == None:
+                returnDict = {
+                    "code" : "NO",
+                    "response": "Nessuna classe"
+                }
+                conn.send(json.dumps(returnDict))
+                conn.close()
+                return
+            returnDict = {
+                "code" : "OK",
+                "response": classes
+            }
+            conn.send(json.dumps(returnDict))
         elif requestType == "execute_message":
             objID = requestBody["objID"]
             messageName = requestBody["messageName"]
