@@ -195,6 +195,7 @@ class Object:
 
     def removeMe(self):
         ToxMain.shared().removeRealObjectForID(self.id)
+        ToxMain.shared().commitObjects()
 
 
 
@@ -1013,13 +1014,33 @@ class ToxSocketServer:
             json_str = json.dumps(returnDict)
             conn.send(json_str)
         elif requestType == "remove_object":
+            if "object_id" not in requestBody:
+                returnDict = {
+                    "code" : "NO",
+                    "response" : "non ho trovato 'object_id' nella tua richiesta"
+                }
+                conn.send(json.dumps(returnDict))
+                conn.close()
+                return
+
             objectID = requestBody["object_id"]
             obj = ToxMain.shared().getRealObjectFromID(objectID)
-            if obj != None:
-                obj.removeMe()
-                conn.send("Oggetto rimosso con successo")
-            else:
-                conn.send("Non esiste nessun oggetto con quell'ID")
+
+            if obj == None:
+                returnDict = {
+                    "code" : "NO",
+                    "response" : "Oggetto con quell'ID == NULL"
+                }
+                conn.send(json.dumps(returnDict))
+                conn.close()
+                return
+            
+            obj.removeMe()
+            returnDict = {
+                "code" : "OK",
+                "response" : "Oggetto rimosso con successo!"
+            }
+            conn.send(json.dumps(returnDict))
         elif requestType == "show_ids":
             ids = ToxIDCreator.shared().currentIDs
             conn.send(str(ids))

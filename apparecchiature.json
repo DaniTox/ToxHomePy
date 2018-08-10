@@ -1,280 +1,6 @@
 {
   "Objects": [
     {
-      "className": "Timer",
-      "color": 0,
-      "customVariables": {
-        "durata": {
-          "value": 5,
-          "valueType": "Int"
-        }
-      },
-      "description": "Desctizione di prova",
-      "handlers": {
-        "activate": [
-          {
-            "args": null,
-            "function": {
-              "functionName": "activate",
-              "objectId": 4694
-            },
-            "id": 733
-          }
-        ]
-      },
-      "id": 3583,
-      "messages": [
-        "fire",
-        "activate"
-      ],
-      "name": "Timer 1",
-      "pin": 80,
-      "type": 0
-    },
-    {
-      "className": "Timer",
-      "color": 0,
-      "customVariables": {
-        "durata": {
-          "value": 5,
-          "valueType": "Int"
-        }
-      },
-      "description": "Desctizione di prova",
-      "handlers": {
-        "activate": []
-      },
-      "id": 9588,
-      "messages": [
-        "fire",
-        "activate"
-      ],
-      "name": "Timer 1",
-      "pin": 80,
-      "type": 0
-    },
-    {
-      "className": "Timer",
-      "color": 0,
-      "customVariables": {
-        "durata": {
-          "value": 5,
-          "valueType": "Int"
-        }
-      },
-      "description": "Desctizione di prova",
-      "handlers": {
-        "activate": []
-      },
-      "id": 3449,
-      "messages": [
-        "fire",
-        "activate"
-      ],
-      "name": "Timer 1",
-      "pin": 80,
-      "type": 0
-    },
-    {
-      "className": "Timer",
-      "color": 0,
-      "customVariables": {
-        "durata": {
-          "value": 5,
-          "valueType": "Int"
-        }
-      },
-      "description": "Desctizione di prova",
-      "handlers": {
-        "activate": []
-      },
-      "id": 6848,
-      "messages": [
-        "fire",
-        "activate"
-      ],
-      "name": "Timer 1",
-      "pin": 80,
-      "type": 0
-    },
-    {
-      "className": "DigitalOutputDevice",
-      "color": 0,
-      "customVariables": {},
-      "description": "Descrizioneeeee",
-      "handlers": {
-        "activate": [],
-        "deactivate": []
-      },
-      "id": 4694,
-      "isOn": false,
-      "messages": [
-        "deactivate",
-        "activate"
-      ],
-      "name": "Test",
-      "pin": null,
-      "type": 0
-    },
-    {
-      "className": "DigitalOutputDevice",
-      "color": 0,
-      "customVariables": {},
-      "description": "Descrizioneeeee",
-      "handlers": {
-        "activate": [],
-        "deactivate": []
-      },
-      "id": 1103,
-      "isOn": false,
-      "messages": [
-        "deactivate",
-        "activate"
-      ],
-      "name": "Test",
-      "pin": null,
-      "type": 0
-    },
-    {
-      "className": "DigitalOutputDevice",
-      "color": 0,
-      "customVariables": {},
-      "description": "Descrizioneeeee",
-      "handlers": {
-        "activate": [],
-        "deactivate": []
-      },
-      "id": 6221,
-      "isOn": false,
-      "messages": [
-        "deactivate",
-        "activate"
-      ],
-      "name": "Test",
-      "pin": null,
-      "type": 0
-    },
-    {
-      "className": "DigitalOutputDevice",
-      "color": 0,
-      "customVariables": {},
-      "description": "Descrizioneeeee",
-      "handlers": {
-        "activate": [],
-        "deactivate": []
-      },
-      "id": 8456,
-      "isOn": false,
-      "messages": [
-        "deactivate",
-        "activate"
-      ],
-      "name": "Test",
-      "pin": null,
-      "type": 0
-    },
-    {
-      "className": "DigitalOutputDevice",
-      "color": 0,
-      "customVariables": {},
-      "description": "Descrizioneeeee",
-      "handlers": {
-        "activate": [],
-        "deactivate": []
-      },
-      "id": 5559,
-      "isOn": false,
-      "messages": [
-        "deactivate",
-        "activate"
-      ],
-      "name": "Test",
-      "pin": null,
-      "type": 0
-    },
-    {
-      "className": "DigitalOutputDevice",
-      "color": 0,
-      "customVariables": {},
-      "description": "Descrizioneeeee del ciaoneeee",
-      "handlers": {
-        "activate": [],
-        "deactivate": [
-          {
-            "args": null,
-            "function": {
-              "functionName": "fire",
-              "objectId": 3583
-            },
-            "id": 6085
-          }
-        ]
-      },
-      "id": 7495,
-      "isOn": false,
-      "messages": [
-        "deactivate",
-        "activate"
-      ],
-      "name": "Ciaone",
-      "pin": null,
-      "type": 0
-    },
-    {
-      "className": "DigitalOutputDevice",
-      "color": 0,
-      "customVariables": {},
-      "description": "Descrizioneeeee",
-      "handlers": {
-        "activate": [],
-        "deactivate": []
-      },
-      "id": 6817,
-      "isOn": false,
-      "messages": [
-        "deactivate",
-        "activate"
-      ],
-      "name": "Test",
-      "pin": null,
-      "type": 0
-    },
-    {
-      "className": "DigitalOutputDevice",
-      "color": 0,
-      "customVariables": {},
-      "description": "Descrizioneeeee",
-      "handlers": {
-        "activate": [],
-        "deactivate": []
-      },
-      "id": 8184,
-      "isOn": false,
-      "messages": [
-        "deactivate",
-        "activate"
-      ],
-      "name": "Test",
-      "pin": null,
-      "type": 0
-    },
-    {
-      "className": "MonoOutputDevice",
-      "color": 0,
-      "customVariables": {},
-      "description": "Asd",
-      "handlers": {
-        "activate": []
-      },
-      "id": 8406,
-      "messages": [
-        "activate"
-      ],
-      "name": "Mono",
-      "pin": null,
-      "type": 0
-    },
-    {
       "className": "MonoOutputDevice",
       "color": 0,
       "customVariables": {},
@@ -429,6 +155,25 @@
         "activate"
       ],
       "name": "Merlino!!!!!!",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "DigitalOutputDevice",
+      "color": 0,
+      "customVariables": {},
+      "description": "Bond of sacrifice",
+      "handlers": {
+        "activate": [],
+        "deactivate": []
+      },
+      "id": 3271,
+      "isOn": false,
+      "messages": [
+        "deactivate",
+        "activate"
+      ],
+      "name": "DRAGHONNN",
       "pin": null,
       "type": 0
     }
