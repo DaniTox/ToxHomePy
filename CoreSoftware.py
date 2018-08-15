@@ -256,6 +256,7 @@ class DigitalOutputDevice(Object):
                 func(args)
 
     def update(self, value):
+        print("Sono un'istanza di un oggetto e ho ricevuto un messaggio di update!")
         if isinstance(self, DigitalOutputDevice):
             if value > 0:
                 self.activate()
@@ -390,6 +391,8 @@ class ToxBoot:
         server = ToxSocketServer()
         try:
             start_new_thread(server.activate_server, ())
+            start_new_thread(ToxSerial.shared().start, ())
+            #start_new_thread(ToxSerialQueueUpdater.shared().start, ())
            # server.activate_server()
         except KeyboardInterrupt:
             print("\nRicevuto segnale di chiusura. Esco...")
@@ -650,10 +653,20 @@ class ToxMain:
     #             obj.update(value)
 
     def updateObjectsStatus(self, status):
-        for index, value in enumerate(status):
-            obj = self.getRealObjectFromPin(index)
-            if obj != None:
-                obj.update(value)
+        statusDict = json.loads(status)
+        if statusDict == None:
+            return
+        allPins = statusDict["pins_d"]
+        allPins.append(statusDict["pins_a"])
+        for pin_n, status in enumerate(allPins):
+            realObj = self.getRealObjectFromPin(pin_n)
+            if realObj == None:
+                continue
+            else:
+                print("Eseguito update del pin: " + str(pin_n) + " con stato: " + str(status))
+            realObj.update(status)
+
+            
 
     def removeRealObjectForID(self, id):
         for index, obj in enumerate(self.realObjects):
@@ -675,30 +688,30 @@ class ToxMain:
 ###     ToxSerial   ###
 
 
-class ToxSerialMessageType(Enum):
-    SPEGNIMENTO = 0
-    ACCENSIONE = 1
-    GET_VALUE = 2
+# class ToxSerialMessageType(Enum):
+#     SPEGNIMENTO = 0
+#     ACCENSIONE = 1
+#     GET_VALUE = 2
 
 
-class ToxSerialMessage:
-    def __init__(self, pin, msgType): #msgType : ToxSerialMessageType
-        self.pin = pin
-        offstr = ""
-        delis = "<"
-        delir = ">"
+# class ToxSerialMessage:
+#     def __init__(self, pin, msgType): #msgType : ToxSerialMessageType
+#         self.pin = pin
+#         offstr = ""
+#         delis = "<"
+#         delir = ">"
 
-        if msgType == 0:
-            offstr = ""
+#         if msgType == 0:
+#             offstr = ""
 
 
-        if msgType == 2:
-            self.isResponseRequested = True
-        else:
-            self.isResponseRequested = False
-        self.message = ""
-        if self.pin > 9:
-            pass
+#         if msgType == 2:
+#             self.isResponseRequested = True
+#         else:
+#             self.isResponseRequested = False
+#         self.message = ""
+#         if self.pin > 9:
+#             pass
 
 
 class ToxSerialResponse:
@@ -725,9 +738,10 @@ class ToxSerial:
             ToxSerial.__instance = self
 
     def start(self):
-        self.ser = serial.Serial("/dev/cu.usbmodem14141", 9600, timeout=0)
+        self.ser = serial.Serial("/dev/cu.usbmodem14221", 9600, timeout=0)
         # self.ser = serial.Serial("/dev/ttyACM0", 9600, timeout=0)
         time.sleep(2.5)
+        start_new_thread(ToxSerialQueueUpdater.shared().start, ())
         start_new_thread(self.performQueue, ())
 
 
@@ -753,12 +767,28 @@ class ToxSerial:
         while True:
             time.sleep(0.1)
             if len(self.queue) >= 1:
+                print("i'm here")
                 msg = self.queue[0]
-                args = msg.args
-                if args != None:
-                    msg.handler(args)
+                if msg.id == 0:
+                    self.ser.write("<09000>")
+                    time.sleep(0.2)
+                    response = self.ser.readline()
+                    
+                    print(response)
+                    ToxMain.shared().updateObjectsStatus(response)
                 else:
-                    msg.handler()
+                    if msg.type == 0:
+                        st_code = "<010"
+                    elif msg.type == 1:
+                        st_code = "<020"
+                    fn_code = ">"
+                    if msg.pin > 9:
+                        md_code = str(msg.pin)
+                    else:
+                        md_code = "0" + str(msg.pin)
+                    code = st_code + md_code + fn_code
+                    self.ser.write(code)
+                    
                 self.queue.popleft()
     
     def printQueue(self):
@@ -769,26 +799,49 @@ class ToxSerial:
 
 
 
-class ToxMessage:
-    def __init__(self, handler):
-        self.handler = handler
-        self.args = None
-        self.message = None
-        self.id = 0
+class ToxSerialMessage:
+    def __init__(self, id):
+        self.id = id
+        self.pin = None
+        self.type = None
         
 
-        
-class ToxSerialUpdate:
+class ToxSerialQueueUpdater:
+    __instance = None
+
+    updateTime = 0.2
+
+    @staticmethod
+    def shared():
+        if ToxSerialQueueUpdater.__instance == None:
+            ToxSerialQueueUpdater()
+        return ToxSerialQueueUpdater.__instance
+
+    def __init__(self):
+        if ToxSerialQueueUpdater.__instance != None:
+            raise Exception("This class is a singleton!")
+        else:
+            ToxSerialQueueUpdater.__instance = self
+
+    def start(self):
+        while True:
+            msg = ToxSerialMessage(0)
+            ToxSerial.shared().addToQueue(msg)
+            time.sleep(self.updateTime)
+
     
-    def updateObjs(self):
-        serialObject = ToxSerial.shared()
-        serialObject.ser.write("B")
-        time.sleep(0.1)
-        line = serialObject.ser.readline()
-        serialObject.ser.flushInput()
-        serialObject.ser.flushOutput()
-        print(line)
-        ToxMain.shared().updateObjectsStatus(line)
+        
+# class ToxSerialUpdate:
+    
+#     def updateObjs(self):
+#         serialObject = ToxSerial.shared()
+#         serialObject.ser.write("B")
+#         time.sleep(0.1)
+#         line = serialObject.ser.readline()
+#         serialObject.ser.flushInput()
+#         serialObject.ser.flushOutput()
+#         print(line)
+#         ToxMain.shared().updateObjectsStatus(line)
 
 
 
@@ -1069,7 +1122,6 @@ class ToxSocketServer:
             }
             conn.send(json.dumps(returnDict))
             
-            #TODO: call the toxHandlerOrganizer and tell him to remove the handler
         elif requestType == "show_ids_h":
             ids = ToxIDCreator.shared().usedHandlersIDs
             conn.send(str(ids))

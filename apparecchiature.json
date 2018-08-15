@@ -54,7 +54,7 @@
         "activate"
       ],
       "name": "Merlino!",
-      "pin": null,
+      "pin": 13,
       "type": 0
     },
     {
