@@ -2,21 +2,21 @@
 
 void setup() {
   Serial.begin(9600);
-
-  
 }
 
 void loop() {  
   if (Serial.available()) {
     handleInput();
   }
+  //while(Serial.available())
+    //Serial.read();
 }
 
 
 void handleInput() {
     static long receivedNumber = 0;
     byte c = Serial.read();
-
+    
     switch (c) {
       case endOfNumberDelimiter:
         handleNumber(receivedNumber);
@@ -61,8 +61,10 @@ void handleNumber(int number) {
       digitalWrite(pin, LOW);
       break;
     case 9:
-      int* arr = getps();
-      sendsts(arr);
+      //int* arr = getps();    <-- Memory management is hard :(
+      //sendsts(arr);          <-- Memory management is hard :(
+      sendsts();
+      //serialFlush();
       break;
   }
   
@@ -88,8 +90,9 @@ int *getps() {
    return p;
 }
 
-void sendsts(int* pins) {
+void sendsts() {
   int* arr = getps();
+  //delay(100);
   if (arr == NULL) { return; }
   Serial.print("{ \"pins_d\" : [ ");
   for (int i = 0; i < PINS_N; i++) {
@@ -105,8 +108,13 @@ void sendsts(int* pins) {
       Serial.print(", ");
     }
   }
-  Serial.print(" ] }");
-  Serial.println("");
+  Serial.print(" ] }\n");
   free(arr);
-  
+}
+
+
+void serialFlush(){
+  while(Serial.available() > 0) {
+    char t = Serial.read();
+  }
 }

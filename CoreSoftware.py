@@ -256,7 +256,7 @@ class DigitalOutputDevice(Object):
                 func(args)
 
     def update(self, value):
-        print("Sono un'istanza di un oggetto e ho ricevuto un messaggio di update!")
+        #print("Sono un'istanza di un oggetto e ho ricevuto un messaggio di update!")
         if isinstance(self, DigitalOutputDevice):
             if value > 0:
                 self.activate()
@@ -646,24 +646,22 @@ class ToxMain:
                 return obj
         return None
 
-    # def updateObjetctsStatus(self, status):
-    #     for index, value in enumerate(status):
-    #         obj = self.getObjectFromPin(index,self.objects)
-    #         if obj != None:
-    #             obj.update(value)
-
     def updateObjectsStatus(self, status):
-        statusDict = json.loads(status)
-        if statusDict == None:
+        try:
+            statusDict = json.loads(status)
+        except:
+            print("ToxMain.updateObjectsStatus: errore nel caricare il json dal response dell'Arduino")
             return
+        
         allPins = statusDict["pins_d"]
-        allPins.append(statusDict["pins_a"])
+        allPins.extend(statusDict["pins_a"])
         for pin_n, status in enumerate(allPins):
             realObj = self.getRealObjectFromPin(pin_n)
             if realObj == None:
                 continue
             else:
-                print("Eseguito update del pin: " + str(pin_n) + " con stato: " + str(status))
+                pass
+                #print("Eseguito update del pin: " + str(pin_n) + " con stato: " + str(status))
             realObj.update(status)
 
             
@@ -738,7 +736,7 @@ class ToxSerial:
             ToxSerial.__instance = self
 
     def start(self):
-        self.ser = serial.Serial("/dev/cu.usbmodem14221", 9600, timeout=0)
+        self.ser = serial.Serial("/dev/cu.usbmodem1411", 9600, timeout=3, write_timeout=3)
         # self.ser = serial.Serial("/dev/ttyACM0", 9600, timeout=0)
         time.sleep(2.5)
         start_new_thread(ToxSerialQueueUpdater.shared().start, ())
@@ -749,7 +747,6 @@ class ToxSerial:
         if message.id == 0:
             self.queue.append(message)
             return
-
         found = False
         for msg in self.queue:
             if msg.id == message.id:    
@@ -760,20 +757,22 @@ class ToxSerial:
         else:
             self.queue.append(message)
 
+
     def removeFromQueue(self):
         self.queue.popleft()
 
     def performQueue(self):
+        num = 0
         while True:
             time.sleep(0.1)
+            num = num + 1
+            print(str(num))
             if len(self.queue) >= 1:
-                print("i'm here")
                 msg = self.queue[0]
                 if msg.id == 0:
                     self.ser.write("<09000>")
                     time.sleep(0.2)
-                    response = self.ser.readline()
-                    
+                    response = self.ser.read(self.ser.inWaiting())#self.ser.readline()
                     print(response)
                     ToxMain.shared().updateObjectsStatus(response)
                 else:

@@ -5,7 +5,7 @@ int getobit(int);
 int getpin(int);
 
 int* getps();
-void sendsts(int*);
+void sendsts();
 
 const char startOfNumberDelimiter = '<';
 const char endOfNumberDelimiter   = '>';
