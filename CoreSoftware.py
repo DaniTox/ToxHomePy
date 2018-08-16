@@ -209,113 +209,52 @@ class Object:
         if key not in self.customVariables:
             return 3
 
-        if value is str:
-            realValue = ToxVariable("String", value)
-        elif value is int:
-            realValue = ToxVariable("Int", value)
+        if self.customVariables[key] == None:
+            if value is str:
+                realValue = ToxVariable("String", value)
+            elif value is int:
+                realValue = ToxVariable("Int", value)
+            else:
+                realValue = ToxVariable("Float", value)
+            self.customVariables[key] = realValue
         else:
-            realValue = ToxVariable("Float", value)
-        self.customVariables[key] = realValue
+            self.customVariables[key].value = value
         self.__dict__[key] = value
         return 0
 
-
-
-class DigitalOutputDevice(Object):
-    def __init__(self, autoID = True):
-        Object.__init__(self, autoID)
-        self.isOn = False
-        self.className = "DigitalOutputDevice"
-        #IMPORTANT: DALL'APP VERRANNO CHIAMATI QUESTI MESSAGGI TRAMITE LA FUNC executeMessage(). È l'unico modo per comunicare con l'app esterna
-        
-        # myID = self.id
-        # myFunc = 
-        
-        self.messages = { 
-            "activate": self.activate,
-            "deactivate": self.deactivate
-        }
-
-        self.handlers = {
-            "activate" : [],
-            "deactivate" : []
-        }
-
-    @staticmethod
-    def class_():
-        return "DigitalOutputDevice"
-
-    #TESTING ONLY. DA ELIMINARE
-    def printStr(self):
-        print("Prova messaggio da handler")
-
-    def activate(self):
-        if self.isOn == True:
-            return
-        #activate the pin
-
-
-        self.executeHandlers("activate")
-
-        return
-        for handler in self.handlers["activate"]:
-            if handler != None:
-                func = handler.function
-                if handler.args != None:
-                    func(handler.args)
-                else:
-                    func()
-        
-
-    def deactivate(self):
-        if self.isOn == False:
-            return
-        #deactivate the pin
-        for handler in self.handlers["deactivate"]:
-            if handler != None:
-                func = handler.function
-                args = handler.args
-                func(args)
-
     def update(self, value):
-        #print("Sono un'istanza di un oggetto e ho ricevuto un messaggio di update!")
-        if isinstance(self, DigitalOutputDevice):
-            if value > 0:
-                self.activate()
-            elif value <= 0:
-                self.deactivate() 
-        #perform some update in pins and execute functions/messages if needed
-    
+        pass
 
-        
 
-class MonoOutputDevice(Object):
+class Timer(Object):
     def __init__(self, autoID = True):
         Object.__init__(self, autoID)
-        self.className = "MonoOutputDevice"
+        self.className = "Timer"
+
+        self.customVariables = {
+            "durata" : ToxVariable("Float", 5)
+        }
         self.messages = {
-            "activate": self.activate
+            "activate": self.activate,
+            "fire": self.startTimer
         }
 
-        self.handlers = {
-            "activate" : []
-        }
-
-    def activate(self):
-        self.executeHandlers("activate")
-        # for handler in self.handlers["activate"]:
-        #     if handler != None:
-                #print(type(handler))
-                #handler.function()
-                # self.executeHandlers("activate")
-
-    #TESTING ONLY. DA ELIMINARE
-    def asd(self):
-        print("Asdddddd")
+    def startTimer(self):
+        if "durata" in self.customVariables:
+            duration = self.customVariables["durata"].value
+        else:
+            duration = 0.0
+        duration = float(duration)
+        t = threading.Timer(duration, self.activate)
+        t.start()
 
     @staticmethod
     def class_():
-        return "MonoOutputDevice"
+        return "Timer"
+
+    def activate():
+        pass
+
 
 
 class ToxHandler:
@@ -358,33 +297,6 @@ class ToxFunction:
     def __init__(self):
         self.objectId = None
         self.functionName = None
-
-
-class Timer(MonoOutputDevice):
-    def __init__(self, autoID = True):
-        MonoOutputDevice.__init__(self, autoID)
-        self.className = "Timer"
-
-        self.customVariables = {
-            "durata" : ToxVariable("Float", 5)
-        }
-        self.messages = {
-            "activate": self.activate,
-            "fire": self.startTimer
-        }
-
-    def startTimer(self):
-        if "durata" in self.customVariables:
-            duration = self.customVariables["durata"].value
-        else:
-            duration = 0.0
-        duration = float(duration)
-        t = threading.Timer(duration, self.activate)
-        t.start()
-
-    @staticmethod
-    def class_():
-        return "Timer"
 
 
 class ToxVariable:
@@ -593,8 +505,7 @@ class ToxMain:
         self.realObjects = [] 
 
         self.classes = [
-            DigitalOutputDevice.class_(),
-            MonoOutputDevice.class_(),
+            Object.class_(),
             Timer.class_()
         ]
         
@@ -932,10 +843,15 @@ class ToxSocketServer:
                     conn.close()
                     return
                 newObject = objClass()
-                newObject.name = requestBody["name"]
+                #newObject.name = requestBody["name"]
+                newObject.setValueForKey(requestBody["name"], "name")
+
                 newObject.description = requestBody["description"]
+                newObject.setValueForKey(requestBody["description"], "description")
+
                 if "pin" in requestBody:
-                    newObject.pin = requestBody["pin"]
+                    newObject.setValueForKey(requestBody["pin"], "pin")
+                    #newObject.pin = requestBody["pin"]
                 # if "variables" in request:
                 #     newObject.customVariables = request["variables"]
                 ToxMain.shared().commitObjects()
