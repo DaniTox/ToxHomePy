@@ -45,9 +45,13 @@ class Object:
         self.description = ""
         self.color = ObjectColors.BLACK
         self.type = ObjectType.NONE
-        self.className = None
+        #self.className = None
 
-        self.customVariables = {}
+        self.customVariables = {
+            "name" : ToxVariable("String", ""),
+            "description" : ToxVariable("String", ""),
+            "pin" : ToxVariable("Int", 0)
+        }
 
         self.messages = {}
         self.serializedMessages = {}
@@ -196,6 +200,24 @@ class Object:
     def removeMe(self):
         ToxMain.shared().removeRealObjectForID(self.id)
         ToxMain.shared().commitObjects()
+
+    def setValueForKey(self, value, key):
+        if key not in self.__dict__:
+            return 1
+        if value == None:
+            return 2
+        if key not in self.customVariables:
+            return 3
+
+        if value is str:
+            realValue = ToxVariable("String", value)
+        elif value is int:
+            realValue = ToxVariable("Int", value)
+        else:
+            realValue = ToxVariable("Float", value)
+        self.customVariables[key] = realValue
+        self.__dict__[key] = value
+        return 0
 
 
 
@@ -766,14 +788,14 @@ class ToxSerial:
         while True:
             time.sleep(0.1)
             num = num + 1
-            print(str(num))
+            #print(str(num))
             if len(self.queue) >= 1:
                 msg = self.queue[0]
                 if msg.id == 0:
                     self.ser.write("<09000>")
                     time.sleep(0.2)
                     response = self.ser.read(self.ser.inWaiting())#self.ser.readline()
-                    print(response)
+                    #print(response)
                     ToxMain.shared().updateObjectsStatus(response)
                 else:
                     if msg.type == 0:
@@ -1165,6 +1187,39 @@ class ToxSocketServer:
                     "response" : "Funzione eseguita con successo"
                 }
                 conn.send(json.dumps(returnDict))
+        elif requestType == "change_properties":
+            properties = requestBody["properties"]
+            objID = requestBody["objID"]
+            realObject = ToxMain.shared().getRealObjectFromID(objID)
+            if realObject == None:
+                returnDict = {
+                    "code" : "NO",
+                    "response" : "Oggetto non trovato con questo ID"
+                }
+                conn.send(json.dumps(returnDict))
+                conn.close()
+                return
+            
+            retCode = 0
+            for key in properties:
+                isSuccess = realObject.setValueForKey(properties[key], key)
+                if isSuccess != 0:
+                    retCode = isSuccess
+                    break
+            if retCode != 0:
+                returnDict = {
+                    "code" : "NO",
+                    "response" : "Valore ritornato mentre cambiavo le properties: " + str(retCode)
+                }
+                conn.send(json.dumps(returnDict))
+                conn.close()
+                return
+            returnDict = {
+                "code" : "OK",
+                "response" : "Properties modificate con successo!"
+            }
+            conn.send(json.dumps(returnDict))
+                
         #conn.send("Scemotto! Hide and Seek\n")
         conn.close()
 
