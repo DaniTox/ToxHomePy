@@ -14,6 +14,7 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from urlparse import urlparse, parse_qs
 import socket
 import traceback
+from weather import Weather, Unit
 
 
 
@@ -50,7 +51,8 @@ class Object:
         self.customVariables = {
             "name" : ToxVariable("String", ""),
             "description" : ToxVariable("String", ""),
-            "pin" : ToxVariable("Int", 0)
+            "pin" : ToxVariable("Int", 0),
+            "location" : ToxVariable("String", "")
         }
 
         self.messages = {}
@@ -80,11 +82,12 @@ class Object:
             return
 
         for key in keys:
-            self.handlers[key] = [] #Free all handlers
-            for serializedHanlder in self.serializedHandlers[key]:
-                newHandler = ToxHandler.createFromDict(serializedHanlder)
-                newHandler.id_object_owner = self.id
-                self.handlers[key].append(newHandler)
+            if key in self.serializedHandlers:
+                self.handlers[key] = [] #Free all handlers            
+                for serializedHanlder in self.serializedHandlers[key]:
+                    newHandler = ToxHandler.createFromDict(serializedHanlder)
+                    newHandler.id_object_owner = self.id
+                    self.handlers[key].append(newHandler)
 
     def removeHandlerWithID(self, id):
         keys = self.handlers.keys()
@@ -170,12 +173,15 @@ class Object:
             if realObject == None:
                 raise Exception("ogetto ottenuto is NULL")
                 sys.exit(1)
-            function = getattr(realObject, funcName)
+
+            realObject.executeMessage(funcName)
+            #function = getattr(realObject, funcName)
             # if args != None:
             #     function(args)
             # else:
             #     funcion()
-            function()
+            # function
+            # function()
 
     def addHandlerForKey(self, key, handler):
         self.handlers[key].append(handler)
@@ -219,7 +225,9 @@ class Object:
             self.customVariables[key] = realValue
         else:
             self.customVariables[key].value = value
-        self.__dict__[key] = value
+        
+        if key in self.__dict__:
+            self.__dict__[key] = value
         return 0
 
     def update(self, value):
@@ -231,15 +239,19 @@ class Timer(Object):
         Object.__init__(self, autoID)
         self.className = "Timer"
 
-        self.customVariables = {
-            "durata" : ToxVariable("Float", 5)
-        }
+        self.customVariables["durata"] = ToxVariable("Float", 5)
+        
         self.messages = {
             "activate": self.activate,
             "fire": self.startTimer
         }
 
+        self.handlers = {
+            "Azione da svolgere" : list()
+        }
+
     def startTimer(self):
+        print("Inizio a contare...")
         if "durata" in self.customVariables:
             duration = self.customVariables["durata"].value
         else:
@@ -248,13 +260,56 @@ class Timer(Object):
         t = threading.Timer(duration, self.activate)
         t.start()
 
+    def activate(self):
+        print("Timer: sto dicendo agli oggetti di eseguire le azioni che hai richiesto...")
+        self.executeHandlers("Azione da svolgere")
+
     @staticmethod
     def class_():
         return "Timer"
 
-    def activate():
-        pass
+    
 
+class WeatherChecker(Object):
+    def __init__(self, autoID = True):
+        Object.__init__(self, autoID)
+        self.className = "WeatherChecker"
+
+        self.messages = {
+            "Controlla il tempo" : self.checkWeather
+        }
+
+        self.handlers = {
+            "Parzialmente nuvoloso" : list(),
+            "Soleggiato" : list(),
+            "Neve" : list(),
+            "Nuvoloso": list()
+        }
+
+    def checkWeather(self):
+        print(self.name + ": Controllo il tempo...")
+
+        weather = Weather(unit=Unit.CELSIUS)
+        location = weather.lookup_by_location('brescia')
+        condition = location.condition
+        print(self.name + ": " + condition.text)
+        print(self.name + ": " + condition.code)
+        code = int(condition.code)
+
+        if code in (29, 30, 44):
+            self.executeHandlers("Parzialmente nuvoloso")
+        elif code in (26, 27, 28):
+            self.executeHandlers("Nuvoloso")
+        elif code in (16, 41):
+            self.executeHandlers("Neve")
+        elif code in (31, 32, 33, 34):
+            self.executeHandlers("Soleggiato")
+        else:
+            print(self.name + ": Codice non corrisponde a niente")
+
+    @staticmethod
+    def class_():
+        return "WeatherChecker"
 
 
 class ToxHandler:
@@ -506,7 +561,8 @@ class ToxMain:
 
         self.classes = [
             Object.class_(),
-            Timer.class_()
+            Timer.class_(),
+            WeatherChecker.class_()
         ]
         
         #self.generateObjectsHandlers()
@@ -1134,6 +1190,7 @@ class ToxSocketServer:
                 "code" : "OK",
                 "response" : "Properties modificate con successo!"
             }
+            print("Server response: " + str(returnDict))
             conn.send(json.dumps(returnDict))
                 
         #conn.send("Scemotto! Hide and Seek\n")

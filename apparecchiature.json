@@ -8,6 +8,10 @@
           "value": "",
           "valueType": "String"
         },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
         "name": {
           "value": "",
           "valueType": "String"
@@ -29,13 +33,31 @@
       "className": "Timer",
       "color": 0,
       "customVariables": {
+        "description": {
+          "value": "",
+          "valueType": "String"
+        },
         "durata": {
           "value": 5,
           "valueType": "Float"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": 0,
+          "valueType": "Int"
         }
       },
       "description": "Merlin!",
-      "handlers": {},
+      "handlers": {
+        "Azione da svolgere": []
+      },
       "id": 1726,
       "messages": [
         "fire",
@@ -50,6 +72,10 @@
       "color": 0,
       "customVariables": {
         "description": {
+          "value": "",
+          "valueType": "String"
+        },
+        "location": {
           "value": "",
           "valueType": "String"
         },
@@ -74,13 +100,31 @@
       "className": "Timer",
       "color": 0,
       "customVariables": {
+        "description": {
+          "value": "",
+          "valueType": "String"
+        },
         "durata": {
           "value": 5,
           "valueType": "Float"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": 0,
+          "valueType": "Int"
         }
       },
       "description": "TARAAAAANANNANARARA",
-      "handlers": {},
+      "handlers": {
+        "Azione da svolgere": []
+      },
       "id": 3496,
       "messages": [
         "fire",
@@ -94,13 +138,31 @@
       "className": "Timer",
       "color": 0,
       "customVariables": {
+        "description": {
+          "value": "",
+          "valueType": "String"
+        },
         "durata": {
           "value": 5,
           "valueType": "Float"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": 0,
+          "valueType": "Int"
         }
       },
       "description": "TARAAAAANANNANARARA",
-      "handlers": {},
+      "handlers": {
+        "Azione da svolgere": []
+      },
       "id": 7238,
       "messages": [
         "fire",
@@ -115,6 +177,10 @@
       "color": 0,
       "customVariables": {
         "description": {
+          "value": "",
+          "valueType": "String"
+        },
+        "location": {
           "value": "",
           "valueType": "String"
         },
@@ -143,6 +209,10 @@
           "value": "",
           "valueType": "String"
         },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
         "name": {
           "value": "",
           "valueType": "String"
@@ -165,6 +235,10 @@
       "color": 0,
       "customVariables": {
         "description": {
+          "value": "",
+          "valueType": "String"
+        },
+        "location": {
           "value": "",
           "valueType": "String"
         },
@@ -193,6 +267,10 @@
           "value": "",
           "valueType": "String"
         },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
         "name": {
           "value": "",
           "valueType": "String"
@@ -215,6 +293,10 @@
       "color": 0,
       "customVariables": {
         "description": {
+          "value": "",
+          "valueType": "String"
+        },
+        "location": {
           "value": "",
           "valueType": "String"
         },
@@ -243,6 +325,10 @@
           "value": "Deeeeee",
           "valueType": "Float"
         },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
         "name": {
           "value": "NewObjectTest",
           "valueType": "Float"
@@ -266,6 +352,10 @@
       "customVariables": {
         "description": {
           "value": "Title says everything",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "",
           "valueType": "String"
         },
         "name": {
@@ -293,6 +383,10 @@
           "value": "Title again says everything",
           "valueType": "String"
         },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
         "name": {
           "value": "Now it\u2019s finally the last one",
           "valueType": "String"
@@ -307,6 +401,154 @@
       "id": 8793,
       "messages": [],
       "name": "Now it\u2019s finally the last one",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "Object",
+      "color": 0,
+      "customVariables": {
+        "description": {
+          "value": "Asd",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "The laaaaast one",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": 0,
+          "valueType": "Int"
+        }
+      },
+      "description": "Asd",
+      "handlers": {},
+      "id": 575,
+      "messages": [],
+      "name": "The laaaaast one",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "WeatherChecker",
+      "color": 0,
+      "customVariables": {
+        "description": {
+          "value": "Titolo...",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Weather",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": 0,
+          "valueType": "Int"
+        }
+      },
+      "description": "Titolo...",
+      "handlers": {
+        "Neve": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "fire",
+              "objectId": 8889
+            },
+            "id": 2383
+          }
+        ],
+        "Nuvoloso": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "fire",
+              "objectId": 8889
+            },
+            "id": 7229
+          }
+        ],
+        "Parzialmente nuvoloso": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "fire",
+              "objectId": 8889
+            },
+            "id": 4566
+          }
+        ],
+        "Soleggiato": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "fire",
+              "objectId": 8889
+            },
+            "id": 7536
+          }
+        ]
+      },
+      "id": 9004,
+      "messages": [
+        "Controlla il tempo"
+      ],
+      "name": "Weather",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "Timer",
+      "color": 0,
+      "customVariables": {
+        "description": {
+          "value": "Prova timer",
+          "valueType": "String"
+        },
+        "durata": {
+          "value": 5,
+          "valueType": "Float"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Timer 1",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": 0,
+          "valueType": "Int"
+        }
+      },
+      "description": "Prova timer",
+      "handlers": {
+        "Azione da svolgere": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "Controlla il tempo",
+              "objectId": 9004
+            },
+            "id": 4095
+          }
+        ]
+      },
+      "id": 8889,
+      "messages": [
+        "fire",
+        "activate"
+      ],
+      "name": "Timer 1",
       "pin": null,
       "type": 0
     }
