@@ -17,7 +17,7 @@
           "valueType": "String"
         },
         "pin": {
-          "value": 0,
+          "value": null,
           "valueType": "Int"
         }
       },
@@ -50,7 +50,7 @@
           "valueType": "String"
         },
         "pin": {
-          "value": 0,
+          "value": null,
           "valueType": "Int"
         }
       },
@@ -84,7 +84,7 @@
           "valueType": "String"
         },
         "pin": {
-          "value": 0,
+          "value": null,
           "valueType": "Int"
         }
       },
@@ -117,7 +117,7 @@
           "valueType": "String"
         },
         "pin": {
-          "value": 0,
+          "value": null,
           "valueType": "Int"
         }
       },
@@ -155,7 +155,7 @@
           "valueType": "String"
         },
         "pin": {
-          "value": 0,
+          "value": null,
           "valueType": "Int"
         }
       },
@@ -189,7 +189,7 @@
           "valueType": "String"
         },
         "pin": {
-          "value": 0,
+          "value": null,
           "valueType": "Int"
         }
       },
@@ -218,7 +218,7 @@
           "valueType": "String"
         },
         "pin": {
-          "value": 0,
+          "value": null,
           "valueType": "Int"
         }
       },
@@ -247,7 +247,7 @@
           "valueType": "String"
         },
         "pin": {
-          "value": 0,
+          "value": null,
           "valueType": "Int"
         }
       },
@@ -276,7 +276,7 @@
           "valueType": "String"
         },
         "pin": {
-          "value": 0,
+          "value": null,
           "valueType": "Int"
         }
       },
@@ -305,7 +305,7 @@
           "valueType": "String"
         },
         "pin": {
-          "value": 0,
+          "value": null,
           "valueType": "Int"
         }
       },
@@ -334,7 +334,7 @@
           "valueType": "Float"
         },
         "pin": {
-          "value": 0,
+          "value": null,
           "valueType": "Int"
         }
       },
@@ -363,7 +363,7 @@
           "valueType": "String"
         },
         "pin": {
-          "value": 0,
+          "value": null,
           "valueType": "Int"
         }
       },
@@ -392,7 +392,7 @@
           "valueType": "String"
         },
         "pin": {
-          "value": 0,
+          "value": null,
           "valueType": "Int"
         }
       },
@@ -413,7 +413,7 @@
           "valueType": "String"
         },
         "location": {
-          "value": "",
+          "value": "Nowheree",
           "valueType": "String"
         },
         "name": {
@@ -421,7 +421,7 @@
           "valueType": "String"
         },
         "pin": {
-          "value": 0,
+          "value": null,
           "valueType": "Int"
         }
       },
@@ -442,7 +442,7 @@
           "valueType": "String"
         },
         "location": {
-          "value": "",
+          "value": "Camelot",
           "valueType": "String"
         },
         "name": {
@@ -450,32 +450,14 @@
           "valueType": "String"
         },
         "pin": {
-          "value": 0,
+          "value": null,
           "valueType": "Int"
         }
       },
       "description": "Titolo...",
       "handlers": {
-        "Neve": [
-          {
-            "args": null,
-            "function": {
-              "functionName": "fire",
-              "objectId": 8889
-            },
-            "id": 2383
-          }
-        ],
-        "Nuvoloso": [
-          {
-            "args": null,
-            "function": {
-              "functionName": "fire",
-              "objectId": 8889
-            },
-            "id": 7229
-          }
-        ],
+        "Neve": [],
+        "Nuvoloso": [],
         "Parzialmente nuvoloso": [
           {
             "args": null,
@@ -486,16 +468,7 @@
             "id": 4566
           }
         ],
-        "Soleggiato": [
-          {
-            "args": null,
-            "function": {
-              "functionName": "fire",
-              "objectId": 8889
-            },
-            "id": 7536
-          }
-        ]
+        "Soleggiato": []
       },
       "id": 9004,
       "messages": [
@@ -518,7 +491,7 @@
           "valueType": "Float"
         },
         "location": {
-          "value": "",
+          "value": "Calmelot",
           "valueType": "String"
         },
         "name": {
@@ -526,22 +499,13 @@
           "valueType": "String"
         },
         "pin": {
-          "value": 0,
+          "value": 15,
           "valueType": "Int"
         }
       },
       "description": "Prova timer",
       "handlers": {
-        "Azione da svolgere": [
-          {
-            "args": null,
-            "function": {
-              "functionName": "Controlla il tempo",
-              "objectId": 9004
-            },
-            "id": 4095
-          }
-        ]
+        "Azione da svolgere": []
       },
       "id": 8889,
       "messages": [
@@ -549,7 +513,7 @@
         "activate"
       ],
       "name": "Timer 1",
-      "pin": null,
+      "pin": 15,
       "type": 0
     }
   ]

@@ -51,7 +51,7 @@ class Object:
         self.customVariables = {
             "name" : ToxVariable("String", ""),
             "description" : ToxVariable("String", ""),
-            "pin" : ToxVariable("Int", 0),
+            "pin" : ToxVariable("Int", None),
             "location" : ToxVariable("String", "")
         }
 
@@ -208,12 +208,12 @@ class Object:
         ToxMain.shared().commitObjects()
 
     def setValueForKey(self, value, key):
-        if key not in self.__dict__:
-            return 1
-        if value == None:
-            return 2
+        # if key not in self.__dict__:
+        #     return 1
+        # if value == None:
+        #     return 1
         if key not in self.customVariables:
-            return 3
+            return 1
 
         if self.customVariables[key] == None:
             if value is str:
@@ -725,7 +725,7 @@ class ToxSerial:
             ToxSerial.__instance = self
 
     def start(self):
-        self.ser = serial.Serial("/dev/cu.usbmodem1411", 9600, timeout=3, write_timeout=3)
+        self.ser = serial.Serial("/dev/cu.usbmodem14231", 9600, timeout=3, write_timeout=3)
         # self.ser = serial.Serial("/dev/ttyACM0", 9600, timeout=0)
         time.sleep(2.5)
         start_new_thread(ToxSerialQueueUpdater.shared().start, ())
@@ -841,6 +841,7 @@ class ToxSocketServer:
     def activate_server(self):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+       # self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 32768)
 
         try:
             self.socket.bind((self.host, self.port))
@@ -1192,10 +1193,57 @@ class ToxSocketServer:
             }
             print("Server response: " + str(returnDict))
             conn.send(json.dumps(returnDict))
-                
+        elif requestType == "change_properties_values":
+            if "obj_id" not in requestBody:
+                self.send_err(conn, "Nella tua richiesta manca l'objID")
+                return
+            if "properties" not in requestBody:
+                self.send_err(conn, "Nella tua richiesta mancano le properties")
+                return
+            objID = requestBody["obj_id"]
+            properties = requestBody["properties"]
+
+            realObj = ToxMain.shared().getRealObjectFromID(objID)
+            if realObj == None:
+                self.send_err(conn, "Nessun oggetto con questo ID")
+                return
+            
+            keys = properties.keys()
+            success = 0
+            for key in keys:
+                # if key == "name" and realObj.customVariables["name"].value == properties[key]:
+                #     continue
+                if realObj.customVariables[key].value == properties[key]:
+                    continue
+                if properties[key] in ("$null", -1, -1.0):
+                    success = realObj.setValueForKey(None, key)
+                else:
+                    success = realObj.setValueForKey(properties[key], key)
+                if success != 0:
+                    err = "Non ho trovato una key che mi hai passato in questo oggetto. Codice errore: " + str(success) + "  key, value: " + str(key) + ", " + str(properties[key])
+                    self.send_err(conn, err)
+                    return
+            ToxMain.shared().commitObjects()
+            self.send_msg(conn, "Properties modificate con successo!")
+            
+
         #conn.send("Scemotto! Hide and Seek\n")
         conn.close()
 
+    def send_err(self, conn, msg):
+        returnDict = {
+            "code" : "NO",
+            "response" : msg
+        }
+        conn.send(json.dumps(returnDict))
+        conn.close()
+
+    def send_msg(self, conn, msg):
+        returnDict = {
+            "code" : "OK",
+            "response" : msg
+        }
+        conn.send(json.dumps(returnDict))
 
     def _wait_for_connections(self):
         while True:
