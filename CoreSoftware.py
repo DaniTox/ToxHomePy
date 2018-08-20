@@ -334,12 +334,20 @@ class Lampada(Object):
         if self.isOn == False:
             self.isOn = True
             #attiva il pin
+            pin = self.customVariables["pin"].value
+            if pin != None:
+                msg = ToxSerialMessage.create(SerialMessageType.ACCENSIONE, pin)
+                ToxSerial.shared().addToQueue(msg)
             self.executeHandlers("Accensione")
     
     def deactivate(self):
         if self.isOn == True:
             self.isOn = False
             #disattiva il pin
+            pin = self.customVariables["pin"].value
+            if pin != None:
+                msg = ToxSerialMessage.create(SerialMessageType.SPEGNIMENTO, pin)
+                ToxSerial.shared().addToQueue(msg)
             self.executeHandlers("Spegnimento")
 
     @staticmethod
@@ -770,9 +778,9 @@ class ToxSerial:
 
 
     def addToQueue(self, message):
-        if message.id == 0:
-            self.queue.append(message)
-            return
+        # if message.id == 0:
+        #     self.queue.append(message)
+        #     return
         found = False
         for msg in self.queue:
             if msg.id == message.id:    
@@ -802,17 +810,24 @@ class ToxSerial:
                     #print(response)
                     ToxMain.shared().updateObjectsStatus(response)
                 else:
-                    if msg.type == 0:
-                        st_code = "<010"
-                    elif msg.type == 1:
-                        st_code = "<020"
-                    fn_code = ">"
-                    if msg.pin > 9:
-                        md_code = str(msg.pin)
-                    else:
-                        md_code = "0" + str(msg.pin)
-                    code = st_code + md_code + fn_code
+                    # if msg.type == 0:
+                    #     st_code = "<010"
+                    # elif msg.type == 1:
+                    #     st_code = "<020"
+                    # fn_code = ">"
+                    # if msg.pin > 9:
+                    #     md_code = str(msg.pin)
+                    # else:
+                    #     md_code = "0" + str(msg.pin)
+                    # code = st_code + md_code + fn_code
+                    if msg.ser_str == None:
+                        return
+                    code = msg.ser_str
+                    print("code to serial: " + code)
                     self.ser.write(code)
+                    time.sleep(0.1)
+                    response = self.ser.readline()
+                    print(response)
                     
                 self.queue.popleft()
     
@@ -829,7 +844,31 @@ class ToxSerialMessage:
         self.id = id
         self.pin = None
         self.type = None
+
+        self.ser_str = None
+
+    @staticmethod
+    def create(type, pin):
+        id = random.randint(1, 999999)
+
+        prefix = ""
+        suffix = ""
+        if type < 10:
+            prefix = "0"
+        prefix += str(type)
+        middle = str(0) #middle number is unused at this moment
+        if pin < 10:
+            suffix = "0"
+        suffix += str(pin)
+
+        me = ToxSerialMessage(id)
+        me.ser_str = "<" + prefix + middle + suffix + ">"
+
+        return me
         
+class SerialMessageType(Enum):
+    ACCENSIONE = 1
+    SPEGNIMENTO = 2
 
 class ToxSerialQueueUpdater:
     __instance = None

@@ -533,22 +533,13 @@
           "valueType": "String"
         },
         "pin": {
-          "value": null,
+          "value": 13,
           "valueType": "Int"
         }
       },
       "description": "Prova di una lampada!",
       "handlers": {
-        "Accensione": [
-          {
-            "args": null,
-            "function": {
-              "functionName": "fire",
-              "objectId": 6418
-            },
-            "id": 993
-          }
-        ],
+        "Accensione": [],
         "Spegnimento": []
       },
       "id": 7075,
@@ -558,7 +549,7 @@
         "activate"
       ],
       "name": "Lampada 1",
-      "pin": null,
+      "pin": 13,
       "type": 0
     },
     {

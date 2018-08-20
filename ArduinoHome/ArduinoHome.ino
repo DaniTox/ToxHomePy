@@ -2,6 +2,13 @@
 
 void setup() {
   Serial.begin(9600);
+
+  for (int i = 0; i < 8; i++) {
+    pinMode(i, INPUT);
+  }
+  for (int i = 8; i < 14; i++) {
+    pinMode(i, OUTPUT);
+  }
 }
 
 void loop() {  
@@ -56,9 +63,13 @@ void handleNumber(int number) {
       break;
     case 1:
       digitalWrite(pin, HIGH);
+      Serial.print("OK: ");
+      Serial.println(number);
       break;
     case 2:
       digitalWrite(pin, LOW);
+      Serial.print("OK: ");
+      Serial.println(number);
       break;
     case 9:
       //int* arr = getps();    <-- Memory management is hard :(
