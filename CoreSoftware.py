@@ -275,6 +275,8 @@ class WeatherChecker(Object):
         Object.__init__(self, autoID)
         self.className = "WeatherChecker"
 
+        self.customVariables["location_temperatura"] = ToxVariable("String", None)
+
         self.messages = {
             "Controlla il tempo" : self.checkWeather
         }
@@ -289,11 +291,14 @@ class WeatherChecker(Object):
     def checkWeather(self):
         print(self.name + ": Controllo il tempo...")
 
+        customLocation = self.customVariables["location_temperatura"].value
+        if customLocation == None:
+            customLocation = "brescia"
+
         weather = Weather(unit=Unit.CELSIUS)
-        location = weather.lookup_by_location('brescia')
+        location = weather.lookup_by_location(customLocation)
         condition = location.condition
-        print(self.name + ": " + condition.text)
-        print(self.name + ": " + condition.code)
+
         code = int(condition.code)
 
         if code in (29, 30, 44):
@@ -311,6 +316,61 @@ class WeatherChecker(Object):
     def class_():
         return "WeatherChecker"
 
+
+class InternetTemperature(Object):
+    def __init__(self, autoID = True):
+        Object.__init__(self, autoID)
+        self.className = "InternetTemperature"
+
+        self.customVariables["condizione"] = ToxVariable("String", None)
+        self.customVariables["location_temperatura"] = ToxVariable("String", None)
+
+        self.messages = {
+            "Controlla la temperatura" : self.checkTemperature
+        }
+
+        self.handlers = {
+            "Condizione verificata" : list()
+        }
+
+    def checkTemperature(self):
+        logic_condition = self.customVariables["condizione"].value
+        if logic_condition == None:
+            return
+        if len(logic_condition) < 2:
+            print("Condizione non valida...")
+            return
+        
+        customLocation = self.customVariables["location_temperatura"].value
+        if customLocation == None:
+            customLocation = "brescia"
+
+        weather = Weather(unit=Unit.CELSIUS)
+        location = weather.lookup_by_location(customLocation)
+        weather_condition = location.condition
+        curr_temperature = weather_condition.temp
+
+        print(self.name + ".curr_temperature: " + str(curr_temperature))
+
+        operator = logic_condition[0]
+        condition_temperature = logic_condition[1:]
+        if operator == ">":
+            if curr_temperature > condition_temperature:
+                self.executeHandlers("Condizione verificata")
+        elif operator == "<":
+            if curr_temperature < condition_temperature:
+                self.executeHandlers("Condizione verificata")
+        elif operator == "=":
+            if curr_temperature == condition_temperature:
+                self.executeHandlers("Condizione verificata")
+        else:
+            return
+        
+
+
+    @staticmethod
+    def class_():
+        return "InternetTemperature"
 
 class Lampada(Object):
     def __init__(self, autoID = True):
@@ -607,7 +667,8 @@ class ToxMain:
             Object.class_(),
             Timer.class_(),
             WeatherChecker.class_(),
-            Lampada.class_()
+            Lampada.class_(),
+            InternetTemperature.class_()
         ]
         
         #self.generateObjectsHandlers()

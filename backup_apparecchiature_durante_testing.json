@@ -1,0 +1,650 @@
+{
+  "Objects": [
+    {
+      "className": "Object",
+      "color": 0,
+      "customVariables": {
+        "description": {
+          "value": "",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": null,
+          "valueType": "Int"
+        }
+      },
+      "description": "Best TV Show I\u2019ve ever seen",
+      "handlers": {},
+      "id": 4095,
+      "messages": [],
+      "name": "Merlin",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "Timer",
+      "color": 0,
+      "customVariables": {
+        "description": {
+          "value": "",
+          "valueType": "String"
+        },
+        "durata": {
+          "value": 5,
+          "valueType": "Float"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": null,
+          "valueType": "Int"
+        }
+      },
+      "description": "Merlin!",
+      "handlers": {
+        "Azione da svolgere": []
+      },
+      "id": 1726,
+      "messages": [
+        "fire",
+        "activate"
+      ],
+      "name": "The feels :(",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "Object",
+      "color": 0,
+      "customVariables": {
+        "description": {
+          "value": "",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": null,
+          "valueType": "Int"
+        }
+      },
+      "description": "TARRAANANANNANA",
+      "handlers": {},
+      "id": 8319,
+      "messages": [],
+      "name": "Merlino!",
+      "pin": 13,
+      "type": 0
+    },
+    {
+      "className": "Timer",
+      "color": 0,
+      "customVariables": {
+        "description": {
+          "value": "",
+          "valueType": "String"
+        },
+        "durata": {
+          "value": 5,
+          "valueType": "Float"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": null,
+          "valueType": "Int"
+        }
+      },
+      "description": "TARAAAAANANNANARARA",
+      "handlers": {
+        "Azione da svolgere": []
+      },
+      "id": 3496,
+      "messages": [
+        "fire",
+        "activate"
+      ],
+      "name": "Merlino!!",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "Timer",
+      "color": 0,
+      "customVariables": {
+        "description": {
+          "value": "",
+          "valueType": "String"
+        },
+        "durata": {
+          "value": 5,
+          "valueType": "Float"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": null,
+          "valueType": "Int"
+        }
+      },
+      "description": "TARAAAAANANNANARARA",
+      "handlers": {
+        "Azione da svolgere": []
+      },
+      "id": 7238,
+      "messages": [
+        "fire",
+        "activate"
+      ],
+      "name": "Merlino!!!",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "Object",
+      "color": 0,
+      "customVariables": {
+        "description": {
+          "value": "",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": null,
+          "valueType": "Int"
+        }
+      },
+      "description": "ATRARARARRAR",
+      "handlers": {},
+      "id": 4426,
+      "messages": [],
+      "name": "Merlino!!!!",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "Object",
+      "color": 0,
+      "customVariables": {
+        "description": {
+          "value": "",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": null,
+          "valueType": "Int"
+        }
+      },
+      "description": "ATRARARARRAR",
+      "handlers": {},
+      "id": 981,
+      "messages": [],
+      "name": "Merlino!!!!!",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "Object",
+      "color": 0,
+      "customVariables": {
+        "description": {
+          "value": "",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": null,
+          "valueType": "Int"
+        }
+      },
+      "description": "ATRARARARRAR",
+      "handlers": {},
+      "id": 9582,
+      "messages": [],
+      "name": "Merlino!!!!!!",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "Object",
+      "color": 0,
+      "customVariables": {
+        "description": {
+          "value": "",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": null,
+          "valueType": "Int"
+        }
+      },
+      "description": "Bond of sacrifice",
+      "handlers": {},
+      "id": 3271,
+      "messages": [],
+      "name": "DRAGHONNN",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "Object",
+      "color": 0,
+      "customVariables": {
+        "description": {
+          "value": "",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": null,
+          "valueType": "Int"
+        }
+      },
+      "description": "Prova!",
+      "handlers": {},
+      "id": 7287,
+      "messages": [],
+      "name": "TestObject",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "Object",
+      "color": 0,
+      "customVariables": {
+        "description": {
+          "value": "Deeeeee",
+          "valueType": "Float"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "NewObjectTest",
+          "valueType": "Float"
+        },
+        "pin": {
+          "value": null,
+          "valueType": "Int"
+        }
+      },
+      "description": "Deeeeee",
+      "handlers": {},
+      "id": 8135,
+      "messages": [],
+      "name": "NewObjectTest",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "Object",
+      "color": 0,
+      "customVariables": {
+        "description": {
+          "value": "Title says everything",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Hopefully the last Object",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": null,
+          "valueType": "Int"
+        }
+      },
+      "description": "Title says everything",
+      "handlers": {},
+      "id": 3447,
+      "messages": [],
+      "name": "Hopefully the last Object",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "Object",
+      "color": 0,
+      "customVariables": {
+        "description": {
+          "value": "Title again says everything",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Now it\u2019s finally the last one",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": null,
+          "valueType": "Int"
+        }
+      },
+      "description": "Title again says everything",
+      "handlers": {},
+      "id": 8793,
+      "messages": [],
+      "name": "Now it\u2019s finally the last one",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "Object",
+      "color": 0,
+      "customVariables": {
+        "description": {
+          "value": "Asd",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "Nowheree",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "The laaaaast one",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": null,
+          "valueType": "Int"
+        }
+      },
+      "description": "Asd",
+      "handlers": {},
+      "id": 575,
+      "messages": [],
+      "name": "The laaaaast one",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "WeatherChecker",
+      "color": 0,
+      "customVariables": {
+        "description": {
+          "value": "Titolo...",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "Camelot",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Weather",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": null,
+          "valueType": "Int"
+        }
+      },
+      "description": "Titolo...",
+      "handlers": {
+        "Neve": [],
+        "Nuvoloso": [],
+        "Parzialmente nuvoloso": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "fire",
+              "objectId": 8889
+            },
+            "id": 4566
+          }
+        ],
+        "Soleggiato": []
+      },
+      "id": 9004,
+      "messages": [
+        "Controlla il tempo"
+      ],
+      "name": "Weather",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "Timer",
+      "color": 0,
+      "customVariables": {
+        "description": {
+          "value": "Prova timer",
+          "valueType": "String"
+        },
+        "durata": {
+          "value": 5,
+          "valueType": "Float"
+        },
+        "location": {
+          "value": "Calmelot",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Timer 1",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": 15,
+          "valueType": "Int"
+        }
+      },
+      "description": "Prova timer",
+      "handlers": {
+        "Azione da svolgere": []
+      },
+      "id": 8889,
+      "messages": [
+        "fire",
+        "activate"
+      ],
+      "name": "Timer 1",
+      "pin": 15,
+      "type": 0
+    },
+    {
+      "className": "Lampada",
+      "color": 0,
+      "customVariables": {
+        "description": {
+          "value": "Prova di una lampada!",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "Camera",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Lampada 1",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": 13,
+          "valueType": "Int"
+        }
+      },
+      "description": "Prova di una lampada!",
+      "handlers": {
+        "Accensione": [],
+        "Spegnimento": []
+      },
+      "id": 7075,
+      "isOn": false,
+      "messages": [
+        "deactivate",
+        "activate"
+      ],
+      "name": "Lampada 1",
+      "pin": 13,
+      "type": 0
+    },
+    {
+      "className": "Timer",
+      "color": 0,
+      "customVariables": {
+        "description": {
+          "value": "Niente di speciale",
+          "valueType": "String"
+        },
+        "durata": {
+          "value": 5,
+          "valueType": "Float"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Timer Accensione Lampada 1",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": null,
+          "valueType": "Int"
+        }
+      },
+      "description": "Niente di speciale",
+      "handlers": {
+        "Azione da svolgere": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "activate",
+              "objectId": 7075
+            },
+            "id": 5626
+          }
+        ]
+      },
+      "id": 4870,
+      "messages": [
+        "fire",
+        "activate"
+      ],
+      "name": "Timer Accensione Lampada 1",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "Timer",
+      "color": 0,
+      "customVariables": {
+        "description": {
+          "value": "Niente di speciale",
+          "valueType": "String"
+        },
+        "durata": {
+          "value": 10,
+          "valueType": "Float"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Timer spegnimento lampada 1",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": null,
+          "valueType": "Int"
+        }
+      },
+      "description": "Niente di speciale",
+      "handlers": {
+        "Azione da svolgere": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "deactivate",
+              "objectId": 7075
+            },
+            "id": 7440
+          }
+        ]
+      },
+      "id": 6418,
+      "messages": [
+        "fire",
+        "activate"
+      ],
+      "name": "Timer spegnimento lampada 1",
+      "pin": null,
+      "type": 0
+    }
+  ]
+}
