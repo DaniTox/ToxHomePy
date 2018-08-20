@@ -515,6 +515,145 @@
       "name": "Timer 1",
       "pin": 15,
       "type": 0
+    },
+    {
+      "className": "Lampada",
+      "color": 0,
+      "customVariables": {
+        "description": {
+          "value": "Prova di una lampada!",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "Camera",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Lampada 1",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": null,
+          "valueType": "Int"
+        }
+      },
+      "description": "Prova di una lampada!",
+      "handlers": {
+        "Accensione": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "fire",
+              "objectId": 6418
+            },
+            "id": 993
+          }
+        ],
+        "Spegnimento": []
+      },
+      "id": 7075,
+      "isOn": false,
+      "messages": [
+        "deactivate",
+        "activate"
+      ],
+      "name": "Lampada 1",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "Timer",
+      "color": 0,
+      "customVariables": {
+        "description": {
+          "value": "Niente di speciale",
+          "valueType": "String"
+        },
+        "durata": {
+          "value": 5,
+          "valueType": "Float"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Timer Accensione Lampada 1",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": null,
+          "valueType": "Int"
+        }
+      },
+      "description": "Niente di speciale",
+      "handlers": {
+        "Azione da svolgere": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "activate",
+              "objectId": 7075
+            },
+            "id": 5626
+          }
+        ]
+      },
+      "id": 4870,
+      "messages": [
+        "fire",
+        "activate"
+      ],
+      "name": "Timer Accensione Lampada 1",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "Timer",
+      "color": 0,
+      "customVariables": {
+        "description": {
+          "value": "Niente di speciale",
+          "valueType": "String"
+        },
+        "durata": {
+          "value": 10,
+          "valueType": "Float"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Timer spegnimento lampada 1",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": null,
+          "valueType": "Int"
+        }
+      },
+      "description": "Niente di speciale",
+      "handlers": {
+        "Azione da svolgere": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "deactivate",
+              "objectId": 7075
+            },
+            "id": 7440
+          }
+        ]
+      },
+      "id": 6418,
+      "messages": [
+        "fire",
+        "activate"
+      ],
+      "name": "Timer spegnimento lampada 1",
+      "pin": null,
+      "type": 0
     }
   ]
 }

@@ -312,6 +312,42 @@ class WeatherChecker(Object):
         return "WeatherChecker"
 
 
+class Lampada(Object):
+    def __init__(self, autoID = True):
+        Object.__init__(self, autoID)
+        self.className = "Lampada"
+
+        #self.customVariables["isOn"] = ToxVariable("Int", 0)
+        self.isOn = False
+
+        self.messages = {
+            "activate": self.activate,
+            "deactivate": self.deactivate
+        }
+
+        self.handlers = {
+            "Accensione" : list(),
+            "Spegnimento" : list()
+        }
+
+    def activate(self):
+        if self.isOn == False:
+            self.isOn = True
+            #attiva il pin
+            self.executeHandlers("Accensione")
+    
+    def deactivate(self):
+        if self.isOn == True:
+            self.isOn = False
+            #disattiva il pin
+            self.executeHandlers("Spegnimento")
+
+    @staticmethod
+    def class_():
+        return "Lampada"
+
+
+
 class ToxHandler:
     def __init__(self, autoID = True):
         self.function = None #ToxFunction
@@ -562,7 +598,8 @@ class ToxMain:
         self.classes = [
             Object.class_(),
             Timer.class_(),
-            WeatherChecker.class_()
+            WeatherChecker.class_(),
+            Lampada.class_()
         ]
         
         #self.generateObjectsHandlers()
