@@ -41,7 +41,7 @@
       "color": 0,
       "customVariables": {
         "condizione": {
-          "value": "=26",
+          "value": "<26",
           "valueType": "String"
         },
         "description": {
