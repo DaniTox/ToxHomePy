@@ -23,7 +23,16 @@
       },
       "description": "$null",
       "handlers": {
-        "Accensione": [],
+        "Accensione": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "fire",
+              "objectId": 7874
+            },
+            "id": 3238
+          }
+        ],
         "Spegnimento": []
       },
       "id": 9920,
@@ -37,35 +46,39 @@
       "type": 0
     },
     {
-      "className": "InternetTemperature",
+      "className": "NumericalCondition",
       "color": 0,
       "customVariables": {
         "condizione": {
+<<<<<<< HEAD
           "value": "<26",
+=======
+          "value": "<3",
+>>>>>>> 56729ad22ea28babc322c3587b8c6395f9ed7cb1
           "valueType": "String"
         },
         "description": {
-          "value": "Prova",
+          "value": "Se il valore \u00e8 minore di 10 continua a farlo",
           "valueType": "String"
         },
         "location": {
           "value": "",
           "valueType": "String"
         },
-        "location_temperatura": {
-          "value": "Brescia",
-          "valueType": "String"
-        },
         "name": {
-          "value": "Internet temperature",
+          "value": "Controllo dance",
           "valueType": "String"
         },
         "pin": {
           "value": null,
           "valueType": "Int"
+        },
+        "variabile": {
+          "value": 0,
+          "valueType": "Int"
         }
       },
-      "description": "Prova",
+      "description": "Se il valore \u00e8 minore di 10 continua a farlo",
       "handlers": {
         "Condizione verificata": [
           {
@@ -74,15 +87,70 @@
               "functionName": "activate",
               "objectId": 9920
             },
-            "id": 7522
+            "id": 9000
           }
         ]
       },
-      "id": 2963,
+      "id": 1081,
       "messages": [
-        "Controlla la temperatura"
+        "Controllo condizione"
       ],
-      "name": "Internet temperature",
+      "name": "Controllo dance",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "Timer",
+      "color": 0,
+      "customVariables": {
+        "description": {
+          "value": "Quello che dice il titolo",
+          "valueType": "String"
+        },
+        "durata": {
+          "value": 3,
+          "valueType": "Float"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Timer di spegnimento luce",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": null,
+          "valueType": "Int"
+        }
+      },
+      "description": "Quello che dice il titolo",
+      "handlers": {
+        "Azione da svolgere": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "deactivate",
+              "objectId": 9920
+            },
+            "id": 6972
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "Controllo condizione",
+              "objectId": 1081
+            },
+            "id": 6510
+          }
+        ]
+      },
+      "id": 7874,
+      "messages": [
+        "fire",
+        "activate"
+      ],
+      "name": "Timer di spegnimento luce",
       "pin": null,
       "type": 0
     }
