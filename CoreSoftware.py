@@ -366,11 +366,65 @@ class InternetTemperature(Object):
         else:
             return
         
-
-
     @staticmethod
     def class_():
         return "InternetTemperature"
+
+class NumericalCondition(Object):
+    def __init__(self, autoID = True):
+        Object.__init__(self, autoID)
+        self.className = "NumericalCondition"
+
+        self.customVariables["variabile"] = ToxVariable("Int", 0)
+        self.customVariables["condizione"] = ToxVariable("String", None)
+
+        self.messages = {
+            "Controllo condizione" : self.eseguiAzioni
+        }
+
+        self.handlers = {
+            "Condizione verificata" : list()
+        }
+
+    def eseguiAzioni(self):
+        current_var_value = self.customVariables["variabile"].value
+        if current_var_value == None:
+            return
+
+        logic_condition = self.customVariables["condizione"].value
+        if logic_condition == None:
+            return
+
+        operator = logic_condition[0]
+        condition_number = int(logic_condition[1:])
+        # if operator == ">":
+        #     if current_var_value > condition_number:
+        #         self.addValue()
+        #         self.executeHandlers("Condizione verificata")
+        if operator == "<":
+            if current_var_value < condition_number:
+                self.addValue()
+                self.executeHandlers("Condizione verificata")
+            else:
+                self.customVariables["variabile"] = ToxVariable("Int", 0)
+            
+        # elif operator == "=":
+        #     if current_var_value == condition_number:
+        #         self.addValue()
+        #         self.executeHandlers("Condizione verificata")
+        else:
+            return
+
+    def addValue(self):
+        curr_value = self.customVariables["variabile"].value
+        if curr_value == None:
+            return
+        new_value = curr_value + 1
+        self.setValueForKey(new_value, "variabile")
+
+    @staticmethod
+    def class_():
+        return "NumericalCondition"
 
 class Lampada(Object):
     def __init__(self, autoID = True):
@@ -668,7 +722,8 @@ class ToxMain:
             Timer.class_(),
             WeatherChecker.class_(),
             Lampada.class_(),
-            InternetTemperature.class_()
+            InternetTemperature.class_(),
+            NumericalCondition.class_()
         ]
         
         #self.generateObjectsHandlers()
