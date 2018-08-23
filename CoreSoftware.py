@@ -76,8 +76,8 @@ class ToxUtility:
                 newList.append(ToxUtility.getList(obj))
             elif isinstance(obj, dict):
                 newList.append(ToxUtility.getDict(obj))
-            elif isinstance(value, ToxSerializeableObjectBase):
-                newDict[key] = value.generateDict()
+            elif isinstance(obj, ToxSerializeableObjectBase):
+                newList.append(obj.generateDict())
             else:
                 newList.append("ToxConversionObjectError")
             return newList
@@ -517,7 +517,6 @@ class Lampada(Object):
                 msg = ToxSerialMessage.create(SerialMessageType.ACCENSIONE, pin)
                 ToxSerial.shared().addToQueue(msg)
             self.executeHandlers("Accensione")
-            print(str(self.generateDict()))
     
     def deactivate(self):
         if self.isOn == True:

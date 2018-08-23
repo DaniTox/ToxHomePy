@@ -23,7 +23,16 @@
       },
       "description": "Ciao",
       "handlers": {
-        "Accensione": [],
+        "Accensione": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "Controlla il tempo",
+              "objectId": 6153
+            },
+            "id": 1401
+          }
+        ],
         "Spegnimento": []
       },
       "id": 2724,
@@ -33,6 +42,46 @@
         "activate"
       ],
       "name": "Test",
+      "pin": null,
+      "type": 0
+    },
+    {
+      "className": "WeatherChecker",
+      "color": 0,
+      "customVariables": {
+        "description": {
+          "value": "Ole",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "location_temperatura": {
+          "value": null,
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Ciao",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": null,
+          "valueType": "Int"
+        }
+      },
+      "description": "Ole",
+      "handlers": {
+        "Neve": [],
+        "Nuvoloso": [],
+        "Parzialmente nuvoloso": [],
+        "Soleggiato": []
+      },
+      "id": 6153,
+      "messages": [
+        "Controlla il tempo"
+      ],
+      "name": "Ciao",
       "pin": null,
       "type": 0
     }
