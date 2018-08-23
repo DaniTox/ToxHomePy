@@ -5,34 +5,25 @@
       "color": 0,
       "customVariables": {
         "description": {
-          "value": "Ciao",
+          "value": "Prova di una lampada",
           "valueType": "String"
         },
         "location": {
-          "value": "",
+          "value": "Camera",
           "valueType": "String"
         },
         "name": {
-          "value": "Test",
+          "value": "Lampada",
           "valueType": "String"
         },
         "pin": {
-          "value": null,
+          "value": 13,
           "valueType": "Int"
         }
       },
-      "description": "Ciao",
+      "description": "Prova di una lampada",
       "handlers": {
-        "Accensione": [
-          {
-            "args": null,
-            "function": {
-              "functionName": "Controlla il tempo",
-              "objectId": 6153
-            },
-            "id": 1401
-          }
-        ],
+        "Accensione": [],
         "Spegnimento": []
       },
       "id": 2724,
@@ -41,48 +32,8 @@
         "deactivate",
         "activate"
       ],
-      "name": "Test",
-      "pin": null,
-      "type": 0
-    },
-    {
-      "className": "WeatherChecker",
-      "color": 0,
-      "customVariables": {
-        "description": {
-          "value": "Ole",
-          "valueType": "String"
-        },
-        "location": {
-          "value": "",
-          "valueType": "String"
-        },
-        "location_temperatura": {
-          "value": null,
-          "valueType": "String"
-        },
-        "name": {
-          "value": "Ciao",
-          "valueType": "String"
-        },
-        "pin": {
-          "value": null,
-          "valueType": "Int"
-        }
-      },
-      "description": "Ole",
-      "handlers": {
-        "Neve": [],
-        "Nuvoloso": [],
-        "Parzialmente nuvoloso": [],
-        "Soleggiato": []
-      },
-      "id": 6153,
-      "messages": [
-        "Controlla il tempo"
-      ],
-      "name": "Ciao",
-      "pin": null,
+      "name": "Lampada",
+      "pin": 13,
       "type": 0
     }
   ]

@@ -1366,8 +1366,27 @@ class ToxSocketServer:
             ids = ToxIDCreator.shared().currentIDs
             conn.send(str(ids))
         elif requestType == "remove_handler":
+            if "handlerID" not in requestBody:
+                returnDict = {
+                    "code" : "NO",
+                    "response" : "Nella tua richiesta non hai inserito l'id dell'handler da rimuovere"
+                }
+                conn.send(json.dumps(returnDict))
+                conn.close()
+                return
+
+            if "obj_id" not in requestBody:
+                returnDict = {
+                    "code" : "NO",
+                    "response" : "Nella tua richiesta non hai inserito l'id dell'oggetto"
+                }
+                conn.send(json.dumps(returnDict))
+                conn.close()
+                return
+            
             handlerIDToRemove = requestBody["handlerID"]
             objectIDOfHandler = requestBody["obj_id"]
+
             realObject = ToxMain.shared().getRealObjectFromID(objectIDOfHandler)
             if realObject == None:
                 returnDict = {
@@ -1375,13 +1394,16 @@ class ToxSocketServer:
                     "response" : "Nessun oggetto con questo ID"
                 }
                 conn.send(json.dumps(returnDict))
+                conn.close()
                 return
-            if handlerIDToRemove not in ToxIDCreator.shared().usedHandlersIDs and handlerIDToRemove != None:
+            
+            if handlerIDToRemove not in ToxIDCreator.shared().usedHandlersIDs:
                 returnDict = {
                     "code" : "NO",
-                    "response" : "Nessun handler trovato con questo ID nella lista degli handler usati. Oppure ID == NULL"
+                    "response" : "Nessun handler trovato con questo ID nella lista degli handler usati."
                 }
                 conn.send(json.dumps(returnDict))
+                conn.close()
                 return
             realObject.removeHandlerWithID(handlerIDToRemove)
             returnDict = {
@@ -1478,7 +1500,18 @@ class ToxSocketServer:
                 self.send_err(conn, "Nessun oggetto con questo ID")
                 return
 
-            #TODO: Finire la funzione...
+            objectDict = realObject.generateDict()
+            if objectDict == None:
+                self.send_err(conn, "Errore mentre generavo il dict dell'oggetto.")
+                return
+
+            requiredDict = objectDict["handlers"]
+            
+            returnDict = {
+                "code" : "OK",
+                "response" : requiredDict
+            }
+            conn.send(json.dumps(returnDict))
 
         elif requestType == "change_properties_values":
             if "obj_id" not in requestBody:
