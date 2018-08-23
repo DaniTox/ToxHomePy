@@ -5,152 +5,34 @@
       "color": 0,
       "customVariables": {
         "description": {
-          "value": "$null",
+          "value": "Ciao",
           "valueType": "String"
         },
         "location": {
-          "value": "Camera",
+          "value": "",
           "valueType": "String"
         },
         "name": {
-          "value": "Lampada 1",
+          "value": "Test",
           "valueType": "String"
         },
         "pin": {
-          "value": 13,
+          "value": null,
           "valueType": "Int"
         }
       },
-      "description": "$null",
+      "description": "Ciao",
       "handlers": {
-        "Accensione": [
-          {
-            "args": null,
-            "function": {
-              "functionName": "fire",
-              "objectId": 7874
-            },
-            "id": 3238
-          }
-        ],
+        "Accensione": [],
         "Spegnimento": []
       },
-      "id": 9920,
+      "id": 2724,
       "isOn": false,
       "messages": [
         "deactivate",
         "activate"
       ],
-      "name": "Lampada 1",
-      "pin": 13,
-      "type": 0
-    },
-    {
-      "className": "NumericalCondition",
-      "color": 0,
-      "customVariables": {
-        "condizione": {
-<<<<<<< HEAD
-          "value": "<26",
-=======
-          "value": "<3",
->>>>>>> 56729ad22ea28babc322c3587b8c6395f9ed7cb1
-          "valueType": "String"
-        },
-        "description": {
-          "value": "Se il valore \u00e8 minore di 10 continua a farlo",
-          "valueType": "String"
-        },
-        "location": {
-          "value": "",
-          "valueType": "String"
-        },
-        "name": {
-          "value": "Controllo dance",
-          "valueType": "String"
-        },
-        "pin": {
-          "value": null,
-          "valueType": "Int"
-        },
-        "variabile": {
-          "value": 0,
-          "valueType": "Int"
-        }
-      },
-      "description": "Se il valore \u00e8 minore di 10 continua a farlo",
-      "handlers": {
-        "Condizione verificata": [
-          {
-            "args": null,
-            "function": {
-              "functionName": "activate",
-              "objectId": 9920
-            },
-            "id": 9000
-          }
-        ]
-      },
-      "id": 1081,
-      "messages": [
-        "Controllo condizione"
-      ],
-      "name": "Controllo dance",
-      "pin": null,
-      "type": 0
-    },
-    {
-      "className": "Timer",
-      "color": 0,
-      "customVariables": {
-        "description": {
-          "value": "Quello che dice il titolo",
-          "valueType": "String"
-        },
-        "durata": {
-          "value": 3,
-          "valueType": "Float"
-        },
-        "location": {
-          "value": "",
-          "valueType": "String"
-        },
-        "name": {
-          "value": "Timer di spegnimento luce",
-          "valueType": "String"
-        },
-        "pin": {
-          "value": null,
-          "valueType": "Int"
-        }
-      },
-      "description": "Quello che dice il titolo",
-      "handlers": {
-        "Azione da svolgere": [
-          {
-            "args": null,
-            "function": {
-              "functionName": "deactivate",
-              "objectId": 9920
-            },
-            "id": 6972
-          },
-          {
-            "args": null,
-            "function": {
-              "functionName": "Controllo condizione",
-              "objectId": 1081
-            },
-            "id": 6510
-          }
-        ]
-      },
-      "id": 7874,
-      "messages": [
-        "fire",
-        "activate"
-      ],
-      "name": "Timer di spegnimento luce",
+      "name": "Test",
       "pin": null,
       "type": 0
     }

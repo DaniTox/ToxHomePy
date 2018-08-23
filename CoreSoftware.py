@@ -15,8 +15,28 @@ from urlparse import urlparse, parse_qs
 import socket
 import traceback
 from weather import Weather, Unit
+import types
 
+class ToxSerializeableObjectBase:
+    def __init__(self):
+        pass
 
+    def generateDict(self):
+        newDict = {}
+        myKeys = list(self.__dict__.keys())
+        for key in myKeys:
+            value = self.__dict__[key]
+            if ToxUtility.isPrimitive(value):
+                newDict[key] = value
+            elif isinstance(value, ToxSerializeableObjectBase):
+                newDict[key] = value.generateDict()
+            elif isinstance(value, dict):
+                newDict[key] = ToxUtility.getDict(value)
+            elif isinstance(value, list):
+                newDict[key] = ToxUtility.getList(value)
+            else:
+                newDict[key] = "ToxConversionError"
+        return newDict
 
 ####    CLASSES APPARECCHIATURE     ###
 
@@ -39,9 +59,52 @@ class ObjectColors(Enum):
     WHITE = 6
     GRAY = 7
 
+class ToxUtility:
 
-class Object:
+    @staticmethod
+    def isPrimitive(obj):
+        primitives = (int, str, float, long, types.NoneType, unicode, basestring)
+        return isinstance(obj, primitives)
+
+    @staticmethod
+    def getList(objList):
+        newList = list()
+        for obj in objList:
+            if ToxUtility.isPrimitive(obj):
+                newList.append(obj)
+            elif isinstance(obj, list):
+                newList.append(ToxUtility.getList(obj))
+            elif isinstance(obj, dict):
+                newList.append(ToxUtility.getDict(obj))
+            elif isinstance(value, ToxSerializeableObjectBase):
+                newDict[key] = value.generateDict()
+            else:
+                newList.append("ToxConversionObjectError")
+            return newList
+
+
+    @staticmethod
+    def getDict(objDict):
+        newDict = {}
+        keys = objDict.keys()
+        for key in keys:
+            value = objDict[key]    
+            if ToxUtility.isPrimitive(value):
+                newDict[key] = value
+            elif isinstance(value, list):
+                newDict[key] = ToxUtility.getList(value)
+            elif isinstance(value, dict):
+                newDict[key] = ToxUtility.getDict(value)
+            elif isinstance(value, ToxSerializeableObjectBase):
+                newDict[key] = value.generateDict()
+            else:
+                newDict[key] = "ToxConversionObjectError"
+        return newDict
+
+
+class Object(ToxSerializeableObjectBase):
     def __init__(self, autoID = True):
+        ToxSerializeableObjectBase.__init__(self)
         self.name = ""
         self.description = ""
         self.color = ObjectColors.BLACK
@@ -445,6 +508,7 @@ class Lampada(Object):
         }
 
     def activate(self):
+        print(str(self.generateDict()))
         if self.isOn == False:
             self.isOn = True
             #attiva il pin
@@ -453,6 +517,7 @@ class Lampada(Object):
                 msg = ToxSerialMessage.create(SerialMessageType.ACCENSIONE, pin)
                 ToxSerial.shared().addToQueue(msg)
             self.executeHandlers("Accensione")
+            print(str(self.generateDict()))
     
     def deactivate(self):
         if self.isOn == True:
@@ -467,11 +532,11 @@ class Lampada(Object):
     @staticmethod
     def class_():
         return "Lampada"
+        
 
-
-
-class ToxHandler:
+class ToxHandler(ToxSerializeableObjectBase):
     def __init__(self, autoID = True):
+        ToxSerializeableObjectBase.__init__(self)
         self.function = None #ToxFunction
         self.args = None
         self.id_object_owner = None
@@ -479,6 +544,15 @@ class ToxHandler:
             self.id = ToxIDCreator.shared().generateUniqueIDforHandlers()
         else:
             self.id = None
+
+    # def getDict(self):
+    #     newDict = {
+    #         "id" : self.id,
+    #         "args" : self.args,
+    #         "id_object_owner" : self.id_object_owner,
+    #         "function" : self.function.getFunctionDict()
+    #     }
+    #     return newDict
         
 
     @staticmethod
@@ -506,14 +580,23 @@ class ToxHandler:
         return realHandler
 
 
-class ToxFunction:
+class ToxFunction(ToxSerializeableObjectBase):
     def __init__(self):
+        ToxSerializeableObjectBase.__init__(self)
         self.objectId = None
         self.functionName = None
+    
+    # def getDict(self):
+    #     # newDict = {
+    #     #     "objectId" : self.objectId,
+    #     #     "functioName" : self.functionName
+    #     # }
+    #     return self.__dict__
 
 
-class ToxVariable:
+class ToxVariable(ToxSerializeableObjectBase):
     def __init__(self, valueType, value):
+        ToxSerializeableObjectBase.__init__(self)
         self.valueType = valueType
         self.value = value
 
@@ -1385,6 +1468,19 @@ class ToxSocketServer:
             }
             print("Server response: " + str(returnDict))
             conn.send(json.dumps(returnDict))
+        elif requestType == "get_handlers":
+            if "obj_id" not in requestBody:
+                self.send_err(conn, "Nella tua richiesta manca l'objID")
+                return
+            objID = requestBody["obj_id"]
+
+            realObject = ToxMain.shared().getRealObjectFromID(objID)
+            if realObject == None:
+                self.send_err(conn, "Nessun oggetto con questo ID")
+                return
+
+            #TODO: Finire la funzione...
+
         elif requestType == "change_properties_values":
             if "obj_id" not in requestBody:
                 self.send_err(conn, "Nella tua richiesta manca l'objID")
