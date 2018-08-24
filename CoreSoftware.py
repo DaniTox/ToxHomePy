@@ -507,10 +507,21 @@ class Lampada(Object):
             "Spegnimento" : list()
         }
 
+    def update(self, value):
+        if value == None:
+            return
+        elif value == 0:
+            self.isOn = False
+        elif value == 1:
+            self.isOn = True
+        else:
+            print("Lampada: Non accetto questo dato")
+            return    
+
     def activate(self):
         print(str(self.generateDict()))
         if self.isOn == False:
-            self.isOn = True
+            # self.isOn = True
             #attiva il pin
             pin = self.customVariables["pin"].value
             if pin != None:
@@ -520,7 +531,7 @@ class Lampada(Object):
     
     def deactivate(self):
         if self.isOn == True:
-            self.isOn = False
+            # self.isOn = False
             #disattiva il pin
             pin = self.customVariables["pin"].value
             if pin != None:

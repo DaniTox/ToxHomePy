@@ -5,7 +5,7 @@
       "color": 0,
       "customVariables": {
         "description": {
-          "value": "Prova di una lampada",
+          "value": "Test",
           "valueType": "String"
         },
         "location": {
@@ -13,7 +13,7 @@
           "valueType": "String"
         },
         "name": {
-          "value": "Lampada",
+          "value": "Lamapda",
           "valueType": "String"
         },
         "pin": {
@@ -21,18 +21,18 @@
           "valueType": "Int"
         }
       },
-      "description": "Prova di una lampada",
+      "description": "Test",
       "handlers": {
         "Accensione": [],
         "Spegnimento": []
       },
-      "id": 2724,
+      "id": 2753,
       "isOn": false,
       "messages": [
         "deactivate",
         "activate"
       ],
-      "name": "Lampada",
+      "name": "Lamapda",
       "pin": 13,
       "type": 0
     }
