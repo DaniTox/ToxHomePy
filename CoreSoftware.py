@@ -107,17 +107,18 @@ class Object(ToxSerializeableObjectBase):
         ToxSerializeableObjectBase.__init__(self)
         self.name = ""
         self.description = ""
-        self.color = ObjectColors.BLACK
-        self.type = ObjectType.NONE
+        #self.color = ObjectColors.BLACK
+        #self.type = ObjectType.NONE
         #self.className = None
+        
 
         self.customVariables = {
             "name" : ToxVariable("String", ""),
-            "description" : ToxVariable("String", ""),
-            "pin" : ToxVariable("Int", None),
-            "location" : ToxVariable("String", "")
+            "description" : ToxVariable("String", "")#,
+            # "pin" : ToxVariable("Int", None),
+            # "location" : ToxVariable("String", "")
         }
-
+        
         self.messages = {}
         self.serializedMessages = {}
 
@@ -131,7 +132,7 @@ class Object(ToxSerializeableObjectBase):
             self.id = ToxIDCreator.shared().createUniqueID()
             if self.id == None or self.id == 0:
                 raise Exception("Creato ID NULL o 0(zero) nell'init di un oggetto")
-        self.pin = None 
+        #self.pin = None 
 
         ToxMain.shared().addRealObject(self)
 
@@ -296,10 +297,61 @@ class Object(ToxSerializeableObjectBase):
     def update(self, value):
         pass
 
-
-class Timer(Object):
+class VirtualObject(Object):
     def __init__(self, autoID = True):
         Object.__init__(self, autoID)
+        self.isVirtual = True
+
+class ConcreteObject(Object):
+    def __init__(self, autoID = True):
+        Object.__init__(self, autoID)
+        self.isVirtual = False
+        
+        self.customVariables["pin"] = ToxVariable("Int", None)
+        self.customVariables["location"] = ToxVariable("String", "")
+
+
+# NB:
+# È ESTREMAMAMENTE SCONSIGLIATO aggiungere handler agli oggetti FISICI. La soluzione è la ToxAxtion
+# Una ToxAction serve per eseguire un'azione di un oggetto fisico oltre che azioni degli oggetti virtuali.
+# Un esempio: se devo far si che la luce si accenda e si spenga per 3 volte \n
+# non posso mettere tutta la logica negli handler degli oggetti fisici perchè \n
+# questo farebbe si che se io volessi eseguire un'altra azione, per esempio accendere la luce normalmente \n
+# eseguendo il suo messaggio, partirebbe la logica dell'accensione e spegnimento per tre volte \n
+# che ho scritto prima.
+# Per ovviare a questo, si crea una tox action che esegue i controlli con la NumericalCondition e si accende \n
+# e spegne la luce come conseguenza dei messaggi inviati dagli oggetti virtuali.
+# Gli Handler degli oggetti fisici possono essere usati (con cautela) se si vuole simulare un impianto in parallelo \n
+# così se si vuole accendere le luci del balcone (composto da 3 lampade per esempio), non si devono aggiungere \n
+# 3 handler per tre luci diverse ma si aggiunge a una lampada e quest'ultima eseguirà i suoi handler dove \n
+# manderà dei messaggi alle altre luci.
+
+class ToxAction(VirtualObject):
+    def __init__(self, autoID = True):
+        VirtualObject.__init__(self, autoID)
+        self.className = "ToxAction"
+        self.isAction = True
+
+
+        self.messages = {
+            "Esegui azione" : self.execute
+        }
+
+        self.handlers = {
+            "Azione da eseguire" : list()
+        }
+
+    def execute():
+        self.executeHandlers("Azione da eseguire")
+
+    @staticmethod
+    def class_():
+        return "ToxAction"
+
+
+class Timer(VirtualObject):
+    def __init__(self, autoID = True):
+        VirtualObject.__init__(self, autoID)
         self.className = "Timer"
 
         self.customVariables["durata"] = ToxVariable("Float", 5)
@@ -333,11 +385,11 @@ class Timer(Object):
 
     
 
-class WeatherChecker(Object):
+class WeatherChecker(VirtualObject):
     def __init__(self, autoID = True):
-        Object.__init__(self, autoID)
+        VirtualObject.__init__(self, autoID)
         self.className = "WeatherChecker"
-
+        
         self.customVariables["location_temperatura"] = ToxVariable("String", None)
 
         self.messages = {
@@ -380,9 +432,9 @@ class WeatherChecker(Object):
         return "WeatherChecker"
 
 
-class InternetTemperature(Object):
+class InternetTemperature(VirtualObject):
     def __init__(self, autoID = True):
-        Object.__init__(self, autoID)
+        VirtualObject.__init__(self, autoID)
         self.className = "InternetTemperature"
 
         self.customVariables["condizione"] = ToxVariable("String", None)
@@ -428,14 +480,19 @@ class InternetTemperature(Object):
                 self.executeHandlers("Condizione verificata")
         else:
             return
+        print("\n\nUsing generateDict:")
+        print(str(self.generateDict()))
+        print("\nUsing createDict:")
+        print(str(self.createDict()))
+        print("\n\n")
         
     @staticmethod
     def class_():
         return "InternetTemperature"
 
-class NumericalCondition(Object):
+class NumericalCondition(VirtualObject):
     def __init__(self, autoID = True):
-        Object.__init__(self, autoID)
+        VirtualObject.__init__(self, autoID)
         self.className = "NumericalCondition"
 
         self.customVariables["variabile"] = ToxVariable("Int", 0)
@@ -489,9 +546,9 @@ class NumericalCondition(Object):
     def class_():
         return "NumericalCondition"
 
-class Lampada(Object):
+class Lampada(ConcreteObject):
     def __init__(self, autoID = True):
-        Object.__init__(self, autoID)
+        ConcreteObject.__init__(self, autoID)
         self.className = "Lampada"
 
         #self.customVariables["isOn"] = ToxVariable("Int", 0)
@@ -811,12 +868,12 @@ class ToxMain:
         self.realObjects = [] 
 
         self.classes = [
-            Object.class_(),
             Timer.class_(),
             WeatherChecker.class_(),
             Lampada.class_(),
             InternetTemperature.class_(),
-            NumericalCondition.class_()
+            NumericalCondition.class_(),
+            ToxAction.class_()
         ]
         
         #self.generateObjectsHandlers()

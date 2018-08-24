@@ -1,39 +1,36 @@
 {
   "Objects": [
     {
-      "className": "Lampada",
+      "className": "InternetTemperature",
       "color": 0,
       "customVariables": {
-        "description": {
-          "value": "Test",
+        "condizione": {
+          "value": ">10",
           "valueType": "String"
         },
-        "location": {
-          "value": "Camera",
+        "description": {
+          "value": "Ciao",
+          "valueType": "String"
+        },
+        "location_temperatura": {
+          "value": "brescia",
           "valueType": "String"
         },
         "name": {
-          "value": "Lamapda",
+          "value": "Test",
           "valueType": "String"
-        },
-        "pin": {
-          "value": 13,
-          "valueType": "Int"
         }
       },
-      "description": "Test",
+      "description": "Ciao",
       "handlers": {
-        "Accensione": [],
-        "Spegnimento": []
+        "Condizione verificata": []
       },
-      "id": 2753,
-      "isOn": false,
+      "id": 6309,
       "messages": [
-        "deactivate",
-        "activate"
+        "Controlla la temperatura"
       ],
-      "name": "Lamapda",
-      "pin": 13,
+      "name": "Test",
+      "pin": null,
       "type": 0
     }
   ]
