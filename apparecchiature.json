@@ -2,7 +2,6 @@
   "Objects": [
     {
       "className": "InternetTemperature",
-      "color": 0,
       "customVariables": {
         "condizione": {
           "value": ">10",
@@ -23,15 +22,52 @@
       },
       "description": "Ciao",
       "handlers": {
-        "Condizione verificata": []
+        "Condizione verificata": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "Controlla la temperatura",
+              "objectId": 6309
+            },
+            "id": 6650
+          }
+        ]
       },
       "id": 6309,
+      "isVirtual": true,
       "messages": [
         "Controlla la temperatura"
       ],
       "name": "Test",
-      "pin": null,
-      "type": 0
+      "pin": null
+    },
+    {
+      "className": "Timer",
+      "customVariables": {
+        "description": {
+          "value": "Niente",
+          "valueType": "String"
+        },
+        "durata": {
+          "value": 5,
+          "valueType": "Float"
+        },
+        "name": {
+          "value": "Timer",
+          "valueType": "String"
+        }
+      },
+      "description": "Niente",
+      "handlers": {
+        "Azione da svolgere": []
+      },
+      "id": 2768,
+      "isVirtual": true,
+      "messages": [
+        "fire",
+        "activate"
+      ],
+      "name": "Timer"
     }
   ]
 }

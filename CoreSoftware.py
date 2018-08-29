@@ -332,7 +332,6 @@ class ToxAction(VirtualObject):
         self.className = "ToxAction"
         self.isAction = True
 
-
         self.messages = {
             "Esegui azione" : self.execute
         }
@@ -891,6 +890,7 @@ class ToxMain:
         newObj.description = dictObj["description"]
         #newObj.color = dictObj["color"]
         #newObj.type = dictObj["type"]
+        # newObj.setValueForKey(dict["pin"], "pin")
         newObj.pin = dictObj["pin"]
         newObj.id = dictObj["id"]
         # if "messages" in dictObj:
@@ -936,7 +936,7 @@ class ToxMain:
 
     def getRealObjectFromPin(self, pin):
         for obj in self.realObjects:
-            if obj.pin == pin:
+            if isinstance(obj, ConcreteObject) and obj.pin == pin:
                 return obj
         return None
 
