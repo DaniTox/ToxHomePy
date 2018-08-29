@@ -1,51 +1,10 @@
 {
   "Objects": [
     {
-      "className": "InternetTemperature",
-      "customVariables": {
-        "condizione": {
-          "value": ">10",
-          "valueType": "String"
-        },
-        "description": {
-          "value": "Ciao",
-          "valueType": "String"
-        },
-        "location_temperatura": {
-          "value": "brescia",
-          "valueType": "String"
-        },
-        "name": {
-          "value": "Test",
-          "valueType": "String"
-        }
-      },
-      "description": "Ciao",
-      "handlers": {
-        "Condizione verificata": [
-          {
-            "args": null,
-            "function": {
-              "functionName": "Controlla la temperatura",
-              "objectId": 6309
-            },
-            "id": 6650
-          }
-        ]
-      },
-      "id": 6309,
-      "isVirtual": true,
-      "messages": [
-        "Controlla la temperatura"
-      ],
-      "name": "Test",
-      "pin": null
-    },
-    {
       "className": "Timer",
       "customVariables": {
         "description": {
-          "value": "Niente",
+          "value": "Ciao",
           "valueType": "String"
         },
         "durata": {
@@ -57,17 +16,19 @@
           "valueType": "String"
         }
       },
-      "description": "Niente",
+      "description": "Ciao",
       "handlers": {
-        "Azione da svolgere": []
+        "Azione da svolgere": null
       },
-      "id": 2768,
+      "id": 292,
       "isVirtual": true,
-      "messages": [
-        "fire",
-        "activate"
-      ],
-      "name": "Timer"
+      "messages": {
+        "activate": "ToxConversionObjectError",
+        "fire": "ToxConversionObjectError"
+      },
+      "name": "Timer",
+      "serializedHandlers": {},
+      "serializedMessages": {}
     }
   ]
 }

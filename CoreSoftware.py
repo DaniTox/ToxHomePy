@@ -147,7 +147,9 @@ class Object(ToxSerializeableObjectBase):
 
         for key in keys:
             if key in self.serializedHandlers:
-                self.handlers[key] = [] #Free all handlers            
+                self.handlers[key] = [] #Free all handlers  
+                if self.serializedHandlers[key] == None:
+                    continue          
                 for serializedHanlder in self.serializedHandlers[key]:
                     newHandler = ToxHandler.createFromDict(serializedHanlder)
                     newHandler.id_object_owner = self.id
@@ -162,54 +164,60 @@ class Object(ToxSerializeableObjectBase):
                     ToxIDCreator.shared().setHandlerIDasFree(handler.id)
                     ToxMain.shared().commitObjects()
 
-    def createDict(self): 
-        myDict = {}
-        variables = self.__dict__.keys()
-        for var in variables:
-            if var == "serializedHandlers" or var == "serializedMessages":
-                continue
-            if var == "messages": #or var == "handlers"
-                #print(str(self.__dict__["messages"]))
-                myDict[var] = self.__dict__["messages"].keys()
-                continue
-            if var == "handlers" and len(self.__dict__["handlers"]) > 0:
-                keyValueHandlers = self.__dict__["handlers"]
-                allKeys = list(keyValueHandlers.keys())
+    # def createDict(self): 
+    #     myDict = {}
+    #     variables = self.__dict__.keys()
+    #     for var in variables:
+    #         if var == "serializedHandlers" or var == "serializedMessages":
+    #             continue
+    #         if var == "messages": #or var == "handlers"
+    #             #print(str(self.__dict__["messages"]))
+    #             myDict[var] = self.__dict__["messages"].keys()
+    #             continue
+    #         if var == "handlers" and len(self.__dict__["handlers"]) > 0:
+    #             keyValueHandlers = self.__dict__["handlers"]
+    #             allKeys = list(keyValueHandlers.keys())
 
-                newDict = {}
-                for key in allKeys:
-                    arrHandlers = keyValueHandlers[key]
-                    arrHandlerForKey = list()
-                    for hand in arrHandlers:
-                        if type(hand) != dict:
-                            hd = {
-                            "function" : {
-                                "objectId" : hand.function.objectId,
-                                "functionName" : hand.function.functionName
-                                }
-                            }
-                            if "args" in hand.__dict__:
-                                hd["args"] = hand.args
-                            if "id" in hand.__dict__:
-                                hd["id"] = hand.id
-                            arrHandlerForKey.append(hd)
-                        else:
-                            arrHandlerForKey.append(hand)
-                    newDict[key] = arrHandlerForKey
-                myDict[var] = newDict
-                continue
-            if var == "customVariables":
-                variables = {}
-                if len(self.customVariables.keys()) <= 0:
-                    myDict[var] = {}
-                    continue
-                for key in self.customVariables:
-                    variables[key] = self.customVariables[key].createDict()
-                myDict[var] = variables
-                continue
-            myDict[var] = self.__dict__[var]
+    #             newDict = {}
+    #             for key in allKeys:
+    #                 arrHandlers = keyValueHandlers[key]
+    #                 arrHandlerForKey = list()
+    #                 for hand in arrHandlers:
+    #                     if type(hand) != dict:
+    #                         hd = {
+    #                         "function" : {
+    #                             "objectId" : hand.function.objectId,
+    #                             "functionName" : hand.function.functionName
+    #                             }
+    #                         }
+    #                         if "args" in hand.__dict__:
+    #                             hd["args"] = hand.args
+    #                         if "id" in hand.__dict__:
+    #                             hd["id"] = hand.id
+    #                         arrHandlerForKey.append(hd)
+    #                     else:
+    #                         arrHandlerForKey.append(hand)
+    #                 newDict[key] = arrHandlerForKey
+    #             myDict[var] = newDict
+    #             continue
+    #         if var == "customVariables":
+    #             variables = {}
+    #             if len(self.customVariables.keys()) <= 0:
+    #                 myDict[var] = {}
+    #                 continue
+    #             for key in self.customVariables:
+    #                 variables[key] = self.customVariables[key].createDict()
+    #             myDict[var] = variables
+    #             continue
+    #         myDict[var] = self.__dict__[var]
         
-        return myDict
+    #     return myDict
+
+    def generateDict(self):
+        tempDict = ToxSerializeableObjectBase.generateDict(self)
+        if "messages" in tempDict:
+            tempDict["messages"] = list(tempDict["messages"].keys())
+        return tempDict
 
     def createJSON(self):
         return json.dumps(self.createDict())
@@ -293,6 +301,18 @@ class Object(ToxSerializeableObjectBase):
         if key in self.__dict__:
             self.__dict__[key] = value
         return 0
+
+    def get(self, key, retTox_v = False):
+        cvars = self.customVariables
+        if cvars == None:
+            return None
+        if retTox_v == False:
+            return cvars[key].value
+        else:
+            return cvars[key]
+        
+    def getToxValueForKey(self, key): #same as get() but more understandable
+        return self.get(key, retTox_v=True)
 
     def update(self, value):
         pass
@@ -815,7 +835,8 @@ class ToxConverter(JSONSaver):
         finalDict = {}
         serializedObjects = list()
         for obj in objects:
-            newObj = obj.createDict()
+            #newObj = obj.createDict()
+            newObj = obj.generateDict()
             serializedObjects.append(newObj)
         finalDict["Objects"] = serializedObjects
 
@@ -863,7 +884,6 @@ class ToxMain:
         else:
             ToxMain.__instance = self
 
-        #self.objects = ToxConverter().getObjectsFromJSON()
         self.realObjects = [] 
 
         self.classes = [
@@ -883,18 +903,11 @@ class ToxMain:
 
     def createObectFromDict(self, dictObj):
         className = dictObj["className"]
-        #objClass = getattr(CoreSoftware, className)
         objClass = globals()[className]
         newObj = objClass(autoID = False)
-        newObj.name = dictObj["name"]
-        newObj.description = dictObj["description"]
-        #newObj.color = dictObj["color"]
-        #newObj.type = dictObj["type"]
-        # newObj.setValueForKey(dict["pin"], "pin")
-        newObj.pin = dictObj["pin"]
+        
         newObj.id = dictObj["id"]
-        # if "messages" in dictObj:
-        #     newObj.messages = dictObj["messages"]
+
         newObj.serializedHandlers = dictObj["handlers"]
         newObj.generateHandlers()
 
@@ -968,7 +981,7 @@ class ToxMain:
 
     def removeRealObjectForID(self, id):
         for index, obj in enumerate(self.realObjects):
-            if obj.id == id:
+            if obj.id== id:
                 del self.realObjects[index]
                 ToxIDCreator.shared().setIDasFree(id)
                 break
@@ -1395,7 +1408,7 @@ class ToxSocketServer:
             realobjs = ToxMain.shared().realObjects
             print("realObjs.count = " + str(len(realobjs)))
             for obj in realobjs:
-                arr.append(obj.createDict())
+                arr.append(obj.generateDict())
             returnDict = {
                 "code" : "OK",
                 "response" : arr
