@@ -462,30 +462,8 @@ class WeatherChecker(VirtualObject):
             self.executeHandlers(weatherDict[groupCode])
         self.executeHandlers("Qualsiasi")
 
+        print(self.name + ": Codice non corrisponde a niente")
 
-        # print(str(w.__dict__))
-
-        # weather = Weather(unit=Unit.CELSIUS)
-        # location = weather.lookup_by_location(customLocation)
-        # condition = location.condition
-
-        # code = int(condition.code)
-
-
-        # print("WeatherChecker: " + str(condition.text))
-
-        # if code in (29, 30, 44):
-        #     self.executeHandlers("Parzialmente nuvoloso")
-        # elif code in (26, 27, 28):
-        #     self.executeHandlers("Nuvoloso")
-        # elif code in (16, 41):
-        #     self.executeHandlers("Neve")
-        # elif code in (31, 32, 33, 34):
-        #     self.executeHandlers("Soleggiato")
-        # else:
-        #     print(self.name + ": Codice non corrisponde a niente")
-
-        
 
     @staticmethod
     def class_():
@@ -525,13 +503,6 @@ class InternetTemperature(VirtualObject):
         w = observation.get_weather()
         curr_temperature = int(w.get_temperature('celsius')["temp"])
 
-        # weather = Weather(unit=Unit.CELSIUS)
-        # if weather == None:
-        #     print("Weather object == None")
-        # location = weather.lookup_by_location(customLocation)
-        # print(str(location))
-        # weather_condition = location.condition
-        # curr_temperature = weather_condition.temp
 
         print(self.name + ".curr_temperature: " + str(curr_temperature))
 
@@ -745,6 +716,12 @@ class ToxVariable(ToxSerializeableObjectBase):
 class ToxBoot:
     @staticmethod
     def boot():
+        arguments = sys.argv
+        if len(arguments) > 1:
+            if arguments[1] == "-t":
+                ToxMain.shared().isTesting = True
+                print("[+] Attivata la modalità testing.")
+
         arraySerializedObjects = ToxConverter.shared().getObjectsFromJSON()
         ToxMain.shared().createRealObjects(arraySerializedObjects)
         ToxIDCreator.shared().getUsedIDs()
@@ -842,6 +819,8 @@ JSON_SAVER_FILENAME = "apparecchiature.json"
 
 class JSONSaver:
     def saveToFile(self, data, fileName):
+        if ToxMain.shared().isTesting == True:
+            return
         os.remove(fileName)
         with open(fileName, "w") as outfile:
             json.dump(data, outfile, sort_keys=True, indent=2, separators=(',', ': '))
@@ -939,7 +918,7 @@ class ToxMain:
             NumericalCondition.class_(),
             ToxAction.class_()
         ]
-        
+        self.isTesting = False
         #self.generateObjectsHandlers()
         
     def createRealObjects(self, fromArray):
