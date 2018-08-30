@@ -16,6 +16,7 @@ import socket
 import traceback
 from weather import Weather, Unit
 import types
+import pyowm
 
 class ToxSerializeableObjectBase:
     def __init__(self):
@@ -421,10 +422,13 @@ class WeatherChecker(VirtualObject):
         }
 
         self.handlers = {
-            "Parzialmente nuvoloso" : list(),
-            "Soleggiato" : list(),
+            "Temporali" : list(),
+            "Pioviggino" : list(),
+            "Pioggia" : list(),
             "Neve" : list(),
-            "Nuvoloso": list(),
+            "Nebbia": list(),
+            "Nuvoloso" : list(),
+            "Sereno" : list(),
             "Qualsiasi" : list()
         }
 
@@ -435,27 +439,53 @@ class WeatherChecker(VirtualObject):
         if customLocation == None:
             customLocation = "brescia"
 
-        weather = Weather(unit=Unit.CELSIUS)
-        location = weather.lookup_by_location(customLocation)
-        condition = location.condition
+        owm = pyowm.OWM('9626593728b889faec6aa8925aca3399')
+        observation = owm.weather_at_place(customLocation)
+        w = observation.get_weather()
+        print(str(w._status))
+        
+        code = w._weather_code
+        groupCode = str(code)[0]
 
-        code = int(condition.code)
+        weatherDict = {
+            2 : "Temporali",
+            3 : "Pioviggino",
+            5 : "Pioggia",
+            6 : "Neve",
+            7 : "Nebbia",
+            8 : "Nuvoloso",
+        }
 
-
-        print("WeatherChecker: " + str(condition.text))
-
-        if code in (29, 30, 44):
-            self.executeHandlers("Parzialmente nuvoloso")
-        elif code in (26, 27, 28):
-            self.executeHandlers("Nuvoloso")
-        elif code in (16, 41):
-            self.executeHandlers("Neve")
-        elif code in (31, 32, 33, 34):
-            self.executeHandlers("Soleggiato")
+        if code == 800:
+            self.executeHandlers("Sereno")
         else:
-            print(self.name + ": Codice non corrisponde a niente")
-
+            self.executeHandlers(weatherDict[groupCode])
         self.executeHandlers("Qualsiasi")
+
+
+        # print(str(w.__dict__))
+
+        # weather = Weather(unit=Unit.CELSIUS)
+        # location = weather.lookup_by_location(customLocation)
+        # condition = location.condition
+
+        # code = int(condition.code)
+
+
+        # print("WeatherChecker: " + str(condition.text))
+
+        # if code in (29, 30, 44):
+        #     self.executeHandlers("Parzialmente nuvoloso")
+        # elif code in (26, 27, 28):
+        #     self.executeHandlers("Nuvoloso")
+        # elif code in (16, 41):
+        #     self.executeHandlers("Neve")
+        # elif code in (31, 32, 33, 34):
+        #     self.executeHandlers("Soleggiato")
+        # else:
+        #     print(self.name + ": Codice non corrisponde a niente")
+
+        
 
     @staticmethod
     def class_():
@@ -490,15 +520,23 @@ class InternetTemperature(VirtualObject):
         if customLocation == None:
             customLocation = "brescia"
 
-        weather = Weather(unit=Unit.CELSIUS)
-        location = weather.lookup_by_location(customLocation)
-        weather_condition = location.condition
-        curr_temperature = weather_condition.temp
+        owm = pyowm.OWM('9626593728b889faec6aa8925aca3399')
+        observation = owm.weather_at_place(customLocation)
+        w = observation.get_weather()
+        curr_temperature = int(w.get_temperature('celsius')["temp"])
+
+        # weather = Weather(unit=Unit.CELSIUS)
+        # if weather == None:
+        #     print("Weather object == None")
+        # location = weather.lookup_by_location(customLocation)
+        # print(str(location))
+        # weather_condition = location.condition
+        # curr_temperature = weather_condition.temp
 
         print(self.name + ".curr_temperature: " + str(curr_temperature))
 
         operator = logic_condition[0]
-        condition_temperature = logic_condition[1:]
+        condition_temperature = int(logic_condition[1:])
         if operator == ">":
             if curr_temperature > condition_temperature:
                 self.executeHandlers("Condizione verificata")
@@ -510,11 +548,7 @@ class InternetTemperature(VirtualObject):
                 self.executeHandlers("Condizione verificata")
         else:
             return
-        print("\n\nUsing generateDict:")
-        #print(str(self.generateDict()))
-        print("\nUsing createDict:")
-        #print(str(self.createDict()))
-        print("\n\n")
+       
         
     @staticmethod
     def class_():

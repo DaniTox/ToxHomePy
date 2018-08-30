@@ -26,7 +26,7 @@
         "Spegnimento": []
       },
       "id": 7399,
-      "isOn": true,
+      "isOn": false,
       "isVirtual": false,
       "messages": [
         "deactivate",
@@ -82,58 +82,89 @@
       "name": "Timer spegnimento"
     },
     {
-      "className": "Lampada",
+      "className": "InternetTemperature",
       "customVariables": {
-        "description": {
-          "value": "Null",
+        "condizione": {
+          "value": ">10",
           "valueType": "String"
         },
-        "location": {
-          "value": "",
+        "description": {
+          "value": "Niente",
+          "valueType": "String"
+        },
+        "location_temperatura": {
+          "value": "brescia",
           "valueType": "String"
         },
         "name": {
-          "value": "Lampada 2",
+          "value": "Temperatura Brescia",
           "valueType": "String"
-        },
-        "pin": {
-          "value": null,
-          "valueType": "Int"
         }
       },
-      "description": "Null",
+      "description": "Niente",
       "handlers": {
-        "Accensione": [
+        "Condizione verificata": [
           {
             "args": null,
             "function": {
               "functionName": "activate",
               "objectId": 7399
             },
-            "id": 6641,
-            "id_object_owner": 2132
-          }
-        ],
-        "Spegnimento": [
-          {
-            "args": null,
-            "function": {
-              "functionName": "deactivate",
-              "objectId": 7399
-            },
-            "id": 9503,
-            "id_object_owner": 2132
+            "id": 2544,
+            "id_object_owner": 8395
           }
         ]
       },
-      "id": 2132,
-      "isOn": false,
-      "isVirtual": false,
+      "id": 8395,
+      "isVirtual": true,
       "messages": [
-        "deactivate",
-        "activate"
+        "Controlla la temperatura"
       ],
-      "name": "Lampada 2"
+      "name": "Temperatura Brescia"
+    },
+    {
+      "className": "WeatherChecker",
+      "customVariables": {
+        "description": {
+          "value": "Ciao",
+          "valueType": "String"
+        },
+        "location_temperatura": {
+          "value": "Brescia",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Tempo Breacia",
+          "valueType": "String"
+        }
+      },
+      "description": "Ciao",
+      "handlers": {
+        "Nebbia": [],
+        "Neve": [],
+        "Nuvoloso": [],
+        "Pioggia": [],
+        "Pioviggino": [],
+        "Qualsiasi": [],
+        "Sereno": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "activate",
+              "objectId": 7399
+            },
+            "id": 1883,
+            "id_object_owner": 7169
+          }
+        ],
+        "Temporali": []
+      },
+      "id": 7169,
+      "isVirtual": true,
+      "messages": [
+        "Controlla il tempo"
+      ],
+      "name": "Tempo Breacia"
     }
   ]
 }
