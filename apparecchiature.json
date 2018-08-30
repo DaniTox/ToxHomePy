@@ -26,7 +26,7 @@
         "Spegnimento": []
       },
       "id": 7399,
-      "isOn": false,
+      "isOn": true,
       "isVirtual": false,
       "messages": [
         "deactivate",
@@ -103,8 +103,28 @@
       },
       "description": "Null",
       "handlers": {
-        "Accensione": [],
-        "Spegnimento": []
+        "Accensione": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "activate",
+              "objectId": 7399
+            },
+            "id": 6641,
+            "id_object_owner": 2132
+          }
+        ],
+        "Spegnimento": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "deactivate",
+              "objectId": 7399
+            },
+            "id": 9503,
+            "id_object_owner": 2132
+          }
+        ]
       },
       "id": 2132,
       "isOn": false,

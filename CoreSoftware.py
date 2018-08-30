@@ -24,10 +24,8 @@ class ToxSerializeableObjectBase:
     def generateDict(self):
         newDict = {}
         myKeys = list(self.__dict__.keys())
-        asd = self.__dict__
         for key in myKeys:
             value = self.__dict__[key]
-            type_of_value = type(value)
             if ToxUtility.isPrimitive(value):
                 newDict[key] = value
             elif isinstance(value, ToxSerializeableObjectBase):
@@ -513,9 +511,9 @@ class InternetTemperature(VirtualObject):
         else:
             return
         print("\n\nUsing generateDict:")
-        print(str(self.generateDict()))
+        #print(str(self.generateDict()))
         print("\nUsing createDict:")
-        print(str(self.createDict()))
+        #print(str(self.createDict()))
         print("\n\n")
         
     @staticmethod
@@ -608,7 +606,7 @@ class Lampada(ConcreteObject):
             return    
 
     def activate(self):
-        print(str(self.generateDict()))
+        #print(str(self.generateDict()))
         if self.isOn == False:
             # self.isOn = True
             #attiva il pin
