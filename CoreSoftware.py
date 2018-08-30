@@ -24,8 +24,10 @@ class ToxSerializeableObjectBase:
     def generateDict(self):
         newDict = {}
         myKeys = list(self.__dict__.keys())
+        asd = self.__dict__
         for key in myKeys:
             value = self.__dict__[key]
+            type_of_value = type(value)
             if ToxUtility.isPrimitive(value):
                 newDict[key] = value
             elif isinstance(value, ToxSerializeableObjectBase):
@@ -38,26 +40,6 @@ class ToxSerializeableObjectBase:
                 newDict[key] = "ToxConversionError"
         return newDict
 
-####    CLASSES APPARECCHIATURE     ###
-
-class ObjectType(Enum):
-    NONE = 0
-    LUCE = 1
-    VENTOLA = 2
-    PIR = 3
-    PUR = 4 #sensore ultrasuoni
-    DOOR_LOCK = 5
-    LIGHT_SENSOR = 6
-
-class ObjectColors(Enum):
-    BLACK = 0
-    RED = 1
-    BLUE = 2
-    PURPLE = 3
-    ORANGE = 4
-    GREEN = 5
-    WHITE = 6
-    GRAY = 7
 
 class ToxUtility:
 
@@ -80,7 +62,7 @@ class ToxUtility:
                 newList.append(obj.generateDict())
             else:
                 newList.append("ToxConversionObjectError")
-            return newList
+        return newList
 
 
     @staticmethod
@@ -101,6 +83,8 @@ class ToxUtility:
                 newDict[key] = "ToxConversionObjectError"
         return newDict
 
+
+####    CLASSES APPARECCHIATURE     ###
 
 class Object(ToxSerializeableObjectBase):
     def __init__(self, autoID = True):
@@ -213,14 +197,34 @@ class Object(ToxSerializeableObjectBase):
         
     #     return myDict
 
-    def generateDict(self):
+    def generateDict(self, saving = False):
         tempDict = ToxSerializeableObjectBase.generateDict(self)
         if "messages" in tempDict:
             tempDict["messages"] = list(tempDict["messages"].keys())
+        if "serializedHandlers" in tempDict:
+            del tempDict["serializedHandlers"]
+        if "serializedMessages" in tempDict:
+            del tempDict["serializedMessages"]
+        
+        keys = tempDict["handlers"].keys()
+        for key in keys:
+            if tempDict["handlers"][key] == None:
+                tempDict["handlers"][key] = list()
+        #print("\n\n\n" + str(tempDict))
+        # if saving == False:
+        #     keys = tempDict["handlers"].keys()
+        #     for key in keys:
+        #         if tempDict["handlers"][key] == None:
+        #             tempDict["handlers"][key] = list()
+        # if "handlers" in tempDict and saving == False:
+        #     keys = tempDict["handlers"].keys()
+        #     for key in keys:
+        #         if tempDict["handlers"][key] == None:
+        #             tempDict["handlers"][key] = list()
         return tempDict
 
     def createJSON(self):
-        return json.dumps(self.createDict())
+        return json.dumps(self.generateDict())
 
     def setID(self, customID):
         self.id = customID
@@ -257,6 +261,7 @@ class Object(ToxSerializeableObjectBase):
 
     def addHandlerForKey(self, key, handler):
         self.handlers[key].append(handler)
+        ToxIDCreator.shared().setHandlerIDasUsed(handler.id)
         ToxMain.shared().commitObjects()#save
 
     def executeMessage(self, message):
@@ -304,6 +309,8 @@ class Object(ToxSerializeableObjectBase):
 
     def get(self, key, retTox_v = False):
         cvars = self.customVariables
+        if key not in cvars:
+            return None
         if cvars == None:
             return None
         if retTox_v == False:
@@ -419,7 +426,8 @@ class WeatherChecker(VirtualObject):
             "Parzialmente nuvoloso" : list(),
             "Soleggiato" : list(),
             "Neve" : list(),
-            "Nuvoloso": list()
+            "Nuvoloso": list(),
+            "Qualsiasi" : list()
         }
 
     def checkWeather(self):
@@ -435,6 +443,9 @@ class WeatherChecker(VirtualObject):
 
         code = int(condition.code)
 
+
+        print("WeatherChecker: " + str(condition.text))
+
         if code in (29, 30, 44):
             self.executeHandlers("Parzialmente nuvoloso")
         elif code in (26, 27, 28):
@@ -445,6 +456,8 @@ class WeatherChecker(VirtualObject):
             self.executeHandlers("Soleggiato")
         else:
             print(self.name + ": Codice non corrisponde a niente")
+
+        self.executeHandlers("Qualsiasi")
 
     @staticmethod
     def class_():
@@ -836,7 +849,7 @@ class ToxConverter(JSONSaver):
         serializedObjects = list()
         for obj in objects:
             #newObj = obj.createDict()
-            newObj = obj.generateDict()
+            newObj = obj.generateDict(saving = True)
             serializedObjects.append(newObj)
         finalDict["Objects"] = serializedObjects
 
@@ -915,6 +928,9 @@ class ToxMain:
         for key in customSerializedVariables.keys():
             serVar = customSerializedVariables[key]
             newObj.customVariables[key] = ToxVariable(serVar["valueType"], serVar["value"])
+            if key in ("name", "description"):
+                newObj.setValueForKey(serVar["value"], key)
+
         return newObj
 
 
@@ -949,8 +965,10 @@ class ToxMain:
 
     def getRealObjectFromPin(self, pin):
         for obj in self.realObjects:
-            if isinstance(obj, ConcreteObject) and obj.pin == pin:
-                return obj
+            if obj.get("pin") == pin:
+                return obj  
+            # if isinstance(obj, ConcreteObject) and obj.get("pin") == pin:
+            #     return obj
         return None
 
     def getRealObjectFromID(self, id):
@@ -981,7 +999,7 @@ class ToxMain:
 
     def removeRealObjectForID(self, id):
         for index, obj in enumerate(self.realObjects):
-            if obj.id== id:
+            if obj.id == id:
                 del self.realObjects[index]
                 ToxIDCreator.shared().setIDasFree(id)
                 break
@@ -1220,7 +1238,7 @@ class ToxSocketServer:
         data = conn.recv(8192)
         try:
             request = json.loads(data)
-            print(str(request))
+            #print(str(request))
         except ValueError:
             print("Nessun messaggio")
             conn.close()
@@ -1236,7 +1254,7 @@ class ToxSocketServer:
         else:
             returnDict = {
                 "code" : "NO",
-                "response" : "Nessun request-body nella tua richiesta"
+                "response_message" : "Nessun request-body nella tua richiesta"
             }
             conn.send(json.dumps(returnDict))
             conn.close()
@@ -1248,7 +1266,7 @@ class ToxSocketServer:
                 if ToxMain.shared().isObjectNameUnique(requestBody["name"]) == False:
                     returnDict = {
                         "code" : "NO",
-                        "response": "Il nome dell'oggetto non è unique"
+                        "response_message": "Il nome dell'oggetto non è unique"
                     }
                     print("Nome non unique")
                     conn.send(json.dumps(returnDict))
@@ -1268,10 +1286,10 @@ class ToxSocketServer:
                 #     newObject.customVariables = request["variables"]
                 ToxMain.shared().commitObjects()
                 print("Nuovo oggetto creato con successo!")
-                odic = newObject.createDict()
+                
                 newDict = {
                     "code" : "OK",
-                    "response" : "Oggetto creato con successo!"
+                    "response_message" : "Oggetto creato con successo!"
                 }
                 
                 ojson = str(json.dumps(newDict))
@@ -1323,7 +1341,7 @@ class ToxSocketServer:
             if "id_object_owner" not in handler:
                 returnDict = {
                     "code" : "NO",
-                    "response" : "Manca l'id_object_owner"
+                    "response_message" : "Manca l'id_object_owner"
                 }
                 conn.send(json.dumps(returnDict))
                 conn.close()
@@ -1332,7 +1350,7 @@ class ToxSocketServer:
             if "key" not in handler:
                 returnDict = {
                     "code" : "NO",
-                    "response" : "key non trovata nella richiesta che mi hai mandato"
+                    "response_message" : "key non trovata nella richiesta che mi hai mandato"
                 }
                 conn.send(json.dumps(returnDict))
                 conn.close()
@@ -1341,7 +1359,7 @@ class ToxSocketServer:
             if "function" not in handler:
                 returnDict = {
                     "code" : "NO",
-                    "response" : "Manca la function"
+                    "response_message" : "Manca la function"
                 }
                 conn.send(json.dumps(returnDict))
                 conn.close()
@@ -1354,7 +1372,7 @@ class ToxSocketServer:
             if objOwner == None:
                 returnDict = {
                     "code" : "NO",
-                    "response" : "Non ho trovato nessun oggetto con l'ID che mi hai dato"
+                    "response_message" : "Non ho trovato nessun oggetto con l'ID che mi hai dato"
                 }
                 conn.send(json.dumps(returnDict))
                 conn.close()
@@ -1365,7 +1383,7 @@ class ToxSocketServer:
             if "objectId" not in handlerFunction:
                 returnDict = {
                     "code" : "NO",
-                    "response" : "ObjectID della funzione non inviato"
+                    "response_message" : "ObjectID della funzione non inviato"
                 }
                 conn.send(json.dumps(returnDict))
                 conn.close()
@@ -1377,7 +1395,7 @@ class ToxSocketServer:
             if "functionName" not in handlerFunction:
                 returnDict = {
                     "code" : "NO",
-                    "response" : "Non ho trovato nessuna functionName nella tua richiesta"
+                    "response_message" : "Non ho trovato nessuna functionName nella tua richiesta"
                 }
                 conn.send(json.dumps(returnDict))
                 conn.close()
@@ -1398,7 +1416,7 @@ class ToxSocketServer:
 
             returnDict = {
                 "code" : "OK",
-                "response" : "Handler aggiunto con successo"
+                "response_message" : "Handler aggiunto con successo"
             }
             conn.send(json.dumps(returnDict))
 
@@ -1408,18 +1426,21 @@ class ToxSocketServer:
             realobjs = ToxMain.shared().realObjects
             print("realObjs.count = " + str(len(realobjs)))
             for obj in realobjs:
-                arr.append(obj.generateDict())
+                objDict = obj.generateDict(saving = False)
+                objDict["handlers"] = {}
+                arr.append(objDict)
             returnDict = {
                 "code" : "OK",
-                "response" : arr
+                "response_objects" : arr
             }
+            #print(str(arr))
             json_str = json.dumps(returnDict)
             conn.send(json_str)
         elif requestType == "remove_object":
             if "object_id" not in requestBody:
                 returnDict = {
                     "code" : "NO",
-                    "response" : "non ho trovato 'object_id' nella tua richiesta"
+                    "response_message" : "non ho trovato 'object_id' nella tua richiesta"
                 }
                 conn.send(json.dumps(returnDict))
                 conn.close()
@@ -1431,7 +1452,7 @@ class ToxSocketServer:
             if obj == None:
                 returnDict = {
                     "code" : "NO",
-                    "response" : "Oggetto con quell'ID == NULL"
+                    "response_message" : "Oggetto con quell'ID == NULL"
                 }
                 conn.send(json.dumps(returnDict))
                 conn.close()
@@ -1440,7 +1461,7 @@ class ToxSocketServer:
             obj.removeMe()
             returnDict = {
                 "code" : "OK",
-                "response" : "Oggetto rimosso con successo!"
+                "response_message" : "Oggetto rimosso con successo!"
             }
             conn.send(json.dumps(returnDict))
         elif requestType == "show_ids":
@@ -1450,7 +1471,7 @@ class ToxSocketServer:
             if "handlerID" not in requestBody:
                 returnDict = {
                     "code" : "NO",
-                    "response" : "Nella tua richiesta non hai inserito l'id dell'handler da rimuovere"
+                    "response_message" : "Nella tua richiesta non hai inserito l'id dell'handler da rimuovere"
                 }
                 conn.send(json.dumps(returnDict))
                 conn.close()
@@ -1459,7 +1480,7 @@ class ToxSocketServer:
             if "obj_id" not in requestBody:
                 returnDict = {
                     "code" : "NO",
-                    "response" : "Nella tua richiesta non hai inserito l'id dell'oggetto"
+                    "response_message" : "Nella tua richiesta non hai inserito l'id dell'oggetto"
                 }
                 conn.send(json.dumps(returnDict))
                 conn.close()
@@ -1472,7 +1493,7 @@ class ToxSocketServer:
             if realObject == None:
                 returnDict = {
                     "code" : "NO",
-                    "response" : "Nessun oggetto con questo ID"
+                    "response_message" : "Nessun oggetto con questo ID"
                 }
                 conn.send(json.dumps(returnDict))
                 conn.close()
@@ -1481,7 +1502,7 @@ class ToxSocketServer:
             if handlerIDToRemove not in ToxIDCreator.shared().usedHandlersIDs:
                 returnDict = {
                     "code" : "NO",
-                    "response" : "Nessun handler trovato con questo ID nella lista degli handler usati."
+                    "response_message" : "Nessun handler trovato con questo ID nella lista degli handler usati."
                 }
                 conn.send(json.dumps(returnDict))
                 conn.close()
@@ -1489,7 +1510,7 @@ class ToxSocketServer:
             realObject.removeHandlerWithID(handlerIDToRemove)
             returnDict = {
                 "code" : "OK",
-                "response" : "Handler rimosso con successo"
+                "response_message" : "Handler rimosso con successo"
             }
             conn.send(json.dumps(returnDict))
             
@@ -1501,14 +1522,14 @@ class ToxSocketServer:
             if classes == None:
                 returnDict = {
                     "code" : "NO",
-                    "response": "Nessuna classe"
+                    "response_message": "Nessuna classe"
                 }
                 conn.send(json.dumps(returnDict))
                 conn.close()
                 return
             returnDict = {
                 "code" : "OK",
-                "response": classes
+                "response_objects": classes
             }
             conn.send(json.dumps(returnDict))
         elif requestType == "execute_message":
@@ -1518,7 +1539,7 @@ class ToxSocketServer:
             if realObject == None:
                 returnDict = {
                     "code" : "NO",
-                    "response" : "Oggetto non trovato con questo ID"
+                    "response_message" : "Oggetto non trovato con questo ID"
                 }
                 conn.send(json.dumps(returnDict))
                 conn.close()
@@ -1526,7 +1547,7 @@ class ToxSocketServer:
             if realObject.executeMessage(messageName) != 0:
                 returnDict = {
                     "code" : "NO",
-                    "response" : "Funzione nel messaggio == NULL"
+                    "response_message" : "Funzione nel messaggio == NULL"
                 }
                 conn.send(json.dumps(returnDict))
                 conn.close()
@@ -1534,7 +1555,7 @@ class ToxSocketServer:
             else:
                 returnDict = {
                     "code" : "OK",
-                    "response" : "Funzione eseguita con successo"
+                    "response_message" : "Funzione eseguita con successo"
                 }
                 conn.send(json.dumps(returnDict))
         elif requestType == "change_properties":
@@ -1544,7 +1565,7 @@ class ToxSocketServer:
             if realObject == None:
                 returnDict = {
                     "code" : "NO",
-                    "response" : "Oggetto non trovato con questo ID"
+                    "response_message" : "Oggetto non trovato con questo ID"
                 }
                 conn.send(json.dumps(returnDict))
                 conn.close()
@@ -1559,14 +1580,14 @@ class ToxSocketServer:
             if retCode != 0:
                 returnDict = {
                     "code" : "NO",
-                    "response" : "Valore ritornato mentre cambiavo le properties: " + str(retCode)
+                    "response_message" : "Valore ritornato mentre cambiavo le properties: " + str(retCode)
                 }
                 conn.send(json.dumps(returnDict))
                 conn.close()
                 return
             returnDict = {
                 "code" : "OK",
-                "response" : "Properties modificate con successo!"
+                "response_message" : "Properties modificate con successo!"
             }
             print("Server response: " + str(returnDict))
             conn.send(json.dumps(returnDict))
@@ -1587,10 +1608,11 @@ class ToxSocketServer:
                 return
 
             requiredDict = objectDict["handlers"]
-            
+            #print(str(requiredDict))
+
             returnDict = {
                 "code" : "OK",
-                "response" : requiredDict
+                "response_objects" : requiredDict
             }
             conn.send(json.dumps(returnDict))
 
@@ -1634,7 +1656,7 @@ class ToxSocketServer:
     def send_err(self, conn, msg):
         returnDict = {
             "code" : "NO",
-            "response" : msg
+            "response_message" : msg
         }
         conn.send(json.dumps(returnDict))
         conn.close()
@@ -1642,7 +1664,7 @@ class ToxSocketServer:
     def send_msg(self, conn, msg):
         returnDict = {
             "code" : "OK",
-            "response" : msg
+            "response_message" : msg
         }
         conn.send(json.dumps(returnDict))
 

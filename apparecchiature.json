@@ -1,34 +1,119 @@
 {
   "Objects": [
     {
+      "className": "Lampada",
+      "customVariables": {
+        "description": {
+          "value": "Null",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "Camera",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Led",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": 13,
+          "valueType": "Int"
+        }
+      },
+      "description": "Null",
+      "handlers": {
+        "Accensione": [],
+        "Spegnimento": []
+      },
+      "id": 7399,
+      "isOn": false,
+      "isVirtual": false,
+      "messages": [
+        "deactivate",
+        "activate"
+      ],
+      "name": "Led"
+    },
+    {
       "className": "Timer",
       "customVariables": {
         "description": {
-          "value": "Ciao",
+          "value": "Null",
           "valueType": "String"
         },
         "durata": {
-          "value": 5,
+          "value": 10,
           "valueType": "Float"
         },
         "name": {
-          "value": "Timer",
+          "value": "Timer spegnimento",
           "valueType": "String"
         }
       },
-      "description": "Ciao",
+      "description": "Null",
       "handlers": {
-        "Azione da svolgere": null
+        "Azione da svolgere": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "activate",
+              "objectId": 7399
+            },
+            "id": 6222,
+            "id_object_owner": 1497
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "activate",
+              "objectId": 2132
+            },
+            "id": 8400,
+            "id_object_owner": 1497
+          }
+        ]
       },
-      "id": 292,
+      "id": 1497,
       "isVirtual": true,
-      "messages": {
-        "activate": "ToxConversionObjectError",
-        "fire": "ToxConversionObjectError"
+      "messages": [
+        "fire",
+        "activate"
+      ],
+      "name": "Timer spegnimento"
+    },
+    {
+      "className": "Lampada",
+      "customVariables": {
+        "description": {
+          "value": "Null",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Lampada 2",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": null,
+          "valueType": "Int"
+        }
       },
-      "name": "Timer",
-      "serializedHandlers": {},
-      "serializedMessages": {}
+      "description": "Null",
+      "handlers": {
+        "Accensione": [],
+        "Spegnimento": []
+      },
+      "id": 2132,
+      "isOn": false,
+      "isVirtual": false,
+      "messages": [
+        "deactivate",
+        "activate"
+      ],
+      "name": "Lampada 2"
     }
   ]
 }
