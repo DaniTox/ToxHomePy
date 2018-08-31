@@ -8,7 +8,10 @@
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
-            "program": "${file}"
+            "program": "/Users/danitox/Desktop/HomePy/CoreMain.py",
+            "args": [
+                "-t"
+            ]
         },
         {
             "name": "Python: Attach",

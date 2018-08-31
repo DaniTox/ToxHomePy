@@ -246,10 +246,14 @@ class Object(ToxSerializeableObjectBase):
             # objecs = ToxMain.shared().realObjects
                 
             if realObject == None:
-                raise Exception("ogetto ottenuto is NULL")
-                sys.exit(1)
-
-            realObject.executeMessage(funcName)
+                # raise Exception("ogetto ottenuto is NULL")
+                print("Oggetto ottenuto is NULL")
+                return
+                # sys.exit(1)
+            try:
+                realObject.executeMessage(funcName)
+            except RuntimeError:
+                pass
             #function = getattr(realObject, funcName)
             # if args != None:
             #     function(args)
@@ -283,6 +287,22 @@ class Object(ToxSerializeableObjectBase):
         ToxMain.shared().removeRealObjectForID(self.id)
         ToxMain.shared().commitObjects()
 
+    # def checkIntegrityTypes(self, oldToxValue, newRawValue):
+    #     oldType = oldValue.valueType
+    #     newType = type(newRawValue)
+
+    #     if oldType == "Int":
+    #         if newType == int:
+    #             return 0
+    #         elif newType == float:
+
+    #     elif oldType == "Float":
+    #         pass
+    #     else:
+    #         pass    
+
+
+
     def setValueForKey(self, value, key):
         # if key not in self.__dict__:
         #     return 1
@@ -300,8 +320,41 @@ class Object(ToxSerializeableObjectBase):
                 realValue = ToxVariable("Float", value)
             self.customVariables[key] = realValue
         else:
-            self.customVariables[key].value = value
-        
+            oldValue = self.customVariables[key]
+            oldType = oldValue.valueType
+
+            if oldType == "Int":
+                if type(value) is int:
+                   self.customVariables[key].value = value
+                elif type(value) is float:
+                    self.customVariables[key].value = int(value)
+                elif type(value) is str or type(value) is unicode:
+                    try:
+                        newValue = int(value)
+                        self.customVariables[key].value = newValue
+                    except:
+                        return 2
+            elif oldType == "Float":
+                if type(value) is int:
+                   self.customVariables[key].value = float(value)
+                elif type(value) is float:
+                    self.customVariables[key].value = round(value)
+                elif type(value) is str or type(value) is unicode:
+                    try:
+                        newValue = float(value)
+                        self.customVariables[key].value = newValue
+                    except:
+                        return 2
+            elif oldType == "String":
+                if type(value) is int:
+                   self.customVariables[key].value = str(value)
+                elif type(value) is float:
+                    self.customVariables[key].value = str(value)
+                elif type(value) is str or type(value) is unicode:
+                    self.customVariables[key].value = value
+            else:
+                return 3
+
         if key in self.__dict__:
             self.__dict__[key] = value
         return 0
@@ -366,7 +419,7 @@ class ToxAction(VirtualObject):
             "Azione da eseguire" : list()
         }
 
-    def execute():
+    def execute(self):
         self.executeHandlers("Azione da eseguire")
 
     @staticmethod
@@ -440,7 +493,12 @@ class WeatherChecker(VirtualObject):
             customLocation = "brescia"
 
         owm = pyowm.OWM('9626593728b889faec6aa8925aca3399')
-        observation = owm.weather_at_place(customLocation)
+        try:
+            observation = owm.weather_at_place(customLocation)
+        except pyowm.exceptions.api_response_error.NotFoundError:
+            print("Il pyowm modulo dice che non ha trovato la città che richiedi.")
+            self.executeHandlers("Qualsiasi")
+            return
         w = observation.get_weather()
         print(str(w._status))
         
@@ -448,21 +506,21 @@ class WeatherChecker(VirtualObject):
         groupCode = str(code)[0]
 
         weatherDict = {
-            2 : "Temporali",
-            3 : "Pioviggino",
-            5 : "Pioggia",
-            6 : "Neve",
-            7 : "Nebbia",
-            8 : "Nuvoloso",
+            "2" : "Temporali",
+            "3" : "Pioviggino",
+            "5" : "Pioggia",
+            "6" : "Neve",
+            "7" : "Nebbia",
+            "8" : "Nuvoloso",
         }
 
         if code == 800:
             self.executeHandlers("Sereno")
         else:
-            self.executeHandlers(weatherDict[groupCode])
+            self.executeHandlers(weatherDict[str(groupCode)])
         self.executeHandlers("Qualsiasi")
 
-        print(self.name + ": Codice non corrisponde a niente")
+        #print(self.name + ": Codice non corrisponde a niente")
 
 
     @staticmethod
@@ -499,7 +557,12 @@ class InternetTemperature(VirtualObject):
             customLocation = "brescia"
 
         owm = pyowm.OWM('9626593728b889faec6aa8925aca3399')
-        observation = owm.weather_at_place(customLocation)
+        try:
+            observation = owm.weather_at_place(customLocation)
+        except:
+            print("Internet Temperature: non ho potuto ottenere la città richiesta")
+            return
+
         w = observation.get_weather()
         curr_temperature = int(w.get_temperature('celsius')["temp"])
 
@@ -507,7 +570,11 @@ class InternetTemperature(VirtualObject):
         print(self.name + ".curr_temperature: " + str(curr_temperature))
 
         operator = logic_condition[0]
-        condition_temperature = int(logic_condition[1:])
+        try:
+            condition_temperature = int(logic_condition[1:])
+        except ValueError:
+            print("InternetTemerature: Condizione non valida. Ritorno...")
+            return
         if operator == ">":
             if curr_temperature > condition_temperature:
                 self.executeHandlers("Condizione verificata")
@@ -551,7 +618,11 @@ class NumericalCondition(VirtualObject):
             return
 
         operator = logic_condition[0]
-        condition_number = int(logic_condition[1:])
+        try:
+            condition_number = int(logic_condition[1:])
+        except ValueError:
+            print("Valore della condizione non valido. Annullo...")
+            return
         # if operator == ">":
         #     if current_var_value > condition_number:
         #         self.addValue()
@@ -607,7 +678,7 @@ class Lampada(ConcreteObject):
         elif value == 1:
             self.isOn = True
         else:
-            print("Lampada: Non accetto questo dato")
+            # print("Lampada: Non accetto questo dato")
             return    
 
     def activate(self):
@@ -1435,10 +1506,13 @@ class ToxSocketServer:
         elif requestType == "show_objects":
             arr = list()
             realobjs = ToxMain.shared().realObjects
-            print("realObjs.count = " + str(len(realobjs)))
+            # print("realObjs.count = " + str(len(realobjs)))
             for obj in realobjs:
                 objDict = obj.generateDict(saving = False)
-                objDict["handlers"] = {}
+                #objDict["handlers"] = {}
+                keys = objDict["handlers"].keys()
+                for key in keys:                    
+                    objDict["handlers"][key] = list()
                 arr.append(objDict)
             returnDict = {
                 "code" : "OK",
@@ -1447,6 +1521,7 @@ class ToxSocketServer:
             #print(str(arr))
             json_str = json.dumps(returnDict)
             conn.send(json_str)
+            print("Oggetti fetchati con successo!")
         elif requestType == "remove_object":
             if "object_id" not in requestBody:
                 returnDict = {
@@ -1475,6 +1550,7 @@ class ToxSocketServer:
                 "response_message" : "Oggetto rimosso con successo!"
             }
             conn.send(json.dumps(returnDict))
+            print("Oggetto rimosso con successo!")
         elif requestType == "show_ids":
             ids = ToxIDCreator.shared().currentIDs
             conn.send(str(ids))
@@ -1524,7 +1600,7 @@ class ToxSocketServer:
                 "response_message" : "Handler rimosso con successo"
             }
             conn.send(json.dumps(returnDict))
-            
+            print("Handler rimosso con successo!")
         elif requestType == "show_ids_h":
             ids = ToxIDCreator.shared().usedHandlersIDs
             conn.send(str(ids))
@@ -1543,6 +1619,7 @@ class ToxSocketServer:
                 "response_objects": classes
             }
             conn.send(json.dumps(returnDict))
+            print("Classi fetchate con successo!")
         elif requestType == "execute_message":
             objID = requestBody["objID"]
             messageName = requestBody["messageName"]
@@ -1569,6 +1646,7 @@ class ToxSocketServer:
                     "response_message" : "Funzione eseguita con successo"
                 }
                 conn.send(json.dumps(returnDict))
+                print("Messaggio eseguito con successo!")
         elif requestType == "change_properties":
             properties = requestBody["properties"]
             objID = requestBody["objID"]
@@ -1602,6 +1680,7 @@ class ToxSocketServer:
             }
             print("Server response: " + str(returnDict))
             conn.send(json.dumps(returnDict))
+            print("Properties modificate con successo!")
         elif requestType == "get_handlers":
             if "obj_id" not in requestBody:
                 self.send_err(conn, "Nella tua richiesta manca l'objID")
@@ -1626,7 +1705,7 @@ class ToxSocketServer:
                 "response_objects" : requiredDict
             }
             conn.send(json.dumps(returnDict))
-
+            print("Handlers fetchati con successo!")
         elif requestType == "change_properties_values":
             if "obj_id" not in requestBody:
                 self.send_err(conn, "Nella tua richiesta manca l'objID")
@@ -1659,7 +1738,7 @@ class ToxSocketServer:
                     return
             ToxMain.shared().commitObjects()
             self.send_msg(conn, "Properties modificate con successo!")
-            
+            print("Properties[2] modificate con successo")
 
         #conn.send("Scemotto! Hide and Seek\n")
         conn.close()
@@ -1684,6 +1763,6 @@ class ToxSocketServer:
             self.socket.listen(5)
 
             conn, addr = self.socket.accept()
-            print("Server <-- " + addr[0])
+            # print("Server <-- " + addr[0])
 
             start_new_thread(self._handle_request, (conn,))
