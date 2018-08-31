@@ -987,7 +987,6 @@ class ToxMain:
             Lampada.class_(),
             InternetTemperature.class_(),
             NumericalCondition.class_(),
-            ToxAction.class_()
         ]
         self.isTesting = False
         #self.generateObjectsHandlers()
@@ -1508,6 +1507,8 @@ class ToxSocketServer:
             realobjs = ToxMain.shared().realObjects
             # print("realObjs.count = " + str(len(realobjs)))
             for obj in realobjs:
+                if isinstance(obj, ToxAction):
+                    continue
                 objDict = obj.generateDict(saving = False)
                 #objDict["handlers"] = {}
                 keys = objDict["handlers"].keys()
@@ -1739,6 +1740,37 @@ class ToxSocketServer:
             ToxMain.shared().commitObjects()
             self.send_msg(conn, "Properties modificate con successo!")
             print("Properties[2] modificate con successo")
+        elif requestType == "show_actions":
+            all_objects = ToxMain.shared().realObjects
+            actions = list()
+            for obj in all_objects:
+                if isinstance(obj, ToxAction):
+                    actions.append(obj.generateDict())
+            returnDict = {
+                "code" : "OK",
+                "response_objects" : actions
+            }
+            conn.send(json.dumps(returnDict))
+            print("Azioni fetchate con successo!")
+        elif requestType == "remove_object_from_action":
+            pass
+            #TODO: ottenere l'actiond dall'id della richiesta e rimuovere l'id object dalla lista degli id dell'azione
+            # Questo deve provocare un salvataggio tramite commitObjects()
+            # la lista degli objects id deve salvarsi con l'azione in json
+            #Quando viene rimosso un oggetto con la solita funzione, deve attivare l'esecuzione di una funzione \n
+            # che pulisce in tutte le actions l'id dell'oggetto appena eliminato.
+
+
+            #TODO XCODE: nella Home, mettere un Segment Control per indicare se visualizzare le actions o gli oggetti \n
+            # di default: gli oggetti.
+            # se seg dice oggetti, l'app funziona come fa adesso.
+            # altrimenti se è in Actions, il pulsante + apre un VC con la creazione dell'Action\n (VC diverso) \n
+            # o modificato facendo selezionare solo ToxAction come classe.
+            # se è in actions, per entrare nella VC degli Handlers, bisogna trascinare per vedere tutte le azioni \n
+            # se si preme, si apre un vc modificato della HomeVC che mostra tutti gli oggetti della ToxAction
+            # da qui si può rimuovere l'oggetto dall'Action, rimuoverlo completamente e modificare le properties. 
+
+            #TODO XCODE: decidere se creare una classe nuova di ToxAction che deriva da ToxObject o lasciare ToxObject
 
         #conn.send("Scemotto! Hide and Seek\n")
         conn.close()
