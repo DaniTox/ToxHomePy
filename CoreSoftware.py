@@ -414,15 +414,42 @@ class ToxAction(VirtualObject):
         self.actionObjectsIDs = list()
 
         self.messages = {
-            "Esegui azione" : self.execute
+            "Esegui azione" : self.execute,
+            "Azione conclusa" : self.finish
         }
 
         self.handlers = {
-            "Azione da eseguire" : list()
+            "Azione da eseguire" : list(),
+            "Azione conclusa" : list()
         }
 
+    def removeObjIDfromMyList(self, objID):
+        if objID == None:
+            return 1
+        try:
+            self.actionObjectsIDs.remove(objID)
+            ToxMain.shared().keepActionsIntegrity()
+            ToxMain.shared().commitObjects()
+            return 0
+        except ValueError:
+            return 2
+        
+
+    def addObjIDtoMyList(self, objID):
+        if objID == None:
+            return 1
+        if objID in self.actionObjectsIDs:
+            return 0
+        self.actionObjectsIDs.append(objID)
+        ToxMain.shared().commitObjects()
+        return 0
+           
+    
     def execute(self):
         self.executeHandlers("Azione da eseguire")
+
+    def finish(self):
+        self.executeHandlers("Azione conclusa")
 
     @staticmethod
     def class_():
@@ -1095,6 +1122,23 @@ class ToxMain:
                 return False
         return True
 
+    def getRealActions(self):
+        actions = list()
+        for obj in self.realObjects:
+            if isinstance(obj, ToxAction):
+                actions.append(obj)
+        return actions
+
+    def keepActionsIntegrity(self):
+        actions = self.getRealActions()
+        if actions == None or len(actions) < 1:
+            return
+        for action in actions:
+            actionObjectsIDs = action.actionObjectsIDs()
+            for objID in actionObjectsIDs:
+                realObject = self.getRealObjectFromID(objID)
+                if realObject == None:
+                    action.removeObjIDfromMyList(objID)
 
 
 ###     ToxSerial   ###
@@ -1364,9 +1408,22 @@ class ToxSocketServer:
 
                 if "pin" in requestBody:
                     newObject.setValueForKey(requestBody["pin"], "pin")
-                    #newObject.pin = requestBody["pin"]
-                # if "variables" in request:
-                #     newObject.customVariables = request["variables"]
+                
+                if "add_to_action_id" in requestBody:
+                    actionID = requestBody["add_to_action_id"]
+                    if actionID == None:
+                        self.send_err(conn, "L'id Action che mi hai dato è null.")
+                        return
+                    realAction = ToxMain.shared().getRealObjectFromID(actionID)
+                    if realAction == None:
+                        self.send_err(conn, "Action non trovata con questo ID.")
+                        return
+
+                    result = realAction.addObjIDtoMyList(newObject.id)
+                    if result != 0:
+                        self.send_err(conn, "Errore mentre cercavo di aggiungere l'oggetto alla ToxAction.")
+                        return
+
                 ToxMain.shared().commitObjects()
                 print("Nuovo oggetto creato con successo!")
                 
@@ -1755,7 +1812,30 @@ class ToxSocketServer:
             conn.send(json.dumps(returnDict))
             print("Azioni fetchate con successo!")
         elif requestType == "remove_object_from_action":
-            pass
+            if "action_id" not in requestBody:
+                self.send_err(conn, "Non ho trovato l'ID Action nella tua richiesta")
+                return
+            if "obj_id" not in requestBody:
+                self.send_err(conn, "Non ho trovato l'ID dell'oggetto nella tua richiesta")
+                return
+
+            objID = requestBody["obj_id"]
+            actionID = requestBody["action_id"]
+            realAction = ToxMain.shared().getRealObjectFromID(objID)
+            if realAction == None:
+                self.send_err(conn, "Non ho trovato nessuna azione con questo ID")
+                return
+            
+            result = realAction.removeObjIDfromMyList(objID)
+
+            if result != 0:
+                self.send_err(conn, "Errore " + str(result) + " mentre eliminavo l'ID dalla liste dell'azione")
+                return
+            else:
+                self.send_msg(conn, "Oggetto rimosso dall'azione correttamente")
+                
+
+            
             #TODO: ottenere l'actiond dall'id della richiesta e rimuovere l'id object dalla lista degli id dell'azione
             # Questo deve provocare un salvataggio tramite commitObjects()
             # la lista degli objects id deve salvarsi con l'azione in json
@@ -1774,6 +1854,13 @@ class ToxSocketServer:
 
             #TODO XCODE: decidere se creare una classe nuova di ToxAction che deriva da ToxObject o lasciare ToxObject
 
+            #TODO XCODE: mettere l'azione della tableView di aggiungere objects in un action.
+            # inoltre, in quel nuovo VC, sul pulsante più premuto, chiedere se si vuole creare un nuovo oggetto \n
+            # all'interno dell'azione o aggiungerne uno esistente (preso dalla sezione oggetti) sempre all'interno \n
+            # dell'action+
+            #Questo nuovo VC inoltre dovrà essere una tableView che mostra tutti gli oggetti dell'action fetchandoli \n
+            # o dal server, o dalla lista degli Ids scaricata in locale.
+            
         #conn.send("Scemotto! Hide and Seek\n")
         conn.close()
 
