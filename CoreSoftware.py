@@ -409,7 +409,9 @@ class ToxAction(VirtualObject):
     def __init__(self, autoID = True):
         VirtualObject.__init__(self, autoID)
         self.className = "ToxAction"
-        self.isAction = True
+        # self.isAction = True
+
+        self.actionObjectsIDs = list()
 
         self.messages = {
             "Esegui azione" : self.execute
