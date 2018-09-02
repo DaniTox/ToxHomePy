@@ -1409,11 +1409,12 @@ class ToxSocketServer:
                 if "pin" in requestBody:
                     newObject.setValueForKey(requestBody["pin"], "pin")
                 
-                if "add_to_action_id" in requestBody:
-                    actionID = requestBody["add_to_action_id"]
-                    if actionID == None:
-                        self.send_err(conn, "L'id Action che mi hai dato è null.")
-                        return
+                if "actionID" in requestBody and requestBody["actionID"] != None:
+                    # actionID = requestBody["actionID"]
+                    # if actionID == None:
+                    #     self.send_err(conn, "L'id Action che mi hai dato è null.")
+                    #     return
+                    actionID = requestBody["actionID"]
                     realAction = ToxMain.shared().getRealObjectFromID(actionID)
                     if realAction == None:
                         self.send_err(conn, "Action non trovata con questo ID.")
@@ -1821,7 +1822,7 @@ class ToxSocketServer:
 
             objID = requestBody["obj_id"]
             actionID = requestBody["action_id"]
-            realAction = ToxMain.shared().getRealObjectFromID(objID)
+            realAction = ToxMain.shared().getRealObjectFromID(actionID)
             if realAction == None:
                 self.send_err(conn, "Non ho trovato nessuna azione con questo ID")
                 return
@@ -1834,7 +1835,28 @@ class ToxSocketServer:
             else:
                 self.send_msg(conn, "Oggetto rimosso dall'azione correttamente")
                 
-
+        elif requestType == "show_objects_of_action":
+            if "action_id" not in requestBody:
+                self.send_err(conn, "Non c'è l'action_id nella tua richiesta")
+                return
+            actionID = requestBody["action_id"]
+            realAction = ToxMain.shared().getRealObjectFromID(actionID)
+            if realAction == None:
+                self.send_err(conn, "Non ho trovato nessun'azione con questo ID")
+                return
+            
+            idsList = realAction.actionObjectsIDs
+            actionObjects = list()
+            for idObject in idsList:
+                realObject = ToxMain.shared().getRealObjectFromID(idObject)
+                if realObject != None:
+                    actionObjects.append(realObject.generateDict())
+            
+            returnDict = {
+                "code" : "OK",
+                "response_objects" : actionObjects
+            }
+            conn.send(json.dumps(returnDict))
             
             #TODO: ottenere l'actiond dall'id della richiesta e rimuovere l'id object dalla lista degli id dell'azione
             # Questo deve provocare un salvataggio tramite commitObjects()
@@ -1860,7 +1882,9 @@ class ToxSocketServer:
             # dell'action+
             #Questo nuovo VC inoltre dovrà essere una tableView che mostra tutti gli oggetti dell'action fetchandoli \n
             # o dal server, o dalla lista degli Ids scaricata in locale.
-            
+
+
+            #TODO: il server non salva quando metto degli oggeti nella lista di un'azione. Risolvere.
         #conn.send("Scemotto! Hide and Seek\n")
         conn.close()
 

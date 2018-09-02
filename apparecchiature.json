@@ -1,10 +1,97 @@
 {
   "Objects": [
     {
+      "actionObjectsIDs": [
+        7106,
+        3991
+      ],
+      "className": "ToxAction",
+      "customVariables": {
+        "description": {
+          "value": "Asd",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Accendi con delay",
+          "valueType": "String"
+        }
+      },
+      "description": "Asd",
+      "handlers": {
+        "Azione conclusa": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "Esegui azione",
+              "objectId": 7309
+            },
+            "id": 6808,
+            "id_object_owner": 7756
+          }
+        ],
+        "Azione da eseguire": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "fire",
+              "objectId": 3991
+            },
+            "id": 7321,
+            "id_object_owner": 7756
+          }
+        ]
+      },
+      "id": 7756,
+      "isVirtual": true,
+      "messages": [
+        "Esegui azione",
+        "Azione conclusa"
+      ],
+      "name": "Accendi con delay"
+    },
+    {
+      "actionObjectsIDs": [
+        4633
+      ],
+      "className": "ToxAction",
+      "customVariables": {
+        "description": {
+          "value": "Asd",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Spegni con delay",
+          "valueType": "String"
+        }
+      },
+      "description": "Asd",
+      "handlers": {
+        "Azione conclusa": [],
+        "Azione da eseguire": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "fire",
+              "objectId": 4633
+            },
+            "id": 7217,
+            "id_object_owner": 7309
+          }
+        ]
+      },
+      "id": 7309,
+      "isVirtual": true,
+      "messages": [
+        "Esegui azione",
+        "Azione conclusa"
+      ],
+      "name": "Spegni con delay"
+    },
+    {
       "className": "Lampada",
       "customVariables": {
         "description": {
-          "value": "Null",
+          "value": "Niente",
           "valueType": "String"
         },
         "location": {
@@ -20,13 +107,13 @@
           "valueType": "Int"
         }
       },
-      "description": "Null",
+      "description": "Niente",
       "handlers": {
         "Accensione": [],
         "Spegnimento": []
       },
-      "id": 7399,
-      "isOn": false,
+      "id": 7106,
+      "isOn": true,
       "isVirtual": false,
       "messages": [
         "deactivate",
@@ -38,48 +125,95 @@
       "className": "Timer",
       "customVariables": {
         "description": {
-          "value": "Null",
+          "value": "Asd",
           "valueType": "String"
         },
         "durata": {
-          "value": 10,
+          "value": 3.0,
           "valueType": "Float"
         },
         "name": {
-          "value": "Timer spegnimento",
+          "value": "Timer accensione con delay",
           "valueType": "String"
         }
       },
-      "description": "Null",
+      "description": "Asd",
       "handlers": {
         "Azione da svolgere": [
           {
             "args": null,
             "function": {
               "functionName": "activate",
-              "objectId": 7399
+              "objectId": 7106
             },
-            "id": 6222,
-            "id_object_owner": 1497
+            "id": 6542,
+            "id_object_owner": 3991
           },
           {
             "args": null,
             "function": {
-              "functionName": "activate",
-              "objectId": 2132
+              "functionName": "Azione conclusa",
+              "objectId": 7756
             },
-            "id": 8400,
-            "id_object_owner": 1497
+            "id": 9483,
+            "id_object_owner": 3991
           }
         ]
       },
-      "id": 1497,
+      "id": 3991,
       "isVirtual": true,
       "messages": [
         "fire",
         "activate"
       ],
-      "name": "Timer spegnimento"
+      "name": "Timer accensione con delay"
+    },
+    {
+      "className": "Timer",
+      "customVariables": {
+        "description": {
+          "value": "Con delay",
+          "valueType": "String"
+        },
+        "durata": {
+          "value": 3.0,
+          "valueType": "Float"
+        },
+        "name": {
+          "value": "Timer spegnimento con delay",
+          "valueType": "String"
+        }
+      },
+      "description": "Con delay",
+      "handlers": {
+        "Azione da svolgere": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "deactivate",
+              "objectId": 7106
+            },
+            "id": 8102,
+            "id_object_owner": 4633
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "Azione conclusa",
+              "objectId": 7309
+            },
+            "id": 1316,
+            "id_object_owner": 4633
+          }
+        ]
+      },
+      "id": 4633,
+      "isVirtual": true,
+      "messages": [
+        "fire",
+        "activate"
+      ],
+      "name": "Timer spegnimento con delay"
     }
   ]
 }
