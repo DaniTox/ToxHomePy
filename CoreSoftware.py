@@ -1034,6 +1034,10 @@ class ToxMain:
         newObj.serializedHandlers = dictObj["handlers"]
         newObj.generateHandlers()
 
+        if "actionObjectsIDs" in dictObj:
+            objectsList = dictObj["actionObjectsIDs"]
+            newObj.actionObjectsIDs = objectsList
+
         customSerializedVariables = dictObj["customVariables"]
         for key in customSerializedVariables.keys():
             serVar = customSerializedVariables[key]
