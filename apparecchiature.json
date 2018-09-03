@@ -2,8 +2,8 @@
   "Objects": [
     {
       "actionObjectsIDs": [
-        7106,
-        3991
+        3991,
+        7106
       ],
       "className": "ToxAction",
       "customVariables": {
@@ -51,7 +51,8 @@
     },
     {
       "actionObjectsIDs": [
-        4633
+        4633,
+        7106
       ],
       "className": "ToxAction",
       "customVariables": {
@@ -113,7 +114,7 @@
         "Spegnimento": []
       },
       "id": 7106,
-      "isOn": true,
+      "isOn": false,
       "isVirtual": false,
       "messages": [
         "deactivate",

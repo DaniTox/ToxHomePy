@@ -1134,7 +1134,7 @@ class ToxMain:
         if actions == None or len(actions) < 1:
             return
         for action in actions:
-            actionObjectsIDs = action.actionObjectsIDs()
+            actionObjectsIDs = action.actionObjectsIDs
             for objID in actionObjectsIDs:
                 realObject = self.getRealObjectFromID(objID)
                 if realObject == None:
@@ -1194,7 +1194,7 @@ class ToxSerial:
             ToxSerial.__instance = self
 
     def start(self):
-        self.ser = serial.Serial("/dev/cu.usbmodem142301", 9600, timeout=3, write_timeout=3)
+        self.ser = serial.Serial("/dev/cu.usbmodem14231", 9600, timeout=3, write_timeout=3)
         # self.ser = serial.Serial("/dev/ttyACM0", 9600, timeout=0)
         time.sleep(2.5)
         start_new_thread(ToxSerialQueueUpdater.shared().start, ())
@@ -1410,10 +1410,6 @@ class ToxSocketServer:
                     newObject.setValueForKey(requestBody["pin"], "pin")
                 
                 if "actionID" in requestBody and requestBody["actionID"] != None:
-                    # actionID = requestBody["actionID"]
-                    # if actionID == None:
-                    #     self.send_err(conn, "L'id Action che mi hai dato è null.")
-                    #     return
                     actionID = requestBody["actionID"]
                     realAction = ToxMain.shared().getRealObjectFromID(actionID)
                     if realAction == None:
@@ -1857,6 +1853,56 @@ class ToxSocketServer:
                 "response_objects" : actionObjects
             }
             conn.send(json.dumps(returnDict))
+            
+        elif requestType == "add_existing_object_to_action":
+            if "actionID" not in requestBody:
+                self.send_err(conn, "Non ho trovato l'actionID nella tua richiesta")
+                return
+            if "obj_id" not in requestBody:
+                self.send_err(conn, "Non ho trovato l'obj_id nella tua richiesta")
+                return
+
+            actionID = requestBody["actionID"]
+            objID = requestBody["obj_id"]
+
+            realAction = ToxMain.shared().getRealObjectFromID(actionID)
+            if realAction == None:
+                self.send_err(conn, "Non ho trovato nessuna azione con questo ID")
+                return
+            
+            if objID in realAction.actionObjectsIDs:
+                self.send_err(conn, "Oggetto già presente nella lista dell'azione")
+                return
+            else:
+                realAction.actionObjectsIDs.append(objID)
+                self.send_msg(conn, "Oggetto aggiunto all'azione correttamente")
+        elif requestType == "add_some_existing_objects_to_action":
+            if "actionID" not in requestBody:
+                self.send_err(conn, "Non ho trovato l'actionID nella tua richiesta")
+                return
+            
+            if "objects_ids" not in requestBody:
+                self.send_err(conn, "Non mi hai dato la lista di oggetti da aggiungere")
+                return
+
+            actionID = requestBody["actionID"]
+            objectsIDs = requestBody["objects_ids"]
+
+            if type(objectsIDs) is not list:
+                self.send_err(conn, "Bastardo! Hai provato a mandarmi un input corrotto come objects_ids per hackerarmi. Invece ti ho inculato bene")
+                return
+
+            realAction = ToxMain.shared().getRealObjectFromID(actionID)
+            if realAction == None:
+                self.send_err(conn, "Non ho trovato nessuna azione con questo ID")
+                return
+
+            for objID in objectsIDs:
+                if objID not in realAction.actionObjectsIDs:
+                    realAction.actionObjectsIDs.append(objID)
+
+            ToxMain.shared().commitObjects()
+            self.send_msg(conn, "Oggetti aggiunti all'azione correttamente")
             
             #TODO: ottenere l'actiond dall'id della richiesta e rimuovere l'id object dalla lista degli id dell'azione
             # Questo deve provocare un salvataggio tramite commitObjects()
