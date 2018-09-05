@@ -110,6 +110,8 @@ class Object(ToxSerializeableObjectBase):
 
         self.className = "Object"
 
+        self.liveProperty = ""
+
         self.id = None
         if autoID == True:
             self.id = ToxIDCreator.shared().createUniqueID()
@@ -479,12 +481,16 @@ class Timer(VirtualObject):
         else:
             duration = 0.0
         duration = float(duration)
+
+        self.liveProperty = "Sto contando i secondi..."
+
         t = threading.Timer(duration, self.activate)
         t.start()
 
     def activate(self):
         print("Timer: sto dicendo agli oggetti di eseguire le azioni che hai richiesto...")
         self.executeHandlers("Azione da svolgere")
+        self.liveProperty = "In Riposo"
 
     @staticmethod
     def class_():
@@ -514,7 +520,7 @@ class WeatherChecker(VirtualObject):
             "Qualsiasi" : list()
         }
 
-    def checkWeather(self):
+    def fetchWeatherFromAPI(self):
         print(self.name + ": Controllo il tempo...")
 
         customLocation = self.customVariables["location_temperatura"].value
@@ -530,10 +536,9 @@ class WeatherChecker(VirtualObject):
             return
         w = observation.get_weather()
         print(str(w._status))
-        
-        code = w._weather_code
-        groupCode = str(code)[0]
+        return w._weather_code
 
+    def getWeatherName(self, code):
         weatherDict = {
             "2" : "Temporali",
             "3" : "Pioviggino",
@@ -542,15 +547,27 @@ class WeatherChecker(VirtualObject):
             "7" : "Nebbia",
             "8" : "Nuvoloso",
         }
+        return weatherDict[code]
+
+    def checkWeather(self):
+        code = self.fetchWeatherFromAPI()
+        groupCode = str(code)[0]
 
         if code == 800:
             self.executeHandlers("Sereno")
         else:
-            self.executeHandlers(weatherDict[str(groupCode)])
+            self.executeHandlers(self.getWeatherName([str(groupCode)]))
         self.executeHandlers("Qualsiasi")
 
-        #print(self.name + ": Codice non corrisponde a niente")
 
+    def live(self):
+        code = self.fetchWeatherFromAPI()
+        groupCode = str(code)[0]
+
+        if code == 800:
+            self.liveProperty = "Sereno"
+        else:
+            self.liveProperty = self.getWeatherName(groupCode)
 
     @staticmethod
     def class_():
@@ -573,14 +590,7 @@ class InternetTemperature(VirtualObject):
             "Condizione verificata" : list()
         }
 
-    def checkTemperature(self):
-        logic_condition = self.customVariables["condizione"].value
-        if logic_condition == None:
-            return
-        if len(logic_condition) < 2:
-            print("Condizione non valida...")
-            return
-        
+    def fetchTemperatureFromAPI(self):
         customLocation = self.customVariables["location_temperatura"].value
         if customLocation == None:
             customLocation = "brescia"
@@ -594,8 +604,17 @@ class InternetTemperature(VirtualObject):
 
         w = observation.get_weather()
         curr_temperature = int(w.get_temperature('celsius')["temp"])
+        return curr_temperature
 
-
+    def checkTemperature(self):
+        logic_condition = self.customVariables["condizione"].value
+        if logic_condition == None:
+            return
+        if len(logic_condition) < 2:
+            print("Condizione non valida...")
+            return
+        
+        curr_temperature = self.fetchTemperatureFromAPI()
         print(self.name + ".curr_temperature: " + str(curr_temperature))
 
         operator = logic_condition[0]
@@ -615,8 +634,10 @@ class InternetTemperature(VirtualObject):
                 self.executeHandlers("Condizione verificata")
         else:
             return
-       
-        
+
+    def live(self):
+        self.liveProperty = str(self.fetchTemperatureFromAPI) + "° C"   
+    
     @staticmethod
     def class_():
         return "InternetTemperature"
@@ -730,6 +751,9 @@ class Lampada(ConcreteObject):
                 msg = ToxSerialMessage.create(SerialMessageType.SPEGNIMENTO, pin)
                 ToxSerial.shared().addToQueue(msg)
             self.executeHandlers("Spegnimento")
+
+    def live(self):
+        self.liveProperty = "Accesa" if self.isOn == True else "Spenta"
 
     @staticmethod
     def class_():
@@ -1907,34 +1931,21 @@ class ToxSocketServer:
 
             ToxMain.shared().commitObjects()
             self.send_msg(conn, "Oggetti aggiunti all'azione correttamente")
+        elif requestType == "show_live_objects":
+            realObjects = ToxMain.shared().realObjects
+            liveObjects = list()
+            for obj in realObjects:
+                try:
+                    obj.live()
+                    liveObjects.append(obj.generateDict())
+                except:
+                    pass
             
-            #TODO: ottenere l'actiond dall'id della richiesta e rimuovere l'id object dalla lista degli id dell'azione
-            # Questo deve provocare un salvataggio tramite commitObjects()
-            # la lista degli objects id deve salvarsi con l'azione in json
-            #Quando viene rimosso un oggetto con la solita funzione, deve attivare l'esecuzione di una funzione \n
-            # che pulisce in tutte le actions l'id dell'oggetto appena eliminato.
-
-
-            #TODO XCODE: nella Home, mettere un Segment Control per indicare se visualizzare le actions o gli oggetti \n
-            # di default: gli oggetti.
-            # se seg dice oggetti, l'app funziona come fa adesso.
-            # altrimenti se è in Actions, il pulsante + apre un VC con la creazione dell'Action\n (VC diverso) \n
-            # o modificato facendo selezionare solo ToxAction come classe.
-            # se è in actions, per entrare nella VC degli Handlers, bisogna trascinare per vedere tutte le azioni \n
-            # se si preme, si apre un vc modificato della HomeVC che mostra tutti gli oggetti della ToxAction
-            # da qui si può rimuovere l'oggetto dall'Action, rimuoverlo completamente e modificare le properties. 
-
-            #TODO XCODE: decidere se creare una classe nuova di ToxAction che deriva da ToxObject o lasciare ToxObject
-
-            #TODO XCODE: mettere l'azione della tableView di aggiungere objects in un action.
-            # inoltre, in quel nuovo VC, sul pulsante più premuto, chiedere se si vuole creare un nuovo oggetto \n
-            # all'interno dell'azione o aggiungerne uno esistente (preso dalla sezione oggetti) sempre all'interno \n
-            # dell'action+
-            #Questo nuovo VC inoltre dovrà essere una tableView che mostra tutti gli oggetti dell'action fetchandoli \n
-            # o dal server, o dalla lista degli Ids scaricata in locale.
-
-
-            #TODO: il server non salva quando metto degli oggeti nella lista di un'azione. Risolvere.
+            returnDict = {
+                "code" : "OK",
+                "response_objects" : liveObjects
+            }
+            conn.send(json.dumps(returnDict))
         #conn.send("Scemotto! Hide and Seek\n")
         conn.close()
 
