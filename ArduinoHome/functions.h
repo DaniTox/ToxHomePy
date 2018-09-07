@@ -7,6 +7,11 @@ int getpin(int);
 int* getps();
 void sendsts();
 
+void setPinAsReadOnly(int);
+bool isReadOnly(int);
+
+bool idDigitalWriteEnabled(int);
+
 const char startOfNumberDelimiter = '<';
 const char endOfNumberDelimiter   = '>';
 
@@ -16,6 +21,7 @@ const int PINS_N = 14;
 
 const char* ERRIN = "{ \"error\" : \"Struttura messaggio non valida\" }";
 
-
+int readOnlyPins[7] = {};
+int pinsIndex = 0;
 
 

@@ -5,6 +5,7 @@ void setup() {
 
   for (int i = 0; i < 8; i++) {
     pinMode(i, INPUT);
+    setPinAsReadOnly(i);
   }
   for (int i = 8; i < 14; i++) {
     pinMode(i, OUTPUT);
@@ -15,8 +16,6 @@ void loop() {
   if (Serial.available()) {
     handleInput();
   }
-  //while(Serial.available())
-    //Serial.read();
 }
 
 
@@ -123,6 +122,14 @@ void sendsts() {
   free(arr);
 }
 
+void setPinAsReadOnly(int pin) {
+  readOnlyPins[pinsIndex] = pin;
+  pinsIndex++;
+}
+
+bool isReadOnly(int pin) {
+  
+}
 
 void serialFlush(){
   while(Serial.available() > 0) {
