@@ -828,6 +828,12 @@ class IRSensor(ConcreteObject):
             "Disattiva Allarme" : self.deactivateAlarm
         }
 
+    def activateAlarm(self):
+        self.customVariables["Allarme Attiva"] = ToxVariable("Int", 1)
+
+    def deactivateAlarm(self):
+        self.customVariables["Allarme Attiva"] = ToxVariable("Int", 0)
+
     def update(self, value):
         if value == None:
             return
@@ -845,6 +851,11 @@ class IRSensor(ConcreteObject):
                 return
             self.hasBeenAlerted = False
     
+    def live(self):
+        alarmState = "[Allarme attiva] - " if self.get("Allarme Attiva") == 1 else "[Allarme disattiva] - "
+        rilevamento = "Nessun movimento" if self.hasBeenAlerted == False else "Movimento rilevato..."
+        self.liveProperty = alarmState + rilevamento
+
     @staticmethod
     def class_():
         return "IRSensor"

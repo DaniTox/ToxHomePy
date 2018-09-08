@@ -118,7 +118,7 @@
       "id": 7106,
       "isOn": false,
       "isVirtual": false,
-      "liveProperty": "",
+      "liveProperty": "Spenta",
       "messages": [
         "deactivate",
         "activate"
@@ -247,7 +247,7 @@
       },
       "id": 2023,
       "isVirtual": true,
-      "liveProperty": "",
+      "liveProperty": "21\u00b0 C",
       "messages": [
         "Controlla la temperatura"
       ],
@@ -282,7 +282,7 @@
       },
       "id": 7949,
       "isVirtual": true,
-      "liveProperty": "",
+      "liveProperty": "Sereno",
       "messages": [
         "Controlla il tempo"
       ],
@@ -292,7 +292,7 @@
       "className": "Buzzer",
       "customVariables": {
         "description": {
-          "value": "Stfu",
+          "value": "Asd",
           "valueType": "String"
         },
         "location": {
@@ -308,20 +308,59 @@
           "valueType": "Int"
         }
       },
-      "description": "Stfu",
+      "description": "Asd",
       "handlers": {
         "Attivato": [],
         "Disattivato": []
       },
-      "id": 2934,
+      "id": 1485,
       "isOn": false,
       "isVirtual": false,
-      "liveProperty": "",
+      "liveProperty": "Spento",
       "messages": [
         "Disattiva",
         "Attiva"
       ],
       "name": "Buzzer"
+    },
+    {
+      "className": "IRSensor",
+      "customVariables": {
+        "Allarme Attiva": {
+          "value": 0,
+          "valueType": "Int"
+        },
+        "description": {
+          "value": "Asd",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Sensore",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": null,
+          "valueType": "Int"
+        }
+      },
+      "description": "Asd",
+      "handlers": {
+        "Rilevato intruso": [],
+        "Rilevato movimento": []
+      },
+      "hasBeenAlerted": false,
+      "id": 5702,
+      "isVirtual": false,
+      "liveProperty": "[Allarme disattiva] - Nessun movimento",
+      "messages": [
+        "Attiva Allarme",
+        "Disattiva Allarme"
+      ],
+      "name": "Sensore"
     }
   ]
 }
