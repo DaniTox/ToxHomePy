@@ -10,6 +10,7 @@ void setup() {
   for (int i = 8; i < 14; i++) {
     pinMode(i, OUTPUT);
   }
+
 }
 
 void loop() {  
@@ -61,12 +62,20 @@ void handleNumber(int number) {
       }
       break;
     case 1:
-      digitalWrite(pin, HIGH);
+      if (!isReadOnly(pin)) {
+        digitalWrite(pin, HIGH);  
+      } else {
+        Serial.print("Read-Only pin. Non procedo... ");
+      }
       Serial.print("OK: ");
       Serial.println(number);
       break;
     case 2:
-      digitalWrite(pin, LOW);
+      if (!isReadOnly(pin)) {
+        digitalWrite(pin, LOW);
+      } else {
+        Serial.print("Read-Only pin. Non procedo...");
+      }
       Serial.print("OK: ");
       Serial.println(number);
       break;
@@ -128,7 +137,12 @@ void setPinAsReadOnly(int pin) {
 }
 
 bool isReadOnly(int pin) {
-  
+  for (int i = 0; i < 7; i++) {
+    if (readOnlyPins[i] == pin) {
+      return true;
+    }
+  }
+  return false;
 }
 
 void serialFlush(){

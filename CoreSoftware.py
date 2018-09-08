@@ -636,7 +636,7 @@ class InternetTemperature(VirtualObject):
             return
 
     def live(self):
-        self.liveProperty = str(self.fetchTemperatureFromAPI) + "° C"   
+        self.liveProperty = str(self.fetchTemperatureFromAPI()) + "° C"   
     
     @staticmethod
     def class_():
@@ -743,13 +743,14 @@ class Lampada(ConcreteObject):
             self.executeHandlers("Accensione")
     
     def deactivate(self):
-        if self.isOn == True:
+        #if self.isOn == True:
             # self.isOn = False
             #disattiva il pin
-            pin = self.customVariables["pin"].value
-            if pin != None:
-                msg = ToxSerialMessage.create(SerialMessageType.SPEGNIMENTO, pin)
-                ToxSerial.shared().addToQueue(msg)
+        pin = self.customVariables["pin"].value
+        if pin != None:
+            msg = ToxSerialMessage.create(SerialMessageType.SPEGNIMENTO, pin)
+            ToxSerial.shared().addToQueue(msg)
+        if self.isOn == True:    
             self.executeHandlers("Spegnimento")
 
     def live(self):
@@ -759,6 +760,94 @@ class Lampada(ConcreteObject):
     def class_():
         return "Lampada"
         
+class Buzzer(ConcreteObject):
+    def __init__(self, autoID=True):
+        ConcreteObject.__init__(self, autoID)
+        self.className = "Buzzer"
+
+        self.handlers = {
+            "Attivato" : list(),
+            "Disattivato" : list()
+        }
+
+        self.messages = {
+            "Attiva" : self.activate,
+            "Disattiva" : self.deactivate
+        }
+
+        self.isOn = False
+
+    def update(self, value):
+        if value == None:
+            return
+        elif value == 0:
+            self.isOn = False
+        elif value == 1:
+            self.isOn = True
+        else:
+            return 
+
+    def activate(self):
+        if self.isOn == False:
+            pin = self.customVariables["pin"].value
+            if pin != None:
+                msg = ToxSerialMessage.create(SerialMessageType.ACCENSIONE, pin)
+                ToxSerial.shared().addToQueue(msg)
+            self.executeHandlers("Attivato")
+
+    def deactivate(self):
+        if self.isOn == True:
+            pin = self.customVariables["pin"].value
+            if pin != None:
+                msg = ToxSerialMessage.create(SerialMessageType.SPEGNIMENTO, pin)
+                ToxSerial.shared().addToQueue(msg)
+            self.executeHandlers("Disattivato")
+    
+    def live(self):
+        self.liveProperty = "Sta suonando..." if self.isOn else "Spento"
+
+    @staticmethod
+    def class_():
+        return "Buzzer"
+
+
+class IRSensor(ConcreteObject):
+    def __init__(self, autoID = True):
+        ConcreteObject.__init__(self, autoID)
+        self.className = "IRSensor"
+        self.customVariables["Allarme Attiva"] = ToxVariable("Int", 0)
+        self.hasBeenAlerted = False
+
+        self.handlers = {
+            "Rilevato movimento" : list(),
+            "Rilevato intruso" : list()
+        }
+
+        self.messages = {
+            "Attiva Allarme" : self.activateAlarm,
+            "Disattiva Allarme" : self.deactivateAlarm
+        }
+
+    def update(self, value):
+        if value == None:
+            return
+
+        if value == 1:
+            if self.hasBeenAlerted == True: #cioè è già acceso da prima
+                return
+            if self.get("Allarme Attiva") == 1:
+                self.executeHandlers("Rilevato intruso")
+            else:
+                self.executeHandlers("Rilevato movimento")
+            self.hasBeenAlerted = True
+        elif value == 0:
+            if self.hasBeenAlerted == False:
+                return
+            self.hasBeenAlerted = False
+    
+    @staticmethod
+    def class_():
+        return "IRSensor"
 
 class ToxHandler(ToxSerializeableObjectBase):
     def __init__(self, autoID = True):
@@ -1040,6 +1129,8 @@ class ToxMain:
             Lampada.class_(),
             InternetTemperature.class_(),
             NumericalCondition.class_(),
+            IRSensor.class_(),
+            Buzzer.class_()
         ]
         self.isTesting = False
         #self.generateObjectsHandlers()
@@ -1222,7 +1313,7 @@ class ToxSerial:
             ToxSerial.__instance = self
 
     def start(self):
-        self.ser = serial.Serial("/dev/cu.usbmodem14231", 9600, timeout=3, write_timeout=3)
+        self.ser = serial.Serial("/dev/cu.usbmodem1411", 9600, timeout=3, write_timeout=3)
         # self.ser = serial.Serial("/dev/ttyACM0", 9600, timeout=0)
         time.sleep(2.5)
         start_new_thread(ToxSerialQueueUpdater.shared().start, ())

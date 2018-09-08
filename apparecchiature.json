@@ -43,6 +43,7 @@
       },
       "id": 7756,
       "isVirtual": true,
+      "liveProperty": "",
       "messages": [
         "Esegui azione",
         "Azione conclusa"
@@ -82,6 +83,7 @@
       },
       "id": 7309,
       "isVirtual": true,
+      "liveProperty": "",
       "messages": [
         "Esegui azione",
         "Azione conclusa"
@@ -116,6 +118,7 @@
       "id": 7106,
       "isOn": false,
       "isVirtual": false,
+      "liveProperty": "",
       "messages": [
         "deactivate",
         "activate"
@@ -163,6 +166,7 @@
       },
       "id": 3991,
       "isVirtual": true,
+      "liveProperty": "",
       "messages": [
         "fire",
         "activate"
@@ -210,11 +214,114 @@
       },
       "id": 4633,
       "isVirtual": true,
+      "liveProperty": "",
       "messages": [
         "fire",
         "activate"
       ],
       "name": "Timer spegnimento con delay"
+    },
+    {
+      "className": "InternetTemperature",
+      "customVariables": {
+        "condizione": {
+          "value": null,
+          "valueType": "String"
+        },
+        "description": {
+          "value": "Asd",
+          "valueType": "String"
+        },
+        "location_temperatura": {
+          "value": null,
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Temperatura",
+          "valueType": "String"
+        }
+      },
+      "description": "Asd",
+      "handlers": {
+        "Condizione verificata": []
+      },
+      "id": 2023,
+      "isVirtual": true,
+      "liveProperty": "",
+      "messages": [
+        "Controlla la temperatura"
+      ],
+      "name": "Temperatura"
+    },
+    {
+      "className": "WeatherChecker",
+      "customVariables": {
+        "description": {
+          "value": "Asd",
+          "valueType": "String"
+        },
+        "location_temperatura": {
+          "value": null,
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Tempo",
+          "valueType": "String"
+        }
+      },
+      "description": "Asd",
+      "handlers": {
+        "Nebbia": [],
+        "Neve": [],
+        "Nuvoloso": [],
+        "Pioggia": [],
+        "Pioviggino": [],
+        "Qualsiasi": [],
+        "Sereno": [],
+        "Temporali": []
+      },
+      "id": 7949,
+      "isVirtual": true,
+      "liveProperty": "",
+      "messages": [
+        "Controlla il tempo"
+      ],
+      "name": "Tempo"
+    },
+    {
+      "className": "Buzzer",
+      "customVariables": {
+        "description": {
+          "value": "Stfu",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Buzzer",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": 12,
+          "valueType": "Int"
+        }
+      },
+      "description": "Stfu",
+      "handlers": {
+        "Attivato": [],
+        "Disattivato": []
+      },
+      "id": 2934,
+      "isOn": false,
+      "isVirtual": false,
+      "liveProperty": "",
+      "messages": [
+        "Disattiva",
+        "Attiva"
+      ],
+      "name": "Buzzer"
     }
   ]
 }
