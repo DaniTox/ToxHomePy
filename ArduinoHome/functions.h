@@ -1,3 +1,4 @@
+
 void handleInput();
 void handleNumber(int);
 
@@ -24,4 +25,10 @@ const char* ERRIN = "{ \"error\" : \"Struttura messaggio non valida\" }";
 int readOnlyPins[7] = {};
 int pinsIndex = 0;
 
+typedef struct ToxObject {
+  char *className;
+} ToxObject;
 
+int16_t dallas(int,byte);
+
+void freeObjectPin(int);

@@ -1,4 +1,8 @@
 #include "functions.h"
+#include <OneWire.h>
+
+
+ToxObject* objects[14];
 
 void setup() {
   Serial.begin(9600);
@@ -79,14 +83,50 @@ void handleNumber(int number) {
       Serial.print("OK: ");
       Serial.println(number);
       break;
-    case 9:
-      //int* arr = getps();    <-- Memory management is hard :(
-      //sendsts(arr);          <-- Memory management is hard :(
+    case 3:
+    {
+      freeObjectPin(pin);
+      createCustomObject(pin, "DallasTemperature");
+    }
+    break;
+    case 4:
+    {
+      freeObjectPin(pin);
+      createCustomObject("ProvaClassName")
+    }
+    break;
+    case 5:
+    {
+      freeObjectPin(pin);
+      createCustomObject(pin, "Servo");
+    }
+    break;
+    case 6:
+    {
+      for (int i = 0; i < 14; i++) {
+        ToxObject *obj = objects[i];
+        int z = (unsigned int)obj;
+        Serial.print("0x"); Serial.print(z, HEX); Serial.print(" - ");
+        Serial.println(obj->className);
+      }
+    }
+    break; 
+    case 9:  
       sendsts();
-      //serialFlush();
       break;
   }
   
+}
+
+void createCustomObject(int pin, char *className) {
+    ToxObject *object = (ToxObject *)malloc(sizeof(ToxObject));
+    object->className = className;
+    objects[pin] = object;
+}
+
+void freeObjectPin(int pin) {
+  ToxObject *old = objects[pin];
+  free(old);
 }
 
 int getobit(int num) {
@@ -104,7 +144,19 @@ int *getps() {
         p[i] = 0;
         continue;
       }
-      p[i] = digitalRead(i);
+      if (objects[i] == NULL) {
+        p[i] = digitalRead(i);
+      } else {
+        ToxObject *object = objects[i];
+        if (strcmp(object->className, "DallasTemperature ")) {
+          /*OneWire oneWire(i);
+          DallasTemperature sensors(&oneWire);
+          sensors.begin();
+          sensors.requestTemperatures();
+          p[i] = (int)sensors.getTempCByIndex(0);*/
+          p[i] = (int)dallas(i,0);
+        }
+      }
    }
    return p;
 }
@@ -150,3 +202,38 @@ void serialFlush(){
     char t = Serial.read();
   }
 }
+
+int16_t dallas(int x, byte start) {
+  OneWire ds(x);
+  byte i;
+  byte data[2];
+  int16_t result;
+
+  do {
+    ds.reset();
+    ds.write(0xCC);
+    ds.write(0xBE);
+    for (i = 0; i < 2; i++) data[i] = ds.read();
+    result = (data[1]<<8) |data[0];
+    result>>=4; if (data[1]&128) result|=61440;
+    if (data[0]&8) ++result;
+    ds.reset();
+    ds.write(0xCC);
+    ds.write(0x44, 1);
+    if (start) delay(1000);
+    
+  } while (start--);
+
+  
+  return result;
+}
+
+
+
+
+
+
+
+
+
+
