@@ -1324,7 +1324,7 @@ class ToxSerial:
             ToxSerial.__instance = self
 
     def start(self):
-        self.ser = serial.Serial("/dev/cu.usbmodem1411", 9600, timeout=3, write_timeout=3)
+        self.ser = serial.Serial("/dev/cu.usbmodem14231", 9600, timeout=3, write_timeout=3)
         # self.ser = serial.Serial("/dev/ttyACM0", 9600, timeout=0)
         time.sleep(2.5)
         start_new_thread(ToxSerialQueueUpdater.shared().start, ())

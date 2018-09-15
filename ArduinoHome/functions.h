@@ -32,3 +32,7 @@ typedef struct ToxObject {
 int16_t dallas(int,byte);
 
 void freeObjectPin(int);
+void createCustomObject(int, char*);
+void writeHighPin(int);
+
+void printNumberReceived(int);

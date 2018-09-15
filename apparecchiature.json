@@ -1,96 +1,6 @@
 {
   "Objects": [
     {
-      "actionObjectsIDs": [
-        3991,
-        7106
-      ],
-      "className": "ToxAction",
-      "customVariables": {
-        "description": {
-          "value": "Asd",
-          "valueType": "String"
-        },
-        "name": {
-          "value": "Accendi con delay",
-          "valueType": "String"
-        }
-      },
-      "description": "Asd",
-      "handlers": {
-        "Azione conclusa": [
-          {
-            "args": null,
-            "function": {
-              "functionName": "Esegui azione",
-              "objectId": 7309
-            },
-            "id": 6808,
-            "id_object_owner": 7756
-          }
-        ],
-        "Azione da eseguire": [
-          {
-            "args": null,
-            "function": {
-              "functionName": "fire",
-              "objectId": 3991
-            },
-            "id": 7321,
-            "id_object_owner": 7756
-          }
-        ]
-      },
-      "id": 7756,
-      "isVirtual": true,
-      "liveProperty": "",
-      "messages": [
-        "Esegui azione",
-        "Azione conclusa"
-      ],
-      "name": "Accendi con delay"
-    },
-    {
-      "actionObjectsIDs": [
-        4633,
-        7106
-      ],
-      "className": "ToxAction",
-      "customVariables": {
-        "description": {
-          "value": "Asd",
-          "valueType": "String"
-        },
-        "name": {
-          "value": "Spegni con delay",
-          "valueType": "String"
-        }
-      },
-      "description": "Asd",
-      "handlers": {
-        "Azione conclusa": [],
-        "Azione da eseguire": [
-          {
-            "args": null,
-            "function": {
-              "functionName": "fire",
-              "objectId": 4633
-            },
-            "id": 7217,
-            "id_object_owner": 7309
-          }
-        ]
-      },
-      "id": 7309,
-      "isVirtual": true,
-      "liveProperty": "",
-      "messages": [
-        "Esegui azione",
-        "Azione conclusa"
-      ],
-      "name": "Spegni con delay"
-    },
-    {
       "className": "Lampada",
       "customVariables": {
         "description": {
@@ -118,7 +28,7 @@
       "id": 7106,
       "isOn": false,
       "isVirtual": false,
-      "liveProperty": "Spenta",
+      "liveProperty": "",
       "messages": [
         "deactivate",
         "activate"
@@ -247,7 +157,7 @@
       },
       "id": 2023,
       "isVirtual": true,
-      "liveProperty": "21\u00b0 C",
+      "liveProperty": "",
       "messages": [
         "Controlla la temperatura"
       ],
@@ -282,7 +192,7 @@
       },
       "id": 7949,
       "isVirtual": true,
-      "liveProperty": "Sereno",
+      "liveProperty": "",
       "messages": [
         "Controlla il tempo"
       ],
@@ -316,7 +226,7 @@
       "id": 1485,
       "isOn": false,
       "isVirtual": false,
-      "liveProperty": "Spento",
+      "liveProperty": "",
       "messages": [
         "Disattiva",
         "Attiva"
@@ -343,24 +253,141 @@
           "valueType": "String"
         },
         "pin": {
-          "value": null,
+          "value": 4,
           "valueType": "Int"
         }
       },
       "description": "Asd",
       "handlers": {
-        "Rilevato intruso": [],
-        "Rilevato movimento": []
+        "Rilevato intruso": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "Attiva",
+              "objectId": 1485
+            },
+            "id": 9305,
+            "id_object_owner": 5702
+          }
+        ],
+        "Rilevato movimento": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "Esegui azione",
+              "objectId": 1632
+            },
+            "id": 4465,
+            "id_object_owner": 5702
+          }
+        ]
       },
       "hasBeenAlerted": false,
       "id": 5702,
       "isVirtual": false,
-      "liveProperty": "[Allarme disattiva] - Nessun movimento",
+      "liveProperty": "",
       "messages": [
         "Attiva Allarme",
         "Disattiva Allarme"
       ],
       "name": "Sensore"
+    },
+    {
+      "actionObjectsIDs": [
+        7106,
+        8994
+      ],
+      "className": "ToxAction",
+      "customVariables": {
+        "description": {
+          "value": "Accende il led e lo spegne dopo 1 secondo",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Accendi-Spegni",
+          "valueType": "String"
+        }
+      },
+      "description": "Accende il led e lo spegne dopo 1 secondo",
+      "handlers": {
+        "Azione conclusa": [],
+        "Azione da eseguire": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "activate",
+              "objectId": 7106
+            },
+            "id": 5681,
+            "id_object_owner": 1632
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "fire",
+              "objectId": 8994
+            },
+            "id": 225,
+            "id_object_owner": 1632
+          }
+        ]
+      },
+      "id": 1632,
+      "isVirtual": true,
+      "liveProperty": "",
+      "messages": [
+        "Esegui azione",
+        "Azione conclusa"
+      ],
+      "name": "Accendi-Spegni"
+    },
+    {
+      "className": "Timer",
+      "customVariables": {
+        "description": {
+          "value": "Asd",
+          "valueType": "String"
+        },
+        "durata": {
+          "value": 1.0,
+          "valueType": "Float"
+        },
+        "name": {
+          "value": "SpegniLed",
+          "valueType": "String"
+        }
+      },
+      "description": "Asd",
+      "handlers": {
+        "Azione da svolgere": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "deactivate",
+              "objectId": 7106
+            },
+            "id": 3732,
+            "id_object_owner": 8994
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "Azione conclusa",
+              "objectId": 1632
+            },
+            "id": 5966,
+            "id_object_owner": 8994
+          }
+        ]
+      },
+      "id": 8994,
+      "isVirtual": true,
+      "liveProperty": "In Riposo",
+      "messages": [
+        "fire",
+        "activate"
+      ],
+      "name": "SpegniLed"
     }
   ]
 }
