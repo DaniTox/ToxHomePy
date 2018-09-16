@@ -17,6 +17,7 @@ import traceback
 from weather import Weather, Unit
 import types
 import pyowm
+from datetime import datetime
 
 class ToxSerializeableObjectBase:
     def __init__(self):
@@ -573,6 +574,55 @@ class WeatherChecker(VirtualObject):
     def class_():
         return "WeatherChecker"
 
+class TimeCondition(VirtualObject):
+    def __init__(self, autoID = True):
+        VirtualObject.__init__(self, autoID)
+        self.className = "TimeCondition"
+
+        self.customVariables["condizione"] = ToxVariable("String", None)
+
+        self.messages = {
+            "Controlla la condizione" : self.checkCondition
+        }
+
+        self.handlers = {
+            "Condizione verificata" : list(),
+            "Condizione non verificata" : list()
+        }
+
+    def checkCondition(self):
+        if condizione == None:
+            return
+        condizione = self.get("condizione")
+        if type(condizione) is not str:
+            condizione = str(condizione)
+
+        operator = condizione[0]
+        orario_cond = condizione[1:]
+        ore_cond = orario_cond.split(":")[0]
+        min_cond = orario_cond.split(":")[1]
+
+        curr_time = datetime.now().time()
+        condition_time =  time(int(ore_cond), int(min_cond))
+
+        if operator == ">":
+            if curr_time > condition_time:
+                self.executeHandlers("Condizione verificata")
+            else:
+                self.executeHandlers("Condizione non verificata")
+        elif operator == "<":
+            if curr_time < condtion_time:
+                self.executeHandlers("Condizione verificata")
+            else:
+                self.executeHandlers("Condizione non verificata")
+        elif operator == "=":
+            if curr_time == condition_time:
+                self.executeHandlers("Condizione verificata")
+            else:
+                self.executeHandlers("Condizione non verificata")
+        else:
+            return
+        
 
 class InternetTemperature(VirtualObject):
     def __init__(self, autoID = True):
