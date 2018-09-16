@@ -623,6 +623,33 @@ class TimeCondition(VirtualObject):
         else:
             return
         
+class Tapparelle(ConcreteObject):
+    pass
+
+
+class RealTemperature(ConcreteObject):
+    def __init__(self, autoID = True):
+        ConcreteObject.__init__(self, autoID)
+        self.className = "RealTemperature"
+
+        self.customVariables["condizione"] = ToxVariable("String", None)
+        self.customVariables["temperatura"] = ToxVariable("Int", None)
+
+        self.handlers = {
+            "Condizione verificata" : list()
+        }
+
+    @staticmethod
+    def class_():
+        return "RealTemperature"
+
+    def update(self, value):
+        if value == None:
+            return  
+        self.setPropertyForKey(value, "temperatura")
+
+    def live(self):
+        self.liveProperty = str(self.get("temperatura")) + "° C" 
 
 class InternetTemperature(VirtualObject):
     def __init__(self, autoID = True):
@@ -1189,6 +1216,7 @@ class ToxMain:
             WeatherChecker.class_(),
             Lampada.class_(),
             InternetTemperature.class_(),
+            RealTemperature.class_(),
             NumericalCondition.class_(),
             IRSensor.class_(),
             Buzzer.class_()
