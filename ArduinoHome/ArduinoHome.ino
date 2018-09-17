@@ -2,7 +2,7 @@
 #include <OneWire.h>
 #include <Servo.h>
 
-ToxObject* objects[14];
+ToxObject* objects[19];
 
 void setup() {
   Serial.begin(9600);
@@ -126,7 +126,7 @@ int getpin(int num) {
 }
 
 int *getps() {
-   int *p = (int *)malloc(sizeof(int) * PINS_N);
+   int *p = (int *)malloc(sizeof(int) * (PINS_N + 5));
    for (int i = 0; i < PINS_N; i++) {
       if (i == 0 || i == 1) {
         p[i] = 0;
@@ -141,6 +141,22 @@ int *getps() {
         } 
       }
    }
+
+  for (int i = 0; i < 6; i ++) {
+    int index = 14 + i;
+    uint8_t analogPin = getAnalogPin(i);
+    
+    if (objects[index] == NULL) {
+      p[index] = analogRead(analogPin);
+    } else {
+      ToxObject *object = objects[index];
+      if (strcmp(object->className, "DallasTemperature ")) {
+        uint8_t analogPin = getAnalogPin(i);
+        p[index] = (int)dallas(analogPin,0); 
+      }
+    }
+  }
+   
    return p;
 }
 
@@ -156,9 +172,9 @@ void sendsts() {
     }
   }
   Serial.print(" ], \"pins_a\" : [");
-  for (int i = 0; i < 5; i++) {
-    Serial.print(analogRead(analog_pins[i]));
-    if (i != 4) {
+  for (int i = 14; i < 19; i++) {
+    Serial.print(arr[i]);
+    if (i != 18) {
       Serial.print(", ");
     }
   }
@@ -260,7 +276,21 @@ void printNumberReceived(int number) {
   Serial.println(number);
 }
 
-
+uint8_t getAnalogPin(int pin) {
+  if (pin == 0) {
+    return A0;
+  } else if (pin == 1) {
+    return A1;
+  } else if (pin == 2) {
+    return A2;
+  } else if (pin == 3) {
+    return A3;
+  } else if (pin == 4) {
+    return A4;
+  } else if (pin == 5) {
+    return A5;
+  }
+}
 
 
 

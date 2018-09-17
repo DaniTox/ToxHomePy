@@ -19,6 +19,7 @@ const char endOfNumberDelimiter   = '>';
 static const uint8_t analog_pins[] = {A0,A1,A2,A3,A4};
 
 const int PINS_N = 14;
+const int PINS_AN = 5;
 
 const char* ERRIN = "{ \"error\" : \"Struttura messaggio non valida\" }";
 
@@ -36,3 +37,7 @@ void createCustomObject(int, char*);
 void writeHighPin(int);
 
 void printNumberReceived(int);
+
+uint8_t getAnalogPin(int);
+
+

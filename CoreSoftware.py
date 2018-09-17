@@ -639,6 +639,12 @@ class RealTemperature(ConcreteObject):
             "Condizione verificata" : list()
         }
 
+    def setValueForKey(self, value, key):
+        if key == "pin" and value != None:
+            message = ToxSerialMessage.create(SerialMessageType.DALLAS_TEMPERATURE, value)
+            ToxSerial.shared().addToQueue(message)
+        return ConcreteObject.setValueForKey(self, value, key)
+
     @staticmethod
     def class_():
         return "RealTemperature"
@@ -646,7 +652,7 @@ class RealTemperature(ConcreteObject):
     def update(self, value):
         if value == None:
             return  
-        self.setPropertyForKey(value, "temperatura")
+        self.setValueForKey(value, "temperatura")
 
     def live(self):
         self.liveProperty = str(self.get("temperatura")) + "° C" 
@@ -1501,6 +1507,8 @@ class ToxSerialMessage:
 class SerialMessageType(Enum):
     ACCENSIONE = 1
     SPEGNIMENTO = 2
+    DALLAS_TEMPERATURE = 3
+    SERVO = 5
 
 class ToxSerialQueueUpdater:
     __instance = None
