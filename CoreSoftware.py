@@ -289,6 +289,12 @@ class Object(ToxSerializeableObjectBase):
     def removeMe(self):
         ToxMain.shared().removeRealObjectForID(self.id)
         ToxMain.shared().commitObjects()
+        self.sendDeleteMessageToArduino()
+
+    def sendDeleteMessageToArduino(self):
+        if self.pin != None:
+            message = ToxSerialMessage.create(SerialMessageType.DELETE, self.pin)
+            ToxSerial.shared().addToQueue(message)
 
     # def checkIntegrityTypes(self, oldToxValue, newRawValue):
     #     oldType = oldValue.valueType
@@ -785,6 +791,42 @@ class NumericalCondition(VirtualObject):
     def class_():
         return "NumericalCondition"
 
+class Porta(ConcreteObject):
+    def __init__(self, autoID = True):
+        ConcreteObject.__init__(self, autoID)
+        self.className = "Porta"
+
+        self.isOpen = False
+
+        self.messages = {
+            "apri" : self.open,
+            "chiudi" : self.close
+        }
+
+        self.handlers = {
+            "Porta aperta" : list(),
+            "Porta chiusa" : list()
+        }
+
+    def open(self):
+        if self.isOpen == False:
+            message = ToxSerialMessage.create(SerialMessageType.ACCENSIONE, self.pin)
+            ToxSerial.shared().addToQueue(message)
+            self.isOpen = True
+    
+    def close(self):
+        if self.isOpen == True:
+            message = ToxSerialMessage.create(SerialMessageType.SPEGNIMENTO, self.pin)
+            ToxSerial.shared().addToQueue(message)
+            self.isOpen = False
+
+    def live(self):
+        self.liveProperty = "Aperta" if self.isOpen == True else "Chiusa"
+    
+    @staticmethod
+    def class_():
+        return "Porta"
+
 class Lampada(ConcreteObject):
     def __init__(self, autoID = True):
         ConcreteObject.__init__(self, autoID)
@@ -1225,7 +1267,8 @@ class ToxMain:
             RealTemperature.class_(),
             NumericalCondition.class_(),
             IRSensor.class_(),
-            Buzzer.class_()
+            Buzzer.class_(),
+            Porta.class_()
         ]
         self.isTesting = False
         #self.generateObjectsHandlers()
@@ -1508,6 +1551,7 @@ class SerialMessageType(Enum):
     ACCENSIONE = 1
     SPEGNIMENTO = 2
     DALLAS_TEMPERATURE = 3
+    DELETE = 4
     SERVO = 5
 
 class ToxSerialQueueUpdater:

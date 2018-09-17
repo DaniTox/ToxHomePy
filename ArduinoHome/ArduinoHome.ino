@@ -1,6 +1,7 @@
 #include "functions.h"
 #include <OneWire.h>
 #include <Servo.h>
+//#include <VarSpeedServo.h> 
 
 ToxObject* objects[19];
 
@@ -80,7 +81,6 @@ void handleNumber(int number) {
     case 4:
     {
       freeObjectPin(pin);
-      createCustomObject(pin, "ProvaClassName");
     }
     break;
     case 5:
@@ -234,12 +234,17 @@ void writeHighPin(int pin) {
           digitalWrite(pin, HIGH);   
         } else {
           if (strcmp(object->className, "Servo ")) {
+           
             Servo servo;
             servo.attach(pin);
-            int pos;
-            for (pos = 0; pos < 180; pos++) {
+            float pos;
+            
+            for (pos = 0; pos < 180; pos+=2.5) {
               servo.write(pos);
+              delay(10);
             }
+
+            
             servo.detach();
           }
         }
@@ -258,10 +263,14 @@ void writeLowPin(int pin) {
           if (strcmp(object->className, "Servo ")) {
             Servo servo;
             servo.attach(pin);
-            int pos;
-            for (pos = 180; pos > 1; pos--) {
+            
+            float pos;
+            
+            for (pos = 180; pos > 1; pos-=2.5) {
               servo.write(pos);
+              delay(10);
             }
+
             servo.detach();
           }
         }
