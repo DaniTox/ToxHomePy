@@ -562,7 +562,7 @@ class WeatherChecker(VirtualObject):
         return weatherDict[code]
 
     def checkWeather(self):
-        code = self.fetchWeatherFromAPI(isLive=True)
+        code = self.fetchWeatherFromAPI()
         groupCode = str(code)[0]
 
         if code == 800:
@@ -573,7 +573,7 @@ class WeatherChecker(VirtualObject):
 
 
     def live(self):
-        code = self.fetchWeatherFromAPI()
+        code = self.fetchWeatherFromAPI(isLive=True)
         groupCode = str(code)[0]
 
         if code == 800:
