@@ -91,12 +91,28 @@ void handleNumber(int number) {
     break;
     case 6:
     {
-      for (int i = 0; i < 14; i++) {
+      /*for (int i = 0; i < 14; i++) {
         ToxObject *obj = objects[i];
         int z = (unsigned int)obj;
         Serial.print("0x"); Serial.print(z, HEX); Serial.print(" - ");
         Serial.println(obj->className);
+      }*/
+      
+
+      
+      for (int i = 0; i < 19; i++) {
+        ToxObject *obj = objects[i];
+        if (obj == NULL) {
+          Serial.print("NULL");
+        } else {
+          Serial.print(obj->className);  
+        }
+        
+        if (i != 18) {
+          Serial.print(", ");
+        }
       }
+      Serial.println("");
     }
     break; 
     case 9:  
@@ -110,10 +126,21 @@ void createCustomObject(int pin, char *className) {
     ToxObject *object = (ToxObject *)malloc(sizeof(ToxObject));
     object->className = className;
     objects[pin] = object;
+
+    if (strcmp(object->className, "Servo ")) {
+      Servo servo;
+      servo.attach(pin);
+
+      servo.write(0);
+      delay(15);
+
+      servo.detach();
+    }
 }
 
 void freeObjectPin(int pin) {
   ToxObject *old = objects[pin];
+  objects[pin] = NULL;
   free(old);
 }
 
@@ -127,21 +154,32 @@ int getpin(int num) {
 
 int *getps() {
    int *p = (int *)malloc(sizeof(int) * (PINS_N + 5));
+
+   //DIGITAL PINS
    for (int i = 0; i < PINS_N; i++) {
       if (i == 0 || i == 1) {
         p[i] = 0;
         continue;
       }
+
+      
+      
       if (objects[i] == NULL) {
         p[i] = digitalRead(i);
       } else {
         ToxObject *object = objects[i];
+        
         if (strcmp(object->className, "DallasTemperature ")) {
           p[i] = (int)dallas(i,0);
         } 
+
+       
       }
    }
+   //FINE DIGITAL PINS
 
+
+  //ANALOG PINS
   for (int i = 0; i < 6; i ++) {
     int index = 14 + i;
     uint8_t analogPin = getAnalogPin(i);
@@ -150,13 +188,19 @@ int *getps() {
       p[index] = analogRead(analogPin);
     } else {
       ToxObject *object = objects[index];
+      
       if (strcmp(object->className, "DallasTemperature ")) {
         uint8_t analogPin = getAnalogPin(i);
         p[index] = (int)dallas(analogPin,0); 
-      }
+      } 
+     
+      
     }
   }
-   
+  //FINE ANALOG PINS
+
+
+  
    return p;
 }
 
@@ -244,7 +288,6 @@ void writeHighPin(int pin) {
               delay(10);
             }
 
-            
             servo.detach();
           }
         }

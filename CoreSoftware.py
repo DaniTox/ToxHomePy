@@ -273,7 +273,8 @@ class Object(ToxSerializeableObjectBase):
     def executeMessage(self, message):
         func = self.messages[message]
         if func != None:
-            func()
+            #func()
+            start_new_thread(func, ())
             print("Eseguito il messaggio: " + message)
             return 0
         print("Errore nell'eseguire il messaggio: " + message)
@@ -813,16 +814,24 @@ class Porta(ConcreteObject):
             message = ToxSerialMessage.create(SerialMessageType.ACCENSIONE, self.pin)
             ToxSerial.shared().addToQueue(message)
             self.isOpen = True
+            self.executeHandlers("Porta aperta")
     
     def close(self):
         if self.isOpen == True:
             message = ToxSerialMessage.create(SerialMessageType.SPEGNIMENTO, self.pin)
             ToxSerial.shared().addToQueue(message)
             self.isOpen = False
+            self.executeHandlers("Porta chiusa")
 
     def live(self):
         self.liveProperty = "Aperta" if self.isOpen == True else "Chiusa"
     
+    def setValueForKey(self, value, key):
+        if key == "pin":
+            message = ToxSerialMessage.create(SerialMessageType.SERVO, value)
+            ToxSerial.shared().addToQueue(message)
+        return ConcreteObject.setValueForKey(value, key)
+
     @staticmethod
     def class_():
         return "Porta"
