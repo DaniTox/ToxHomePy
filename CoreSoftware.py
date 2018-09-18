@@ -294,9 +294,12 @@ class Object(ToxSerializeableObjectBase):
         self.sendDeleteMessageToArduino()
 
     def sendDeleteMessageToArduino(self):
-        if self.pin != None:
-            message = ToxSerialMessage.create(SerialMessageType.DELETE, self.pin)
-            ToxSerial.shared().addToQueue(message)
+        if self.get("pin") == None:
+            return
+        pin = self.get("pin")
+        
+        message = ToxSerialMessage.create(SerialMessageType.DELETE, pin)
+        ToxSerial.shared().addToQueue(message)
 
     # def checkIntegrityTypes(self, oldToxValue, newRawValue):
     #     oldType = oldValue.valueType
