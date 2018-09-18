@@ -529,8 +529,9 @@ class WeatherChecker(VirtualObject):
             "Qualsiasi" : list()
         }
 
-    def fetchWeatherFromAPI(self):
-        print(self.name + ": Controllo il tempo...")
+    def fetchWeatherFromAPI(self, isLive = False):
+        if isLive == False:
+            print(self.name + ": Controllo il tempo...")
 
         customLocation = self.customVariables["location_temperatura"].value
         if customLocation == None:
@@ -541,10 +542,12 @@ class WeatherChecker(VirtualObject):
             observation = owm.weather_at_place(customLocation)
         except pyowm.exceptions.api_response_error.NotFoundError:
             print("Il pyowm modulo dice che non ha trovato la città che richiedi.")
-            self.executeHandlers("Qualsiasi")
+            #self.executeHandlers("Qualsiasi")
             return
         w = observation.get_weather()
-        print(str(w._status))
+        
+        if isLive == False:
+            print(str(w._status))
         return w._weather_code
 
     def getWeatherName(self, code):
@@ -559,7 +562,7 @@ class WeatherChecker(VirtualObject):
         return weatherDict[code]
 
     def checkWeather(self):
-        code = self.fetchWeatherFromAPI()
+        code = self.fetchWeatherFromAPI(isLive=True)
         groupCode = str(code)[0]
 
         if code == 800:
@@ -1549,14 +1552,14 @@ class ToxSerialMessage:
         self.ser_str = None
 
     @staticmethod
-    def create(type, pin):
+    def create(type_, pin):
         id = random.randint(1, 999999)
 
         prefix = ""
         suffix = ""
-        if type < 10:
+        if type_ < 10:
             prefix = "0"
-        prefix += str(type)
+        prefix += str(type_)
         middle = str(0) #middle number is unused at this moment
         if pin < 10:
             suffix = "0"
