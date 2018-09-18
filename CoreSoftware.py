@@ -567,6 +567,10 @@ class WeatherChecker(VirtualObject):
     def checkWeather(self):
         code = self.fetchWeatherFromAPI()
         groupCode = str(code)[0]
+        
+        if groupCode not in ("0", "1", "2", "3", "4", "5", "6", "7", "8"):
+            print("Codice tempo atmosferico non è nell'elenco dei codici autorizzati")
+            return
 
         if code == 800:
             self.executeHandlers("Sereno")
