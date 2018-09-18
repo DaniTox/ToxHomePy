@@ -571,7 +571,7 @@ class WeatherChecker(VirtualObject):
         if code == 800:
             self.executeHandlers("Sereno")
         else:
-            self.executeHandlers(self.getWeatherName([str(groupCode)]))
+            self.executeHandlers(self.getWeatherName(str(groupCode)))
         self.executeHandlers("Qualsiasi")
 
 
