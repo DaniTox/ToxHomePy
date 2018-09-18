@@ -18,6 +18,7 @@ from weather import Weather, Unit
 import types
 import pyowm
 from datetime import datetime
+import platform
 
 class ToxSerializeableObjectBase:
     def __init__(self):
@@ -800,8 +801,8 @@ class Porta(ConcreteObject):
         self.isOpen = False
 
         self.messages = {
-            "apri" : self.open,
-            "chiudi" : self.close
+            "Apri" : self.open,
+            "Chiudi" : self.close
         }
 
         self.handlers = {
@@ -810,15 +811,22 @@ class Porta(ConcreteObject):
         }
 
     def open(self):
+        if self.get("pin") == None:
+            return
+
+        pin = self.get("pin")
         if self.isOpen == False:
-            message = ToxSerialMessage.create(SerialMessageType.ACCENSIONE, self.pin)
+            message = ToxSerialMessage.create(SerialMessageType.ACCENSIONE, pin)
             ToxSerial.shared().addToQueue(message)
             self.isOpen = True
             self.executeHandlers("Porta aperta")
     
     def close(self):
+        if self.get("pin") == None:
+            return
+        pin = self.get("pin")
         if self.isOpen == True:
-            message = ToxSerialMessage.create(SerialMessageType.SPEGNIMENTO, self.pin)
+            message = ToxSerialMessage.create(SerialMessageType.SPEGNIMENTO, pin)
             ToxSerial.shared().addToQueue(message)
             self.isOpen = False
             self.executeHandlers("Porta chiusa")
@@ -830,7 +838,7 @@ class Porta(ConcreteObject):
         if key == "pin":
             message = ToxSerialMessage.create(SerialMessageType.SERVO, value)
             ToxSerial.shared().addToQueue(message)
-        return ConcreteObject.setValueForKey(value, key)
+        return ConcreteObject.setValueForKey(self, value, key)
 
     @staticmethod
     def class_():
@@ -1460,8 +1468,11 @@ class ToxSerial:
             ToxSerial.__instance = self
 
     def start(self):
-        self.ser = serial.Serial("/dev/cu.usbmodem14231", 9600, timeout=3, write_timeout=3)
-        # self.ser = serial.Serial("/dev/ttyACM0", 9600, timeout=0)
+        if (platform.system() == "Linux"):
+            self.ser = serial.Serial("/dev/ttyACM0", 9600, timeout=3, write_timeout=3)
+        else:
+            self.ser = serial.Serial("/dev/cu.usbmodem14231", 9600, timeout=3, write_timeout=3)
+        
         time.sleep(2.5)
         start_new_thread(ToxSerialQueueUpdater.shared().start, ())
         start_new_thread(self.performQueue, ())
