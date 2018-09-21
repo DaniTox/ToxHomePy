@@ -3,7 +3,7 @@
 #include <OneWire.h>
 #include <Servo.h>
 
-ToxObject* objects[19];
+ToxObject* objects[69];
 
 
 const int stepsPerRevolution = 512;
@@ -15,14 +15,14 @@ int stepsDone = 0;
 
 void setup() {
   stepper.setSpeed(60);
-  Serial.begin(9600);
+  Serial.begin(19200);
   
-  for (int i = 0; i < 8; i++) {
+  for (int i = 0; i < 42; i++) {
+    pinMode(i, OUTPUT);
+  }
+  for (int i = 42; i < 54; i++) {
     pinMode(i, INPUT);
     setPinAsReadOnly(i);
-  }
-  for (int i = 8; i < 14; i++) {
-    pinMode(i, OUTPUT);
   }
 }
 
@@ -79,7 +79,7 @@ void handleNumber(int number) {
   switch (opbit) {
     case 0:
       {
-        int rpin = rand() % PINS_N;
+        int rpin = rand() % n_PINSD;
         digitalWrite(rpin, HIGH);
       }
       break;
@@ -110,19 +110,23 @@ void handleNumber(int number) {
     break;
     case 6:
     {
-      for (int i = 0; i < 19; i++) {
+      int total_pins = (n_PINSD + n_PINSA);
+      for (int i = 0; i < (total_pins - 1); i++) {
         ToxObject *obj = objects[i];
         if (obj == NULL) {
           Serial.print("NULL");
         } else {
+          //p(obj->className);
           Serial.print(obj->className);  
         }
         
-        if (i != 18) {
+        if (i != (total_pins - 2)) {
           Serial.print(", ");
         }
+        delay(10);
       }
       Serial.println("");
+      
     }
     break;
     case 7:
@@ -143,6 +147,13 @@ void createCustomObject(int pin, char *className) {
     object->className = className;
     objects[pin] = object;
 
+    Serial.print("Ecco la classe al pin: ");
+    Serial.print(pin);
+    
+    p(objects[pin]->className);
+    
+    Serial.print("Sto creando una classe: ");
+    Serial.print(className);
     if (object->className.equals("Servo")) {
       Servo servo;
       servo.attach(pin);
@@ -169,11 +180,11 @@ int getpin(int num) {
 }
 
 int *getps() {
-   int *p = (int *)malloc(sizeof(int) * (PINS_N + 5));
+   int *p = (int *)malloc(sizeof(int) * (n_PINSD + (n_PINSA - 1)));
 
    //DIGITAL PINS
-   for (int i = 0; i < PINS_N; i++) {
-      if (i == 0 || i == 1) {
+   for (int i = 0; i < n_PINSD; i++) {
+      if (i == 0 || i == 1 || i == 14 || i == 15 || i == 16 || i == 17 || i == 18 || i == 19 || i == 20 || i == 21) {
         p[i] = 0;
         continue;
       }
@@ -194,8 +205,8 @@ int *getps() {
 
 
   //ANALOG PINS
-  for (int i = 0; i < 6; i ++) {
-    int index = 14 + i;
+  for (int i = 0; i < n_PINSA; i ++) {
+    int index = n_PINSD + i;
     uint8_t analogPin = getAnalogPin(i);
     
     if (objects[index] == NULL) {
@@ -220,19 +231,20 @@ int *getps() {
 
 void sendsts() {
   int* arr = getps();
-  //delay(100);
+
   if (arr == NULL) { return; }
   Serial.print("{ \"pins_d\" : [ ");
-  for (int i = 0; i < PINS_N; i++) {
+  for (int i = 0; i < n_PINSD; i++) {
     Serial.print(arr[i]);
-    if (i != (PINS_N - 1)) {
+    if (i != (n_PINSD - 1)) {
       Serial.print(", ");
     }
   }
   Serial.print(" ], \"pins_a\" : [");
-  for (int i = 14; i < 19; i++) {
+  int total_pins = n_PINSD + n_PINSA;
+  for (int i = n_PINSD; i < (total_pins - 1); i++) {
     Serial.print(arr[i]);
-    if (i != 18) {
+    if (i != (total_pins - 2)) {
       Serial.print(", ");
     }
   }
@@ -246,7 +258,7 @@ void setPinAsReadOnly(int pin) {
 }
 
 bool isReadOnly(int pin) {
-  for (int i = 0; i < 7; i++) {
+  for (int i = 0; i < 10; i++) {
     if (readOnlyPins[i] == pin) {
       return true;
     }
@@ -288,6 +300,8 @@ int16_t dallas(int x, byte start) {
 void writeHighPin(int pin) {
   if (!isReadOnly(pin)) {
         ToxObject *object = objects[pin];
+        Serial.print("Sto per accendere la classe: ");
+        Serial.println(object->className);
         if (object == NULL) {
           digitalWrite(pin, HIGH);   
         } else {
@@ -368,6 +382,26 @@ uint8_t getAnalogPin(int pin) {
     return A4;
   } else if (pin == 5) {
     return A5;
+  } else if (pin == 6) {
+    return A6;
+  } else if (pin == 7) {
+    return A7;
+  } else if (pin == 8) {
+    return A8;
+  } else if (pin == 9) {
+    return A9;
+  } else if (pin == 10) {
+    return A10;
+  } else if (pin == 11) {
+    return A11;
+  } else if (pin == 12) {
+    return A12;
+  } else if (pin == 13) {
+    return A13;
+  } else if (pin == 14) {
+    return A14;
+  } else if (pin == 15) {
+    return A15;
   }
 }
 

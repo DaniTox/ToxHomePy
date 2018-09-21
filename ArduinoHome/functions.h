@@ -16,14 +16,14 @@ bool idDigitalWriteEnabled(int);
 const char startOfNumberDelimiter = '<';
 const char endOfNumberDelimiter   = '>';
 
-static const uint8_t analog_pins[] = {A0,A1,A2,A3,A4};
+static const uint8_t analog_pins[] = {A0,A1,A2,A3,A4,A5,A6,A7,A8,A9,A10,A11,A12,A13,A14,A15};
 
-const int PINS_N = 14;
-const int PINS_AN = 5;
+const int n_PINSD = 54;
+const int n_PINSA = 16;
 
 const char* ERRIN = "{ \"error\" : \"Struttura messaggio non valida\" }";
 
-int readOnlyPins[7] = {};
+int readOnlyPins[10] = {};
 int pinsIndex = 0;
 
 typedef struct ToxObject {
