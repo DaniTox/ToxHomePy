@@ -27,7 +27,7 @@ int readOnlyPins[7] = {};
 int pinsIndex = 0;
 
 typedef struct ToxObject {
-  char *className;
+  String className;
 } ToxObject;
 
 int16_t dallas(int,byte);
@@ -40,4 +40,14 @@ void printNumberReceived(int);
 
 uint8_t getAnalogPin(int);
 
+void p(String X) {
+   for (int i = 0; i < X.length(); i++) {
+    char c = X.charAt(i);
+    
+    if (c < 16) {Serial.print("0");}
+    Serial.print(c, HEX);
+   }
+   Serial.println("");
+
+}
 

@@ -1,13 +1,22 @@
+#include <Stepper.h>
 #include "functions.h"
 #include <OneWire.h>
 #include <Servo.h>
-//#include <VarSpeedServo.h> 
 
 ToxObject* objects[19];
 
-void setup() {
-  Serial.begin(9600);
 
+const int stepsPerRevolution = 512;
+const int MAXSTEPS = 2000;
+Stepper stepper(stepsPerRevolution,8,10,9,11);
+
+int motorMode = -1;
+int stepsDone = 0;
+
+void setup() {
+  stepper.setSpeed(60);
+  Serial.begin(9600);
+  
   for (int i = 0; i < 8; i++) {
     pinMode(i, INPUT);
     setPinAsReadOnly(i);
@@ -21,6 +30,16 @@ void loop() {
   if (Serial.available()) {
     handleInput();
   }
+
+ if(stepsDone < MAXSTEPS) {
+  if (motorMode == 0) {
+    stepper.step(1);
+  } else if (motorMode == 1) {
+    stepper.step(-1);
+  }
+  stepsDone++;
+ }
+  
 }
 
 void handleInput() {
@@ -91,15 +110,6 @@ void handleNumber(int number) {
     break;
     case 6:
     {
-      /*for (int i = 0; i < 14; i++) {
-        ToxObject *obj = objects[i];
-        int z = (unsigned int)obj;
-        Serial.print("0x"); Serial.print(z, HEX); Serial.print(" - ");
-        Serial.println(obj->className);
-      }*/
-      
-
-      
       for (int i = 0; i < 19; i++) {
         ToxObject *obj = objects[i];
         if (obj == NULL) {
@@ -114,7 +124,13 @@ void handleNumber(int number) {
       }
       Serial.println("");
     }
-    break; 
+    break;
+    case 7:
+    {
+      freeObjectPin(pin);
+      createCustomObject(pin, "MotorControl");
+    }
+    break;
     case 9:  
       sendsts();
       break;
@@ -127,7 +143,7 @@ void createCustomObject(int pin, char *className) {
     object->className = className;
     objects[pin] = object;
 
-    if (strcmp(object->className, "Servo ")) {
+    if (object->className.equals("Servo")) {
       Servo servo;
       servo.attach(pin);
 
@@ -162,14 +178,12 @@ int *getps() {
         continue;
       }
 
-      
-      
       if (objects[i] == NULL) {
         p[i] = digitalRead(i);
       } else {
         ToxObject *object = objects[i];
         
-        if (strcmp(object->className, "DallasTemperature ")) {
+        if (object->className.equals("DallasTemperature")) {
           p[i] = (int)dallas(i,0);
         } 
 
@@ -189,7 +203,7 @@ int *getps() {
     } else {
       ToxObject *object = objects[index];
       
-      if (strcmp(object->className, "DallasTemperature ")) {
+      if (object->className.equals("DallasTemperature")) {
         uint8_t analogPin = getAnalogPin(i);
         p[index] = (int)dallas(analogPin,0); 
       } 
@@ -277,7 +291,8 @@ void writeHighPin(int pin) {
         if (object == NULL) {
           digitalWrite(pin, HIGH);   
         } else {
-          if (strcmp(object->className, "Servo ")) {
+          p(object->className);
+          if (object->className.equals("Servo")) {
            
             Servo servo;
             servo.attach(pin);
@@ -290,6 +305,13 @@ void writeHighPin(int pin) {
 
             servo.detach();
           }
+          
+          else if (object->className.equals("MotorControl")) {
+            motorMode = 1;
+            stepsDone = 0;
+            Serial.println("Alzo le veneziane");
+          }
+
         }
         
       } else {
@@ -303,7 +325,7 @@ void writeLowPin(int pin) {
         if (object == NULL) {
           digitalWrite(pin, LOW);
         } else {
-          if (strcmp(object->className, "Servo ")) {
+          if (object->className.equals("Servo")) {
             Servo servo;
             servo.attach(pin);
             
@@ -315,6 +337,11 @@ void writeLowPin(int pin) {
             }
 
             servo.detach();
+          }
+          else if (object->className.equals("MotorControl")) {
+            Serial.println("Chiudo le veneziane");
+            motorMode = 0;
+            stepsDone = 0;
           }
         }
         
