@@ -15,7 +15,7 @@ int stepsDone = 0;
 
 void setup() {
   stepper.setSpeed(60);
-  Serial.begin(19200);
+  Serial.begin(57600);
   
   for (int i = 0; i < 42; i++) {
     pinMode(i, OUTPUT);
@@ -150,7 +150,7 @@ void createCustomObject(int pin, char *className) {
     //Serial.print("Ecco la classe al pin: ");
     //Serial.print(pin);
     
-    p(objects[pin]->className);
+   // p(objects[pin]->className);
     
     //Serial.print("Sto creando una classe: ");
     //Serial.print(className);
@@ -305,7 +305,7 @@ void writeHighPin(int pin) {
         if (object == NULL) {
           digitalWrite(pin, HIGH);   
         } else {
-          p(object->className);
+          //p(object->className);
           if (object->className.equals("Servo")) {
            
             Servo servo;

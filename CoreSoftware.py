@@ -646,7 +646,51 @@ class TimeCondition(VirtualObject):
             return "TimeCondition"
         
 class Tapparelle(ConcreteObject):
-    pass
+    def __init__(self, autoID = True):
+        ConcreteObject.__init__(self, autoID)
+        self.className = "Tapparelle"
+
+        self.isOpen = False
+
+        self.handlers = {
+            "Aperte" : list(),
+            "Chiuse" : list()
+        }
+
+        self.messages = {
+            "Apri" : self.open,
+            "Chiudi" : self.close
+        }
+
+    def open(self):
+        if self.isOpen != None:
+            pin = self.get("pin")
+            if pin != None:
+                messsage = ToxSerialMessage.create(SerialMessageType.ACCENSIONE, pin)
+                ToxSerial.shared().addToQueue(messsage)
+            self.executeHandlers("Aperte")
+            self.isOpen = True 
+
+    def close(self):
+        if self.isOpen != None:
+            pin = self.get("pin")
+            if pin != None:
+                message = ToxSerialMessage.create(SerialMessageType.SPEGNIMENTO, pin)
+                ToxSerial.shared().addToQueue(message)
+            self.executeHandlers("Chiuse")
+    
+    def live(self):
+        self.liveProperty = "Aperte" if self.isOpen else "Chiuse"
+
+    def setValueForKey(self, value, key):
+        if key == "pin":
+            message = ToxSerialMessage.create(SerialMessageType.MOTOR, value)
+            ToxSerial.shared().addToQueue(message)
+        return ConcreteObject.setValueForKey(self, value, key)
+
+    @staticmethod
+    def class_():
+        return "Tapparelle"
 
 class Repeater(VirtualObject):
     def __init__(self, autoID = True):
@@ -1343,7 +1387,8 @@ class ToxMain:
             Buzzer.class_(),
             Porta.class_(),
             TimeCondition.class_(),
-            Repeater.class_()
+            Repeater.class_(),
+            Tapparelle.class_()
         ]
         self.isTesting = False
         #self.generateObjectsHandlers()
@@ -1552,9 +1597,9 @@ class ToxSerial:
 
     def start(self):
         if (platform.system() == "Linux"):
-            self.ser = serial.Serial("/dev/ttyACM0", 19200, timeout=3, write_timeout=3)
+            self.ser = serial.Serial("/dev/ttyACM0", 57600, timeout=3, write_timeout=3)
         else:
-            self.ser = serial.Serial("/dev/cu.usbmodem14231", 19200, timeout=3, write_timeout=3)
+            self.ser = serial.Serial("/dev/cu.usbmodem14231", 57600, timeout=3, write_timeout=3)
         
         time.sleep(2.5)
         start_new_thread(ToxSerialQueueUpdater.shared().start, ())
@@ -1656,6 +1701,7 @@ class SerialMessageType(Enum):
     DALLAS_TEMPERATURE = 3
     DELETE = 4
     SERVO = 5
+    MOTOR = 7
 
 class ToxSerialQueueUpdater:
     __instance = None

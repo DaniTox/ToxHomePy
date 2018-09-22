@@ -28,7 +28,7 @@
       "id": 7106,
       "isOn": false,
       "isVirtual": false,
-      "liveProperty": "Spenta",
+      "liveProperty": "",
       "messages": [
         "deactivate",
         "activate"
@@ -157,7 +157,7 @@
       },
       "id": 2023,
       "isVirtual": true,
-      "liveProperty": "22\u00b0 C",
+      "liveProperty": "",
       "messages": [
         "Controlla la temperatura"
       ],
@@ -192,7 +192,7 @@
       },
       "id": 7949,
       "isVirtual": true,
-      "liveProperty": "Nuvoloso",
+      "liveProperty": "",
       "messages": [
         "Controlla il tempo"
       ],
@@ -226,7 +226,7 @@
       "id": 1485,
       "isOn": false,
       "isVirtual": false,
-      "liveProperty": "Spento",
+      "liveProperty": "",
       "messages": [
         "Disattiva",
         "Attiva"
@@ -285,7 +285,7 @@
       "hasBeenAlerted": false,
       "id": 5702,
       "isVirtual": false,
-      "liveProperty": "[Allarme disattiva] - Nessun movimento",
+      "liveProperty": "",
       "messages": [
         "Attiva Allarme",
         "Disattiva Allarme"
@@ -390,41 +390,39 @@
       "name": "SpegniLed"
     },
     {
-      "className": "Repeater",
+      "className": "Tapparelle",
       "customVariables": {
         "description": {
-          "value": "Spegne il led ogni 5 secondi",
+          "value": "Asd",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "",
           "valueType": "String"
         },
         "name": {
-          "value": "Repeater 1",
+          "value": "Tappa",
           "valueType": "String"
         },
-        "secondi": {
-          "value": 5,
+        "pin": {
+          "value": 13,
           "valueType": "Int"
         }
       },
-      "description": "Spegne il led ogni 5 secondi",
+      "description": "Asd",
       "handlers": {
-        "Azione da ripetere": [
-          {
-            "args": null,
-            "function": {
-              "functionName": "deactivate",
-              "objectId": 7106
-            },
-            "id": 1323,
-            "id_object_owner": 8783
-          }
-        ]
+        "Aperte": [],
+        "Chiuse": []
       },
-      "id": 8783,
-      "isRepeatableObject": true,
-      "isVirtual": true,
+      "id": 9141,
+      "isOpen": false,
+      "isVirtual": false,
       "liveProperty": "",
-      "messages": [],
-      "name": "Repeater 1"
+      "messages": [
+        "Chiudi",
+        "Apri"
+      ],
+      "name": "Tappa"
     }
   ]
 }
