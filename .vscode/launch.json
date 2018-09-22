@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "/Users/danitox/Desktop/HomePy/CoreMain.py",
             "args": [
-                "-t"
+                ""
             ]
         },
         {

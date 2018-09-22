@@ -640,10 +640,53 @@ class TimeCondition(VirtualObject):
                 self.executeHandlers("Condizione non verificata")
         else:
             return
+
+        @staticmethod
+        def class_():
+            return "TimeCondition"
         
 class Tapparelle(ConcreteObject):
     pass
 
+class Repeater(VirtualObject):
+    def __init__(self, autoID = True):
+        VirtualObject.__init__(self, autoID)
+        self.className = "Repeater"
+        self.isRepeatableObject = True
+        self.isRepeatableObjectReady = True
+
+        self.customVariables["secondi"] = ToxVariable("Int", None)
+
+        self.handlers = {
+            "Azione da ripetere": list()
+        }
+
+    def performActions(self):
+        secondi = self.get("secondi")
+        if type(secondi) is not int:
+            secondi = int(secondi)
+        if secondi == None:
+            return
+        if secondi < 1:
+            print("Tempo di secondi troppo basso. Deve essere almeno di 1 secondo")
+            return
+        
+        secondi = float(secondi)
+
+        t = threading.Timer(secondi, self.executeHandlers, ["Azione da ripetere"])
+        t.start()
+
+    def repeaterAction(self):
+        self.isRepeatableObjectReady = False
+        self.performActions()
+
+    def executeHandlers(self, message):
+        VirtualObject.executeHandlers(self, message)
+        self.isRepeatableObjectReady = True
+
+    @staticmethod
+    def class_():
+        return "Repeater"
 
 class RealTemperature(ConcreteObject):
     def __init__(self, autoID = True):
@@ -1102,6 +1145,8 @@ class ToxBoot:
         ToxMain.shared().createRealObjects(arraySerializedObjects)
         ToxIDCreator.shared().getUsedIDs()
 
+        start_new_thread(ToxMain.shared().checkRepeatableObjectsAndExecuteThem, ())
+       # ToxMain.shared().checkRepeatableObjectsAndExecuteThem()
         server = ToxSocketServer()
         try:
             start_new_thread(server.activate_server, ())
@@ -1285,6 +1330,7 @@ class ToxMain:
             ToxMain.__instance = self
 
         self.realObjects = [] 
+        self.repeatableObjects = []
 
         self.classes = [
             Timer.class_(),
@@ -1295,7 +1341,9 @@ class ToxMain:
             NumericalCondition.class_(),
             IRSensor.class_(),
             Buzzer.class_(),
-            Porta.class_()
+            Porta.class_(),
+            TimeCondition.class_(),
+            Repeater.class_()
         ]
         self.isTesting = False
         #self.generateObjectsHandlers()
@@ -1326,6 +1374,29 @@ class ToxMain:
                 newObj.setValueForKey(serVar["value"], key)
 
         return newObj
+
+    def createRepeatableObjectsList(self):
+        for obj in self.realObjects:
+            try:
+                if obj.isRepeatableObject == True:
+                    if obj not in self.repeatableObjects:
+                        self.repeatableObjects.append(obj)
+            except AttributeError:
+                pass
+        start_new_thread(self.performRepeatableQueue, ())
+
+    def performRepeatableQueue(self):
+        for obj in self.repeatableObjects:
+            try:
+                if obj.isRepeatableObjectReady:
+                    obj.repeaterAction()
+            except:
+                pass
+
+    def checkRepeatableObjectsAndExecuteThem(self):
+        while True:
+            self.createRepeatableObjectsList()
+            time.sleep(0.1)
 
 
     def addRealObject(self, obj):
@@ -1396,6 +1467,8 @@ class ToxMain:
             if obj.id == id:
                 del self.realObjects[index]
                 ToxIDCreator.shared().setIDasFree(id)
+                if obj in self.repeatableObjects:
+                    self.repeatableObjects.remove(obj)
                 break
 
         self.saveRealObjectsToDisk()
@@ -1479,9 +1552,9 @@ class ToxSerial:
 
     def start(self):
         if (platform.system() == "Linux"):
-            self.ser = serial.Serial("/dev/ttyACM0", 9600, timeout=3, write_timeout=3)
+            self.ser = serial.Serial("/dev/ttyACM0", 19200, timeout=3, write_timeout=3)
         else:
-            self.ser = serial.Serial("/dev/cu.usbmodem14231", 9600, timeout=3, write_timeout=3)
+            self.ser = serial.Serial("/dev/cu.usbmodem14231", 19200, timeout=3, write_timeout=3)
         
         time.sleep(2.5)
         start_new_thread(ToxSerialQueueUpdater.shared().start, ())

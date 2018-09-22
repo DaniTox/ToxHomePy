@@ -16,7 +16,7 @@
           "valueType": "String"
         },
         "pin": {
-          "value": 13,
+          "value": 32,
           "valueType": "Int"
         }
       },
@@ -28,7 +28,7 @@
       "id": 7106,
       "isOn": false,
       "isVirtual": false,
-      "liveProperty": "",
+      "liveProperty": "Spenta",
       "messages": [
         "deactivate",
         "activate"
@@ -157,7 +157,7 @@
       },
       "id": 2023,
       "isVirtual": true,
-      "liveProperty": "",
+      "liveProperty": "22\u00b0 C",
       "messages": [
         "Controlla la temperatura"
       ],
@@ -192,7 +192,7 @@
       },
       "id": 7949,
       "isVirtual": true,
-      "liveProperty": "",
+      "liveProperty": "Nuvoloso",
       "messages": [
         "Controlla il tempo"
       ],
@@ -226,7 +226,7 @@
       "id": 1485,
       "isOn": false,
       "isVirtual": false,
-      "liveProperty": "",
+      "liveProperty": "Spento",
       "messages": [
         "Disattiva",
         "Attiva"
@@ -285,7 +285,7 @@
       "hasBeenAlerted": false,
       "id": 5702,
       "isVirtual": false,
-      "liveProperty": "",
+      "liveProperty": "[Allarme disattiva] - Nessun movimento",
       "messages": [
         "Attiva Allarme",
         "Disattiva Allarme"
@@ -382,12 +382,49 @@
       },
       "id": 8994,
       "isVirtual": true,
-      "liveProperty": "In Riposo",
+      "liveProperty": "",
       "messages": [
         "fire",
         "activate"
       ],
       "name": "SpegniLed"
+    },
+    {
+      "className": "Repeater",
+      "customVariables": {
+        "description": {
+          "value": "Spegne il led ogni 5 secondi",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Repeater 1",
+          "valueType": "String"
+        },
+        "secondi": {
+          "value": 5,
+          "valueType": "Int"
+        }
+      },
+      "description": "Spegne il led ogni 5 secondi",
+      "handlers": {
+        "Azione da ripetere": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "deactivate",
+              "objectId": 7106
+            },
+            "id": 1323,
+            "id_object_owner": 8783
+          }
+        ]
+      },
+      "id": 8783,
+      "isRepeatableObject": true,
+      "isVirtual": true,
+      "liveProperty": "",
+      "messages": [],
+      "name": "Repeater 1"
     }
   ]
 }

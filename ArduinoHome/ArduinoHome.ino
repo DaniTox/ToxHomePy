@@ -123,7 +123,7 @@ void handleNumber(int number) {
         if (i != (total_pins - 2)) {
           Serial.print(", ");
         }
-        delay(10);
+        //delay(10);
       }
       Serial.println("");
       
@@ -147,13 +147,13 @@ void createCustomObject(int pin, char *className) {
     object->className = className;
     objects[pin] = object;
 
-    Serial.print("Ecco la classe al pin: ");
-    Serial.print(pin);
+    //Serial.print("Ecco la classe al pin: ");
+    //Serial.print(pin);
     
     p(objects[pin]->className);
     
-    Serial.print("Sto creando una classe: ");
-    Serial.print(className);
+    //Serial.print("Sto creando una classe: ");
+    //Serial.print(className);
     if (object->className.equals("Servo")) {
       Servo servo;
       servo.attach(pin);
@@ -300,8 +300,8 @@ int16_t dallas(int x, byte start) {
 void writeHighPin(int pin) {
   if (!isReadOnly(pin)) {
         ToxObject *object = objects[pin];
-        Serial.print("Sto per accendere la classe: ");
-        Serial.println(object->className);
+        //Serial.print("Sto per accendere la classe: ");
+        //Serial.println(object->className);
         if (object == NULL) {
           digitalWrite(pin, HIGH);   
         } else {
@@ -323,7 +323,7 @@ void writeHighPin(int pin) {
           else if (object->className.equals("MotorControl")) {
             motorMode = 1;
             stepsDone = 0;
-            Serial.println("Alzo le veneziane");
+            //Serial.println("Alzo le veneziane");
           }
 
         }
@@ -353,7 +353,7 @@ void writeLowPin(int pin) {
             servo.detach();
           }
           else if (object->className.equals("MotorControl")) {
-            Serial.println("Chiudo le veneziane");
+            //Serial.println("Chiudo le veneziane");
             motorMode = 0;
             stepsDone = 0;
           }
