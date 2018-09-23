@@ -214,7 +214,7 @@
           "valueType": "String"
         },
         "pin": {
-          "value": 12,
+          "value": 6,
           "valueType": "Int"
         }
       },
@@ -232,65 +232,6 @@
         "Attiva"
       ],
       "name": "Buzzer"
-    },
-    {
-      "className": "IRSensor",
-      "customVariables": {
-        "Allarme Attiva": {
-          "value": 0,
-          "valueType": "Int"
-        },
-        "description": {
-          "value": "Asd",
-          "valueType": "String"
-        },
-        "location": {
-          "value": "",
-          "valueType": "String"
-        },
-        "name": {
-          "value": "Sensore",
-          "valueType": "String"
-        },
-        "pin": {
-          "value": 4,
-          "valueType": "Int"
-        }
-      },
-      "description": "Asd",
-      "handlers": {
-        "Rilevato intruso": [
-          {
-            "args": null,
-            "function": {
-              "functionName": "Attiva",
-              "objectId": 1485
-            },
-            "id": 9305,
-            "id_object_owner": 5702
-          }
-        ],
-        "Rilevato movimento": [
-          {
-            "args": null,
-            "function": {
-              "functionName": "Esegui azione",
-              "objectId": 1632
-            },
-            "id": 4465,
-            "id_object_owner": 5702
-          }
-        ]
-      },
-      "hasBeenAlerted": false,
-      "id": 5702,
-      "isVirtual": false,
-      "liveProperty": "",
-      "messages": [
-        "Attiva Allarme",
-        "Disattiva Allarme"
-      ],
-      "name": "Sensore"
     },
     {
       "actionObjectsIDs": [
@@ -423,6 +364,100 @@
         "Apri"
       ],
       "name": "Tappa"
+    },
+    {
+      "className": "IRSensor",
+      "customVariables": {
+        "Allarme Attiva": {
+          "value": 0,
+          "valueType": "Int"
+        },
+        "description": {
+          "value": "Asd",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Allarme",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": 5,
+          "valueType": "Int"
+        }
+      },
+      "description": "Asd",
+      "handlers": {
+        "Rilevato intruso": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "Chiudi",
+              "objectId": 157
+            },
+            "id": 8396,
+            "id_object_owner": 6272
+          }
+        ],
+        "Rilevato movimento": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "Apri",
+              "objectId": 157
+            },
+            "id": 1400,
+            "id_object_owner": 6272
+          }
+        ]
+      },
+      "hasBeenAlerted": false,
+      "id": 6272,
+      "isVirtual": false,
+      "liveProperty": "",
+      "messages": [
+        "Attiva Allarme",
+        "Disattiva Allarme"
+      ],
+      "name": "Allarme"
+    },
+    {
+      "className": "Porta",
+      "customVariables": {
+        "description": {
+          "value": "As",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "A",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": null,
+          "valueType": "Int"
+        }
+      },
+      "description": "As",
+      "handlers": {
+        "Porta aperta": [],
+        "Porta chiusa": []
+      },
+      "id": 1458,
+      "isOpen": false,
+      "isVirtual": false,
+      "liveProperty": "",
+      "messages": [
+        "Chiudi",
+        "Apri"
+      ],
+      "name": "A"
     }
   ]
 }

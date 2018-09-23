@@ -33,7 +33,7 @@ typedef struct ToxObject {
 int16_t dallas(int,byte);
 
 void freeObjectPin(int);
-void createCustomObject(int, char*);
+void createCustomObject(int, String);
 void writeHighPin(int);
 
 void printNumberReceived(int);
@@ -50,4 +50,9 @@ void p(String X) {
    Serial.println("");
 
 }
+
+
+#define MOTOR "MotorControl"
+#define SERVO "Servo"
+#define TEMPE "DallasTemperature"
 

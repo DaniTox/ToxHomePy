@@ -1597,9 +1597,9 @@ class ToxSerial:
 
     def start(self):
         if (platform.system() == "Linux"):
-            self.ser = serial.Serial("/dev/ttyACM0", 57600, timeout=3, write_timeout=3)
+            self.ser = serial.Serial("/dev/ttyACM0", 74880, timeout=3, write_timeout=3)
         else:
-            self.ser = serial.Serial("/dev/cu.usbmodem14231", 57600, timeout=3, write_timeout=3)
+            self.ser = serial.Serial("/dev/cu.usbmodem14231", 74880, timeout=3, write_timeout=3)
         
         time.sleep(2.5)
         start_new_thread(ToxSerialQueueUpdater.shared().start, ())
