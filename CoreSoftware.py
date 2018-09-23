@@ -1492,6 +1492,7 @@ class ToxMain:
             statusDict = json.loads(status)
         except:
             print("ToxMain.updateObjectsStatus: errore nel caricare il json dal response dell'Arduino")
+            print(str(status))
             return
         
         allPins = statusDict["pins_d"]

@@ -369,7 +369,7 @@
       "className": "IRSensor",
       "customVariables": {
         "Allarme Attiva": {
-          "value": 0,
+          "value": 1,
           "valueType": "Int"
         },
         "description": {
@@ -385,7 +385,7 @@
           "valueType": "String"
         },
         "pin": {
-          "value": 5,
+          "value": 52,
           "valueType": "Int"
         }
       },
@@ -396,23 +396,22 @@
             "args": null,
             "function": {
               "functionName": "Chiudi",
-              "objectId": 157
+              "objectId": 9141
             },
-            "id": 8396,
+            "id": 4389,
             "id_object_owner": 6272
-          }
-        ],
-        "Rilevato movimento": [
+          },
           {
             "args": null,
             "function": {
-              "functionName": "Apri",
-              "objectId": 157
+              "functionName": "Chiudi",
+              "objectId": 1469
             },
-            "id": 1400,
+            "id": 2369,
             "id_object_owner": 6272
           }
-        ]
+        ],
+        "Rilevato movimento": []
       },
       "hasBeenAlerted": false,
       "id": 6272,
@@ -428,7 +427,7 @@
       "className": "Porta",
       "customVariables": {
         "description": {
-          "value": "As",
+          "value": "Asd",
           "valueType": "String"
         },
         "location": {
@@ -436,20 +435,20 @@
           "valueType": "String"
         },
         "name": {
-          "value": "A",
+          "value": "Porta",
           "valueType": "String"
         },
         "pin": {
-          "value": null,
+          "value": 7,
           "valueType": "Int"
         }
       },
-      "description": "As",
+      "description": "Asd",
       "handlers": {
         "Porta aperta": [],
         "Porta chiusa": []
       },
-      "id": 1458,
+      "id": 1469,
       "isOpen": false,
       "isVirtual": false,
       "liveProperty": "",
@@ -457,7 +456,7 @@
         "Chiudi",
         "Apri"
       ],
-      "name": "A"
+      "name": "Porta"
     }
   ]
 }

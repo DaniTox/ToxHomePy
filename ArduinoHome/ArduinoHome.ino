@@ -3,7 +3,7 @@
 #include <OneWire.h>
 #include <Servo.h>
 
-ToxObject* objects[69];
+char* objects[69];
 
 
 const int stepsPerRevolution = 512;
@@ -16,6 +16,8 @@ int stepsDone = 0;
 void setup() {
   stepper.setSpeed(60);
   Serial.begin(74880);
+
+//Serial.println(sizeof(String) * 69);
   
   for (int i = 0; i < 42; i++) {
     pinMode(i, OUTPUT);
@@ -110,23 +112,7 @@ void handleNumber(int number) {
     break;
     case 6:
     {
-      int total_pins = (n_PINSD + n_PINSA);
-      for (int i = 0; i < (total_pins - 1); i++) {
-        ToxObject *obj = objects[i];
-        if (obj == NULL) {
-          Serial.print("NULL");
-        } else {
-          p(obj->className);
-          Serial.print(obj->className);  
-        }
-        
-        if (i != (total_pins - 2)) {
-          Serial.print(", ");
-        }
-        delay(10);
-      }
-      Serial.println("");
-      
+      printClasses();
     }
     break;
     case 7:
@@ -143,39 +129,31 @@ void handleNumber(int number) {
   
 }
 
-void createCustomObject(int pin, String className) {
-    ToxObject *object = (ToxObject *)malloc(sizeof(ToxObject));
-    if (object == NULL) {
-      Serial.println("malloc returned NULL");
-      return;
+void printClasses() {
+  for (int i = 0; i < 69; i++) {
+    if (objects[i] == NULL) {
+      Serial.print(" _ ");   
+    } else {
+      if (i != 68) {
+        Serial.print(objects[i]);
+        Serial.print(" ");  
+      } else {
+        Serial.println(objects[i]);
+      }
     }
-    object->className = className;
-    objects[pin] = object;
+  }
+}
 
-    Serial.print("Ecco la classe al pin: ");
-    Serial.print(pin);
-    Serial.print(" ");
+void createCustomObject(int pin, char* className) {
+    objects[pin] = className;
 
-    p(className);
-    p(objects[pin]->className);
+    //p(className);
+    //p(objects[pin]);
     
-    //Serial.print("Sto creando una classe: ");
-    //Serial.print(className);
-    if (object->className.equals("Servo")) {
-      Servo servo;
-      servo.attach(pin);
-
-      servo.write(0);
-      delay(15);
-
-      servo.detach();
-    }
 }
 
 void freeObjectPin(int pin) {
-  ToxObject *old = objects[pin];
   objects[pin] = NULL;
-  free(old);
 }
 
 int getobit(int num) {
@@ -199,17 +177,19 @@ int *getps() {
       if (objects[i] == NULL) {
         p[i] = digitalRead(i);
       } else {
-        ToxObject *object = objects[i];
-        
-        if (object->className.equals(TEMPE)) {
+        String object = String(objects[i]);
+                
+        if (object.equals(TEMPE)) {
           p[i] = (int)dallas(i,0);
-        } 
-
-       
+        } else {
+          p[i] = 0;
+        }       
       }
+     //Serial.print("Index: "); Serial.print(i);
+    //Serial.print("\tValue: "); Serial.println(p[i]); 
    }
    //FINE DIGITAL PINS
-
+  
 
   //ANALOG PINS
   for (int i = 0; i < n_PINSA; i ++) {
@@ -219,15 +199,20 @@ int *getps() {
     if (objects[index] == NULL) {
       p[index] = analogRead(analogPin);
     } else {
-      ToxObject *object = objects[index];
+      String object = String(objects[index]);
       
-      if (object->className.equals(TEMPE)) {
+      if (object.equals(TEMPE)) {
         uint8_t analogPin = getAnalogPin(i);
         p[index] = (int)dallas(analogPin,0); 
-      } 
+      } else {
+        p[index] = 0;
+      }
      
       
     }
+
+    //Serial.print("Index: "); Serial.print(index);
+    //Serial.print("\tValue: "); Serial.println(p[index]);
   }
   //FINE ANALOG PINS
 
@@ -236,7 +221,7 @@ int *getps() {
    return p;
 }
 
-void sendsts() {
+/*void sendsts() {
   int* arr = getps();
 
   if (arr == NULL) { return; }
@@ -256,6 +241,31 @@ void sendsts() {
     }
   }
   Serial.print(" ] }\n");
+  free(arr);
+}*/
+
+void sendsts() {
+  int *arr = getps();  
+  String str = "{ \"pins_d\" : [";
+  
+  for (int i = 0; i < n_PINSD; i++) {
+    str += String(arr[i]);
+    if (i != (n_PINSD - 1)) {
+      str += ", ";
+    }
+  }
+  str += "], \"pins_a\" : [ ";
+
+  int total = n_PINSD + n_PINSA - 1;
+  for (int i = n_PINSD; i < total; i++) {
+    str += String(arr[i]);
+    if (i != (total - 1)) {
+      str += ", ";
+    }
+  }
+  str += "] }";
+  
+  Serial.println(str);
   free(arr);
 }
 
@@ -306,14 +316,14 @@ int16_t dallas(int x, byte start) {
 
 void writeHighPin(int pin) {
   if (!isReadOnly(pin)) {
-        ToxObject *object = objects[pin];
+        String object = objects[pin];
         //Serial.print("Sto per accendere la classe: ");
         //Serial.println(object->className);
         if (object == NULL) {
           digitalWrite(pin, HIGH);   
         } else {
           //p(object->className);
-          if (object->className.equals(SERVO)) {
+          if (object.equals(SERVO)) {
            
             Servo servo;
             servo.attach(pin);
@@ -327,7 +337,7 @@ void writeHighPin(int pin) {
             servo.detach();
           }
           
-          else if (object->className.equals(MOTOR)) {
+          else if (object.equals(MOTOR)) {
             motorMode = 1;
             stepsDone = 0;
             //Serial.println("Alzo le veneziane");
@@ -342,11 +352,11 @@ void writeHighPin(int pin) {
 
 void writeLowPin(int pin) {
   if (!isReadOnly(pin)) {
-        ToxObject *object = objects[pin];
+        String object = objects[pin];
         if (object == NULL) {
           digitalWrite(pin, LOW);
         } else {
-          if (object->className.equals(SERVO)) {
+          if (object.equals(SERVO)) {
             Servo servo;
             servo.attach(pin);
             
@@ -359,7 +369,7 @@ void writeLowPin(int pin) {
 
             servo.detach();
           }
-          else if (object->className.equals(MOTOR)) {
+          else if (object.equals(MOTOR)) {
             //Serial.println("Chiudo le veneziane");
             motorMode = 0;
             stepsDone = 0;
