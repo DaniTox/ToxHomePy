@@ -1059,7 +1059,9 @@ class IRSensor(ConcreteObject):
 
         self.handlers = {
             "Rilevato movimento" : list(),
-            "Rilevato intruso" : list()
+            "Rilevato intruso" : list(),
+            "Allarme spenta" : list(),
+            "Allarme accesa" : list()
         }
 
         self.messages = {
@@ -1069,9 +1071,11 @@ class IRSensor(ConcreteObject):
 
     def activateAlarm(self):
         self.customVariables["Allarme Attiva"] = ToxVariable("Int", 1)
+        self.executeHandlers("Allarme accesa")
 
     def deactivateAlarm(self):
         self.customVariables["Allarme Attiva"] = ToxVariable("Int", 0)
+        self.executeHandlers("Allarme spenta")
 
     def update(self, value):
         if value == None:
@@ -1414,9 +1418,11 @@ class ToxMain:
         customSerializedVariables = dictObj["customVariables"]
         for key in customSerializedVariables.keys():
             serVar = customSerializedVariables[key]
-            newObj.customVariables[key] = ToxVariable(serVar["valueType"], serVar["value"])
-            if key in ("name", "description"):
-                newObj.setValueForKey(serVar["value"], key)
+            newObj.setValueForKey(serVar["value"], key)
+            
+            #newObj.customVariables[key] = ToxVariable(serVar["valueType"], serVar["value"])
+            #if key in ("name", "description"):
+            #    newObj.setValueForKey(serVar["value"], key)
 
         return newObj
 

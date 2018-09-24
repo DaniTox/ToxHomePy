@@ -1,208 +1,80 @@
 {
   "Objects": [
     {
-      "className": "Lampada",
-      "customVariables": {
-        "description": {
-          "value": "Niente",
-          "valueType": "String"
-        },
-        "location": {
-          "value": "Camera",
-          "valueType": "String"
-        },
-        "name": {
-          "value": "Led",
-          "valueType": "String"
-        },
-        "pin": {
-          "value": 32,
-          "valueType": "Int"
-        }
-      },
-      "description": "Niente",
-      "handlers": {
-        "Accensione": [],
-        "Spegnimento": []
-      },
-      "id": 7106,
-      "isOn": false,
-      "isVirtual": false,
-      "liveProperty": "",
-      "messages": [
-        "deactivate",
-        "activate"
+      "actionObjectsIDs": [
+        2108,
+        551,
+        4332,
+        8839,
+        8159
       ],
-      "name": "Led"
-    },
-    {
-      "className": "Timer",
+      "className": "ToxAction",
       "customVariables": {
         "description": {
-          "value": "Asd",
+          "value": "Azione che spegne le luci, attiva l\u2019allarme ecc",
           "valueType": "String"
         },
-        "durata": {
-          "value": 3.0,
-          "valueType": "Float"
-        },
         "name": {
-          "value": "Timer accensione con delay",
+          "value": "BuonanotteAction",
           "valueType": "String"
         }
       },
-      "description": "Asd",
+      "description": "Azione che spegne le luci, attiva l\u2019allarme ecc",
       "handlers": {
-        "Azione da svolgere": [
+        "Azione conclusa": [],
+        "Azione da eseguire": [
           {
             "args": null,
             "function": {
-              "functionName": "activate",
-              "objectId": 7106
+              "functionName": "Attiva Allarme",
+              "objectId": 8159
             },
-            "id": 6542,
-            "id_object_owner": 3991
+            "id": 7740,
+            "id_object_owner": 4626
           },
           {
             "args": null,
             "function": {
-              "functionName": "Azione conclusa",
-              "objectId": 7756
+              "functionName": "Chiudi",
+              "objectId": 8839
             },
-            "id": 9483,
-            "id_object_owner": 3991
-          }
-        ]
-      },
-      "id": 3991,
-      "isVirtual": true,
-      "liveProperty": "",
-      "messages": [
-        "fire",
-        "activate"
-      ],
-      "name": "Timer accensione con delay"
-    },
-    {
-      "className": "Timer",
-      "customVariables": {
-        "description": {
-          "value": "Con delay",
-          "valueType": "String"
-        },
-        "durata": {
-          "value": 3.0,
-          "valueType": "Float"
-        },
-        "name": {
-          "value": "Timer spegnimento con delay",
-          "valueType": "String"
-        }
-      },
-      "description": "Con delay",
-      "handlers": {
-        "Azione da svolgere": [
+            "id": 4731,
+            "id_object_owner": 4626
+          },
           {
             "args": null,
             "function": {
               "functionName": "deactivate",
-              "objectId": 7106
+              "objectId": 551
             },
-            "id": 8102,
-            "id_object_owner": 4633
+            "id": 6629,
+            "id_object_owner": 4626
           },
           {
             "args": null,
             "function": {
-              "functionName": "Azione conclusa",
-              "objectId": 7309
+              "functionName": "Chiudi",
+              "objectId": 4332
             },
-            "id": 1316,
-            "id_object_owner": 4633
+            "id": 300,
+            "id_object_owner": 4626
           }
         ]
       },
-      "id": 4633,
+      "id": 4626,
       "isVirtual": true,
       "liveProperty": "",
       "messages": [
-        "fire",
-        "activate"
+        "Esegui azione",
+        "Azione conclusa"
       ],
-      "name": "Timer spegnimento con delay"
-    },
-    {
-      "className": "InternetTemperature",
-      "customVariables": {
-        "condizione": {
-          "value": null,
-          "valueType": "String"
-        },
-        "description": {
-          "value": "Asd",
-          "valueType": "String"
-        },
-        "location_temperatura": {
-          "value": null,
-          "valueType": "String"
-        },
-        "name": {
-          "value": "Temperatura",
-          "valueType": "String"
-        }
-      },
-      "description": "Asd",
-      "handlers": {
-        "Condizione verificata": []
-      },
-      "id": 2023,
-      "isVirtual": true,
-      "liveProperty": "",
-      "messages": [
-        "Controlla la temperatura"
-      ],
-      "name": "Temperatura"
-    },
-    {
-      "className": "WeatherChecker",
-      "customVariables": {
-        "description": {
-          "value": "Asd",
-          "valueType": "String"
-        },
-        "location_temperatura": {
-          "value": null,
-          "valueType": "String"
-        },
-        "name": {
-          "value": "Tempo",
-          "valueType": "String"
-        }
-      },
-      "description": "Asd",
-      "handlers": {
-        "Nebbia": [],
-        "Neve": [],
-        "Nuvoloso": [],
-        "Pioggia": [],
-        "Pioviggino": [],
-        "Qualsiasi": [],
-        "Sereno": [],
-        "Temporali": []
-      },
-      "id": 7949,
-      "isVirtual": true,
-      "liveProperty": "",
-      "messages": [
-        "Controlla il tempo"
-      ],
-      "name": "Tempo"
+      "name": "BuonanotteAction"
     },
     {
       "className": "Buzzer",
       "customVariables": {
         "description": {
-          "value": "Asd",
+          "value": "Nulla",
           "valueType": "String"
         },
         "location": {
@@ -218,12 +90,12 @@
           "valueType": "Int"
         }
       },
-      "description": "Asd",
+      "description": "Nulla",
       "handlers": {
         "Attivato": [],
         "Disattivato": []
       },
-      "id": 1485,
+      "id": 2108,
       "isOn": false,
       "isVirtual": false,
       "liveProperty": "",
@@ -234,107 +106,10 @@
       "name": "Buzzer"
     },
     {
-      "actionObjectsIDs": [
-        7106,
-        8994
-      ],
-      "className": "ToxAction",
+      "className": "Lampada",
       "customVariables": {
         "description": {
-          "value": "Accende il led e lo spegne dopo 1 secondo",
-          "valueType": "String"
-        },
-        "name": {
-          "value": "Accendi-Spegni",
-          "valueType": "String"
-        }
-      },
-      "description": "Accende il led e lo spegne dopo 1 secondo",
-      "handlers": {
-        "Azione conclusa": [],
-        "Azione da eseguire": [
-          {
-            "args": null,
-            "function": {
-              "functionName": "activate",
-              "objectId": 7106
-            },
-            "id": 5681,
-            "id_object_owner": 1632
-          },
-          {
-            "args": null,
-            "function": {
-              "functionName": "fire",
-              "objectId": 8994
-            },
-            "id": 225,
-            "id_object_owner": 1632
-          }
-        ]
-      },
-      "id": 1632,
-      "isVirtual": true,
-      "liveProperty": "",
-      "messages": [
-        "Esegui azione",
-        "Azione conclusa"
-      ],
-      "name": "Accendi-Spegni"
-    },
-    {
-      "className": "Timer",
-      "customVariables": {
-        "description": {
-          "value": "Asd",
-          "valueType": "String"
-        },
-        "durata": {
-          "value": 1.0,
-          "valueType": "Float"
-        },
-        "name": {
-          "value": "SpegniLed",
-          "valueType": "String"
-        }
-      },
-      "description": "Asd",
-      "handlers": {
-        "Azione da svolgere": [
-          {
-            "args": null,
-            "function": {
-              "functionName": "deactivate",
-              "objectId": 7106
-            },
-            "id": 3732,
-            "id_object_owner": 8994
-          },
-          {
-            "args": null,
-            "function": {
-              "functionName": "Azione conclusa",
-              "objectId": 1632
-            },
-            "id": 5966,
-            "id_object_owner": 8994
-          }
-        ]
-      },
-      "id": 8994,
-      "isVirtual": true,
-      "liveProperty": "",
-      "messages": [
-        "fire",
-        "activate"
-      ],
-      "name": "SpegniLed"
-    },
-    {
-      "className": "Tapparelle",
-      "customVariables": {
-        "description": {
-          "value": "Asd",
+          "value": "Lampada nella camera",
           "valueType": "String"
         },
         "location": {
@@ -342,20 +117,55 @@
           "valueType": "String"
         },
         "name": {
-          "value": "Tappa",
+          "value": "Luce",
           "valueType": "String"
         },
         "pin": {
-          "value": 13,
+          "value": 32,
           "valueType": "Int"
         }
       },
-      "description": "Asd",
+      "description": "Lampada nella camera",
       "handlers": {
-        "Aperte": [],
-        "Chiuse": []
+        "Accensione": [],
+        "Spegnimento": []
       },
-      "id": 9141,
+      "id": 551,
+      "isOn": false,
+      "isVirtual": false,
+      "liveProperty": "",
+      "messages": [
+        "deactivate",
+        "activate"
+      ],
+      "name": "Luce"
+    },
+    {
+      "className": "Porta",
+      "customVariables": {
+        "description": {
+          "value": "Porta in sala",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Porta soggiorno",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": 7,
+          "valueType": "Int"
+        }
+      },
+      "description": "Porta in sala",
+      "handlers": {
+        "Porta aperta": [],
+        "Porta chiusa": []
+      },
+      "id": 4332,
       "isOpen": false,
       "isVirtual": false,
       "liveProperty": "",
@@ -363,17 +173,52 @@
         "Chiudi",
         "Apri"
       ],
-      "name": "Tappa"
+      "name": "Porta soggiorno"
+    },
+    {
+      "className": "Tapparelle",
+      "customVariables": {
+        "description": {
+          "value": "Nulla",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Tapparelle",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": 3,
+          "valueType": "Int"
+        }
+      },
+      "description": "Nulla",
+      "handlers": {
+        "Aperte": [],
+        "Chiuse": []
+      },
+      "id": 8839,
+      "isOpen": false,
+      "isVirtual": false,
+      "liveProperty": "",
+      "messages": [
+        "Chiudi",
+        "Apri"
+      ],
+      "name": "Tapparelle"
     },
     {
       "className": "IRSensor",
       "customVariables": {
         "Allarme Attiva": {
-          "value": 1,
+          "value": 0,
           "valueType": "Int"
         },
         "description": {
-          "value": "Asd",
+          "value": "Sensore",
           "valueType": "String"
         },
         "location": {
@@ -389,32 +234,45 @@
           "valueType": "Int"
         }
       },
-      "description": "Asd",
+      "description": "Sensore",
       "handlers": {
+        "Allarme accesa": [],
+        "Allarme spenta": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "Disattiva",
+              "objectId": 2108
+            },
+            "id": 2355,
+            "id_object_owner": 8159
+          }
+        ],
         "Rilevato intruso": [
           {
             "args": null,
             "function": {
-              "functionName": "Chiudi",
-              "objectId": 9141
+              "functionName": "Attiva",
+              "objectId": 2108
             },
-            "id": 4389,
-            "id_object_owner": 6272
-          },
+            "id": 7061,
+            "id_object_owner": 8159
+          }
+        ],
+        "Rilevato movimento": [
           {
             "args": null,
             "function": {
-              "functionName": "Chiudi",
-              "objectId": 1469
+              "functionName": "Esegui azione",
+              "objectId": 5277
             },
-            "id": 2369,
-            "id_object_owner": 6272
+            "id": 5953,
+            "id_object_owner": 8159
           }
-        ],
-        "Rilevato movimento": []
+        ]
       },
       "hasBeenAlerted": false,
-      "id": 6272,
+      "id": 8159,
       "isVirtual": false,
       "liveProperty": "",
       "messages": [
@@ -424,10 +282,175 @@
       "name": "Allarme"
     },
     {
-      "className": "Porta",
+      "actionObjectsIDs": [],
+      "className": "ToxAction",
       "customVariables": {
         "description": {
-          "value": "Asd",
+          "value": "Fa l\u2019opposto di Buonanotte",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "BuongiornoAction",
+          "valueType": "String"
+        }
+      },
+      "description": "Fa l\u2019opposto di Buonanotte",
+      "handlers": {
+        "Azione conclusa": [],
+        "Azione da eseguire": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "Disattiva Allarme",
+              "objectId": 8159
+            },
+            "id": 1687,
+            "id_object_owner": 9185
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "Disattiva",
+              "objectId": 2108
+            },
+            "id": 111,
+            "id_object_owner": 9185
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "Apri",
+              "objectId": 8839
+            },
+            "id": 6012,
+            "id_object_owner": 9185
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "activate",
+              "objectId": 551
+            },
+            "id": 6079,
+            "id_object_owner": 9185
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "Apri",
+              "objectId": 4332
+            },
+            "id": 122,
+            "id_object_owner": 9185
+          }
+        ]
+      },
+      "id": 9185,
+      "isVirtual": true,
+      "liveProperty": "",
+      "messages": [
+        "Esegui azione",
+        "Azione conclusa"
+      ],
+      "name": "BuongiornoAction"
+    },
+    {
+      "actionObjectsIDs": [
+        551,
+        5378
+      ],
+      "className": "ToxAction",
+      "customVariables": {
+        "description": {
+          "value": "Accende il led per qualche secondo",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "AccendiLedAction",
+          "valueType": "String"
+        }
+      },
+      "description": "Accende il led per qualche secondo",
+      "handlers": {
+        "Azione conclusa": [],
+        "Azione da eseguire": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "activate",
+              "objectId": 551
+            },
+            "id": 3715,
+            "id_object_owner": 5277
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "fire",
+              "objectId": 5378
+            },
+            "id": 7255,
+            "id_object_owner": 5277
+          }
+        ]
+      },
+      "id": 5277,
+      "isVirtual": true,
+      "liveProperty": "",
+      "messages": [
+        "Esegui azione",
+        "Azione conclusa"
+      ],
+      "name": "AccendiLedAction"
+    },
+    {
+      "className": "Timer",
+      "customVariables": {
+        "description": {
+          "value": "Timer che spegne il led dopo 5 secondi",
+          "valueType": "String"
+        },
+        "durata": {
+          "value": 5.0,
+          "valueType": "Float"
+        },
+        "name": {
+          "value": "Timer di spegnimento",
+          "valueType": "String"
+        }
+      },
+      "description": "Timer che spegne il led dopo 5 secondi",
+      "handlers": {
+        "Azione da svolgere": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "deactivate",
+              "objectId": 551
+            },
+            "id": 4010,
+            "id_object_owner": 5378
+          }
+        ]
+      },
+      "id": 5378,
+      "isVirtual": true,
+      "liveProperty": "",
+      "messages": [
+        "fire",
+        "activate"
+      ],
+      "name": "Timer di spegnimento"
+    },
+    {
+      "className": "RealTemperature",
+      "customVariables": {
+        "condizione": {
+          "value": ">20",
+          "valueType": "String"
+        },
+        "description": {
+          "value": "Nulla",
           "valueType": "String"
         },
         "location": {
@@ -435,28 +458,27 @@
           "valueType": "String"
         },
         "name": {
-          "value": "Porta",
+          "value": "Temperatura Camera",
           "valueType": "String"
         },
         "pin": {
-          "value": 7,
+          "value": 5,
+          "valueType": "Int"
+        },
+        "temperatura": {
+          "value": null,
           "valueType": "Int"
         }
       },
-      "description": "Asd",
+      "description": "Nulla",
       "handlers": {
-        "Porta aperta": [],
-        "Porta chiusa": []
+        "Condizione verificata": []
       },
-      "id": 1469,
-      "isOpen": false,
+      "id": 3897,
       "isVirtual": false,
       "liveProperty": "",
-      "messages": [
-        "Chiudi",
-        "Apri"
-      ],
-      "name": "Porta"
+      "messages": [],
+      "name": "Temperatura Camera"
     }
   ]
 }
