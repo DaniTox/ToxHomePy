@@ -427,15 +427,27 @@ class ToxAction(VirtualObject):
 
         self.actionObjectsIDs = list()
 
+        self.customVariables["isActive"] = ToxVariable("Int", 1)
+
         self.messages = {
             "Esegui azione" : self.execute,
             "Azione conclusa" : self.finish
+            "Attiva": self.activate,
+            "Disattiva" : self.deactivate
         }
 
         self.handlers = {
             "Azione da eseguire" : list(),
             "Azione conclusa" : list()
         }
+
+    def activate(self):
+        self.setValueForKey(1, "isActive")
+        print("ToxAction è stata settata to Attiva")
+
+    def deactivate(self):
+        self.setValueForKey(0, "isActive")
+        print("ToxAction è stata settata to Disattiva")
 
     def removeObjIDfromMyList(self, objID):
         if objID == None:
@@ -460,7 +472,13 @@ class ToxAction(VirtualObject):
            
     
     def execute(self):
-        self.executeHandlers("Azione da eseguire")
+        isActive = self.get("isActive")
+        if isActive == 1 or isActive == None:
+            print("ToxAction è abilitata. Eseguo...")
+            self.executeHandlers("Azione da eseguire")
+        elif isActive == 0:
+            print("ToxAction disabilitata. Non eseguo...")
+        
 
     def finish(self):
         self.executeHandlers("Azione conclusa")

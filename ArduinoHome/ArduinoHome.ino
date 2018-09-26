@@ -329,7 +329,7 @@ void writeHighPin(int pin) {
             servo.attach(pin);
             float pos;
             
-            for (pos = 90; pos < 190; pos+=2.5) {
+            for (pos = 70; pos > 25; pos-=2.5) {
               servo.write(pos);
               delay(10);
             }
@@ -362,7 +362,7 @@ void writeLowPin(int pin) {
             
             float pos;
             
-            for (pos = 190; pos > 90; pos-=2.5) {
+            for (pos = 25; pos < 70; pos+=2.5) {
               servo.write(pos);
               delay(10);
             }

@@ -86,7 +86,7 @@
           "valueType": "String"
         },
         "pin": {
-          "value": 4,
+          "value": 6,
           "valueType": "Int"
         }
       },
@@ -121,7 +121,7 @@
           "valueType": "String"
         },
         "pin": {
-          "value": 29,
+          "value": 32,
           "valueType": "Int"
         }
       },
@@ -131,7 +131,7 @@
         "Spegnimento": []
       },
       "id": 551,
-      "isOn": true,
+      "isOn": false,
       "isVirtual": false,
       "liveProperty": "",
       "messages": [
@@ -230,7 +230,7 @@
           "valueType": "String"
         },
         "pin": {
-          "value": 50,
+          "value": 52,
           "valueType": "Int"
         }
       },
@@ -435,7 +435,7 @@
       },
       "id": 5378,
       "isVirtual": true,
-      "liveProperty": "Sto contando i secondi...",
+      "liveProperty": "",
       "messages": [
         "fire",
         "activate"
@@ -462,11 +462,11 @@
           "valueType": "String"
         },
         "pin": {
-          "value": 6,
+          "value": 5,
           "valueType": "Int"
         },
         "temperatura": {
-          "value": 27,
+          "value": null,
           "valueType": "Int"
         }
       },
