@@ -14,6 +14,10 @@
           "value": "Azione che spegne le luci, attiva l\u2019allarme ecc",
           "valueType": "String"
         },
+        "isActive": {
+          "value": 1,
+          "valueType": "Int"
+        },
         "name": {
           "value": "BuonanotteAction",
           "valueType": "String"
@@ -58,6 +62,51 @@
             },
             "id": 300,
             "id_object_owner": 4626
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "Esegui azione",
+              "objectId": 3367
+            },
+            "id": 4791,
+            "id_object_owner": 4626
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "deactivate",
+              "objectId": 1125
+            },
+            "id": 8395,
+            "id_object_owner": 4626
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "deactivate",
+              "objectId": 5669
+            },
+            "id": 2769,
+            "id_object_owner": 4626
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "deactivate",
+              "objectId": 9075
+            },
+            "id": 5109,
+            "id_object_owner": 4626
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "deactivate",
+              "objectId": 8598
+            },
+            "id": 3444,
+            "id_object_owner": 4626
           }
         ]
       },
@@ -66,7 +115,9 @@
       "liveProperty": "",
       "messages": [
         "Esegui azione",
-        "Azione conclusa"
+        "Azione conclusa",
+        "Disattiva",
+        "Attiva"
       ],
       "name": "BuonanotteAction"
     },
@@ -98,7 +149,7 @@
       "id": 2108,
       "isOn": false,
       "isVirtual": false,
-      "liveProperty": "",
+      "liveProperty": "Spento",
       "messages": [
         "Disattiva",
         "Attiva"
@@ -117,7 +168,7 @@
           "valueType": "String"
         },
         "name": {
-          "value": "Luce",
+          "value": "Led1",
           "valueType": "String"
         },
         "pin": {
@@ -131,14 +182,14 @@
         "Spegnimento": []
       },
       "id": 551,
-      "isOn": true,
+      "isOn": false,
       "isVirtual": false,
-      "liveProperty": "",
+      "liveProperty": "Spenta",
       "messages": [
         "deactivate",
         "activate"
       ],
-      "name": "Luce"
+      "name": "Led1"
     },
     {
       "className": "Porta",
@@ -168,7 +219,7 @@
       "id": 4332,
       "isOpen": false,
       "isVirtual": false,
-      "liveProperty": "",
+      "liveProperty": "Chiusa",
       "messages": [
         "Chiudi",
         "Apri"
@@ -201,9 +252,9 @@
         "Chiuse": []
       },
       "id": 8839,
-      "isOpen": false,
+      "isOpen": true,
       "isVirtual": false,
-      "liveProperty": "",
+      "liveProperty": "Aperte",
       "messages": [
         "Chiudi",
         "Apri"
@@ -226,7 +277,7 @@
           "valueType": "String"
         },
         "name": {
-          "value": "Allarme",
+          "value": "Sensore1",
           "valueType": "String"
         },
         "pin": {
@@ -236,7 +287,17 @@
       },
       "description": "Sensore",
       "handlers": {
-        "Allarme accesa": [],
+        "Allarme accesa": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "Attiva Allarme",
+              "objectId": 668
+            },
+            "id": 1044,
+            "id_object_owner": 8159
+          }
+        ],
         "Allarme spenta": [
           {
             "args": null,
@@ -246,16 +307,25 @@
             },
             "id": 2355,
             "id_object_owner": 8159
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "Disattiva Allarme",
+              "objectId": 668
+            },
+            "id": 7864,
+            "id_object_owner": 8159
           }
         ],
         "Rilevato intruso": [
           {
             "args": null,
             "function": {
-              "functionName": "Attiva",
-              "objectId": 2108
+              "functionName": "Esegui azione",
+              "objectId": 4920
             },
-            "id": 7061,
+            "id": 557,
             "id_object_owner": 8159
           }
         ],
@@ -274,12 +344,12 @@
       "hasBeenAlerted": false,
       "id": 8159,
       "isVirtual": false,
-      "liveProperty": "",
+      "liveProperty": "[Allarme disattiva] - Movimento rilevato...",
       "messages": [
         "Attiva Allarme",
         "Disattiva Allarme"
       ],
-      "name": "Allarme"
+      "name": "Sensore1"
     },
     {
       "actionObjectsIDs": [],
@@ -288,6 +358,10 @@
         "description": {
           "value": "Fa l\u2019opposto di Buonanotte",
           "valueType": "String"
+        },
+        "isActive": {
+          "value": 1,
+          "valueType": "Int"
         },
         "name": {
           "value": "BuongiornoAction",
@@ -350,7 +424,9 @@
       "liveProperty": "",
       "messages": [
         "Esegui azione",
-        "Azione conclusa"
+        "Azione conclusa",
+        "Disattiva",
+        "Attiva"
       ],
       "name": "BuongiornoAction"
     },
@@ -364,6 +440,10 @@
         "description": {
           "value": "Accende il led per qualche secondo",
           "valueType": "String"
+        },
+        "isActive": {
+          "value": 0,
+          "valueType": "Int"
         },
         "name": {
           "value": "AccendiLedAction",
@@ -399,7 +479,9 @@
       "liveProperty": "",
       "messages": [
         "Esegui azione",
-        "Azione conclusa"
+        "Azione conclusa",
+        "Disattiva",
+        "Attiva"
       ],
       "name": "AccendiLedAction"
     },
@@ -435,7 +517,7 @@
       },
       "id": 5378,
       "isVirtual": true,
-      "liveProperty": "Sto contando i secondi...",
+      "liveProperty": "",
       "messages": [
         "fire",
         "activate"
@@ -466,19 +548,1144 @@
           "valueType": "Int"
         },
         "temperatura": {
-          "value": 27,
+          "value": 25,
           "valueType": "Int"
         }
       },
       "description": "Nulla",
       "handlers": {
-        "Condizione verificata": []
+        "Codizione non verificata": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "Spegni",
+              "objectId": 2201
+            },
+            "id": 8992,
+            "id_object_owner": 3897
+          }
+        ],
+        "Condizione verificata": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "Accendi",
+              "objectId": 2201
+            },
+            "id": 8801,
+            "id_object_owner": 3897
+          }
+        ]
       },
       "id": 3897,
       "isVirtual": false,
-      "liveProperty": "",
+      "liveProperty": "25\u00b0 C",
       "messages": [],
       "name": "Temperatura Camera"
+    },
+    {
+      "className": "Lampada",
+      "customVariables": {
+        "description": {
+          "value": "Asd",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Led2",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": 30,
+          "valueType": "Int"
+        }
+      },
+      "description": "Asd",
+      "handlers": {
+        "Accensione": [],
+        "Spegnimento": []
+      },
+      "id": 1125,
+      "isOn": false,
+      "isVirtual": false,
+      "liveProperty": "Spenta",
+      "messages": [
+        "deactivate",
+        "activate"
+      ],
+      "name": "Led2"
+    },
+    {
+      "className": "Lampada",
+      "customVariables": {
+        "description": {
+          "value": "Asd",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Led3",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": 31,
+          "valueType": "Int"
+        }
+      },
+      "description": "Asd",
+      "handlers": {
+        "Accensione": [],
+        "Spegnimento": []
+      },
+      "id": 5669,
+      "isOn": false,
+      "isVirtual": false,
+      "liveProperty": "Spenta",
+      "messages": [
+        "deactivate",
+        "activate"
+      ],
+      "name": "Led3"
+    },
+    {
+      "className": "Lampada",
+      "customVariables": {
+        "description": {
+          "value": "Asd",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Led4",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": 32,
+          "valueType": "Int"
+        }
+      },
+      "description": "Asd",
+      "handlers": {
+        "Accensione": [],
+        "Spegnimento": []
+      },
+      "id": 9075,
+      "isOn": false,
+      "isVirtual": false,
+      "liveProperty": "Spenta",
+      "messages": [
+        "deactivate",
+        "activate"
+      ],
+      "name": "Led4"
+    },
+    {
+      "className": "Lampada",
+      "customVariables": {
+        "description": {
+          "value": "Asd",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Led5",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": 33,
+          "valueType": "Int"
+        }
+      },
+      "description": "Asd",
+      "handlers": {
+        "Accensione": [],
+        "Spegnimento": []
+      },
+      "id": 8598,
+      "isOn": false,
+      "isVirtual": false,
+      "liveProperty": "Spenta",
+      "messages": [
+        "deactivate",
+        "activate"
+      ],
+      "name": "Led5"
+    },
+    {
+      "actionObjectsIDs": [
+        5669,
+        1125,
+        551,
+        4332,
+        2108,
+        2201
+      ],
+      "className": "ToxAction",
+      "customVariables": {
+        "description": {
+          "value": "Asd",
+          "valueType": "String"
+        },
+        "isActive": {
+          "value": 1,
+          "valueType": "Int"
+        },
+        "name": {
+          "value": "Spegni tutto",
+          "valueType": "String"
+        }
+      },
+      "description": "Asd",
+      "handlers": {
+        "Azione conclusa": [],
+        "Azione da eseguire": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "deactivate",
+              "objectId": 551
+            },
+            "id": 85,
+            "id_object_owner": 4149
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "deactivate",
+              "objectId": 1125
+            },
+            "id": 9558,
+            "id_object_owner": 4149
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "deactivate",
+              "objectId": 5669
+            },
+            "id": 128,
+            "id_object_owner": 4149
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "deactivate",
+              "objectId": 9075
+            },
+            "id": 2197,
+            "id_object_owner": 4149
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "deactivate",
+              "objectId": 8598
+            },
+            "id": 1987,
+            "id_object_owner": 4149
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "Disattiva",
+              "objectId": 2108
+            },
+            "id": 6435,
+            "id_object_owner": 4149
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "Chiudi",
+              "objectId": 4332
+            },
+            "id": 788,
+            "id_object_owner": 4149
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "Spegni",
+              "objectId": 2201
+            },
+            "id": 4997,
+            "id_object_owner": 4149
+          }
+        ]
+      },
+      "id": 4149,
+      "isVirtual": true,
+      "liveProperty": "",
+      "messages": [
+        "Esegui azione",
+        "Azione conclusa",
+        "Disattiva",
+        "Attiva"
+      ],
+      "name": "Spegni tutto"
+    },
+    {
+      "actionObjectsIDs": [
+        5669,
+        1125,
+        551,
+        4332,
+        2201
+      ],
+      "className": "ToxAction",
+      "customVariables": {
+        "description": {
+          "value": "Asd",
+          "valueType": "String"
+        },
+        "isActive": {
+          "value": 1,
+          "valueType": "Int"
+        },
+        "name": {
+          "value": "Accendi tutto",
+          "valueType": "String"
+        }
+      },
+      "description": "Asd",
+      "handlers": {
+        "Azione conclusa": [],
+        "Azione da eseguire": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "activate",
+              "objectId": 551
+            },
+            "id": 1779,
+            "id_object_owner": 6225
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "activate",
+              "objectId": 1125
+            },
+            "id": 745,
+            "id_object_owner": 6225
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "activate",
+              "objectId": 5669
+            },
+            "id": 9737,
+            "id_object_owner": 6225
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "activate",
+              "objectId": 9075
+            },
+            "id": 324,
+            "id_object_owner": 6225
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "activate",
+              "objectId": 8598
+            },
+            "id": 4042,
+            "id_object_owner": 6225
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "Attiva",
+              "objectId": 2108
+            },
+            "id": 7646,
+            "id_object_owner": 6225
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "Apri",
+              "objectId": 4332
+            },
+            "id": 6745,
+            "id_object_owner": 6225
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "Accendi",
+              "objectId": 2201
+            },
+            "id": 6530,
+            "id_object_owner": 6225
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "Apri",
+              "objectId": 8839
+            },
+            "id": 4947,
+            "id_object_owner": 6225
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "Controllo condizione",
+              "objectId": 2851
+            },
+            "id": 1167,
+            "id_object_owner": 6225
+          }
+        ]
+      },
+      "id": 6225,
+      "isVirtual": true,
+      "liveProperty": "",
+      "messages": [
+        "Esegui azione",
+        "Azione conclusa",
+        "Disattiva",
+        "Attiva"
+      ],
+      "name": "Accendi tutto"
+    },
+    {
+      "className": "IRSensor",
+      "customVariables": {
+        "Allarme Attiva": {
+          "value": 0,
+          "valueType": "Int"
+        },
+        "description": {
+          "value": "Asd",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Sensore2",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": 51,
+          "valueType": "Int"
+        }
+      },
+      "description": "Asd",
+      "handlers": {
+        "Allarme accesa": [],
+        "Allarme spenta": [],
+        "Rilevato intruso": [],
+        "Rilevato movimento": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "Esegui azione",
+              "objectId": 5292
+            },
+            "id": 889,
+            "id_object_owner": 8419
+          }
+        ]
+      },
+      "hasBeenAlerted": true,
+      "id": 8419,
+      "isVirtual": false,
+      "liveProperty": "[Allarme disattiva] - Nessun movimento",
+      "messages": [
+        "Attiva Allarme",
+        "Disattiva Allarme"
+      ],
+      "name": "Sensore2"
+    },
+    {
+      "className": "IRSensor",
+      "customVariables": {
+        "Allarme Attiva": {
+          "value": 0,
+          "valueType": "Int"
+        },
+        "description": {
+          "value": "Asd",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Sensore3",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": 52,
+          "valueType": "Int"
+        }
+      },
+      "description": "Asd",
+      "handlers": {
+        "Allarme accesa": [],
+        "Allarme spenta": [],
+        "Rilevato intruso": [],
+        "Rilevato movimento": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "Esegui azione",
+              "objectId": 9186
+            },
+            "id": 4904,
+            "id_object_owner": 668
+          }
+        ]
+      },
+      "hasBeenAlerted": false,
+      "id": 668,
+      "isVirtual": false,
+      "liveProperty": "[Allarme disattiva] - Movimento rilevato...",
+      "messages": [
+        "Attiva Allarme",
+        "Disattiva Allarme"
+      ],
+      "name": "Sensore3"
+    },
+    {
+      "actionObjectsIDs": [
+        1125,
+        5928
+      ],
+      "className": "ToxAction",
+      "customVariables": {
+        "description": {
+          "value": "Asd",
+          "valueType": "String"
+        },
+        "isActive": {
+          "value": 0,
+          "valueType": "Int"
+        },
+        "name": {
+          "value": "AccendiSpegni2",
+          "valueType": "String"
+        }
+      },
+      "description": "Asd",
+      "handlers": {
+        "Azione conclusa": [],
+        "Azione da eseguire": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "activate",
+              "objectId": 1125
+            },
+            "id": 3584,
+            "id_object_owner": 5292
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "fire",
+              "objectId": 5928
+            },
+            "id": 6994,
+            "id_object_owner": 5292
+          }
+        ]
+      },
+      "id": 5292,
+      "isVirtual": true,
+      "liveProperty": "",
+      "messages": [
+        "Esegui azione",
+        "Azione conclusa",
+        "Disattiva",
+        "Attiva"
+      ],
+      "name": "AccendiSpegni2"
+    },
+    {
+      "actionObjectsIDs": [
+        5669,
+        2920,
+        668
+      ],
+      "className": "ToxAction",
+      "customVariables": {
+        "description": {
+          "value": "Asd",
+          "valueType": "String"
+        },
+        "isActive": {
+          "value": 0,
+          "valueType": "Int"
+        },
+        "name": {
+          "value": "AccendiSpegni3",
+          "valueType": "String"
+        }
+      },
+      "description": "Asd",
+      "handlers": {
+        "Azione conclusa": [],
+        "Azione da eseguire": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "activate",
+              "objectId": 5669
+            },
+            "id": 8569,
+            "id_object_owner": 9186
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "fire",
+              "objectId": 2920
+            },
+            "id": 6633,
+            "id_object_owner": 9186
+          }
+        ]
+      },
+      "id": 9186,
+      "isVirtual": true,
+      "liveProperty": "",
+      "messages": [
+        "Esegui azione",
+        "Azione conclusa",
+        "Disattiva",
+        "Attiva"
+      ],
+      "name": "AccendiSpegni3"
+    },
+    {
+      "className": "Timer",
+      "customVariables": {
+        "description": {
+          "value": "Asd",
+          "valueType": "String"
+        },
+        "durata": {
+          "value": 5.0,
+          "valueType": "Float"
+        },
+        "name": {
+          "value": "Timer2",
+          "valueType": "String"
+        }
+      },
+      "description": "Asd",
+      "handlers": {
+        "Azione da svolgere": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "deactivate",
+              "objectId": 1125
+            },
+            "id": 6430,
+            "id_object_owner": 5928
+          }
+        ]
+      },
+      "id": 5928,
+      "isVirtual": true,
+      "liveProperty": "",
+      "messages": [
+        "fire",
+        "activate"
+      ],
+      "name": "Timer2"
+    },
+    {
+      "className": "Timer",
+      "customVariables": {
+        "description": {
+          "value": "Asd",
+          "valueType": "String"
+        },
+        "durata": {
+          "value": 5.0,
+          "valueType": "Float"
+        },
+        "name": {
+          "value": "Timer3",
+          "valueType": "String"
+        }
+      },
+      "description": "Asd",
+      "handlers": {
+        "Azione da svolgere": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "deactivate",
+              "objectId": 5669
+            },
+            "id": 7629,
+            "id_object_owner": 2920
+          }
+        ]
+      },
+      "id": 2920,
+      "isVirtual": true,
+      "liveProperty": "",
+      "messages": [
+        "fire",
+        "activate"
+      ],
+      "name": "Timer3"
+    },
+    {
+      "className": "Ventola",
+      "customVariables": {
+        "description": {
+          "value": "Asd",
+          "valueType": "String"
+        },
+        "location": {
+          "value": "",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Ventola1",
+          "valueType": "String"
+        },
+        "pin": {
+          "value": 27,
+          "valueType": "Int"
+        }
+      },
+      "description": "Asd",
+      "handlers": {
+        "Accesa": [],
+        "Spenta": []
+      },
+      "id": 2201,
+      "isOn": false,
+      "isVirtual": false,
+      "liveProperty": "Ferma",
+      "messages": [
+        "Accendi",
+        "Spegni"
+      ],
+      "name": "Ventola1"
+    },
+    {
+      "actionObjectsIDs": [
+        2201,
+        4721
+      ],
+      "className": "ToxAction",
+      "customVariables": {
+        "description": {
+          "value": "Asd",
+          "valueType": "String"
+        },
+        "isActive": {
+          "value": 0,
+          "valueType": "Int"
+        },
+        "name": {
+          "value": "Accendi se fa caldo",
+          "valueType": "String"
+        }
+      },
+      "description": "Asd",
+      "handlers": {
+        "Azione conclusa": [],
+        "Azione da eseguire": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "Controlla la temperatura",
+              "objectId": 4721
+            },
+            "id": 1133,
+            "id_object_owner": 3367
+          }
+        ]
+      },
+      "id": 3367,
+      "isVirtual": true,
+      "liveProperty": "",
+      "messages": [
+        "Esegui azione",
+        "Azione conclusa",
+        "Disattiva",
+        "Attiva"
+      ],
+      "name": "Accendi se fa caldo"
+    },
+    {
+      "className": "InternetTemperature",
+      "customVariables": {
+        "condizione": {
+          "value": ">13",
+          "valueType": "String"
+        },
+        "description": {
+          "value": "Asd",
+          "valueType": "String"
+        },
+        "location_temperatura": {
+          "value": "Brescia",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Temperatura",
+          "valueType": "String"
+        }
+      },
+      "description": "Asd",
+      "handlers": {
+        "Condizione non verificata": [],
+        "Condizione verificata": []
+      },
+      "id": 4721,
+      "isVirtual": true,
+      "liveProperty": "13\u00b0 C",
+      "messages": [
+        "Controlla la temperatura"
+      ],
+      "name": "Temperatura"
+    },
+    {
+      "className": "Repeater",
+      "customVariables": {
+        "description": {
+          "value": "Asd",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Ripetitore Check Temperatura",
+          "valueType": "String"
+        },
+        "secondi": {
+          "value": 60,
+          "valueType": "Int"
+        }
+      },
+      "description": "Asd",
+      "handlers": {
+        "Azione da ripetere": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "Esegui azione",
+              "objectId": 3367
+            },
+            "id": 544,
+            "id_object_owner": 5687
+          }
+        ]
+      },
+      "id": 5687,
+      "isRepeatableObject": true,
+      "isRepeatableObjectReady": false,
+      "isVirtual": true,
+      "liveProperty": "",
+      "messages": [],
+      "name": "Ripetitore Check Temperatura"
+    },
+    {
+      "actionObjectsIDs": [
+        8839,
+        2201
+      ],
+      "className": "ToxAction",
+      "customVariables": {
+        "description": {
+          "value": "Azione da eseguire quando ho caldo",
+          "valueType": "String"
+        },
+        "isActive": {
+          "value": 1,
+          "valueType": "Int"
+        },
+        "name": {
+          "value": "CaldoAction",
+          "valueType": "String"
+        }
+      },
+      "description": "Azione da eseguire quando ho caldo",
+      "handlers": {
+        "Azione conclusa": [],
+        "Azione da eseguire": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "Accendi",
+              "objectId": 2201
+            },
+            "id": 5270,
+            "id_object_owner": 4567
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "Apri",
+              "objectId": 8839
+            },
+            "id": 5582,
+            "id_object_owner": 4567
+          }
+        ]
+      },
+      "id": 4567,
+      "isVirtual": true,
+      "liveProperty": "",
+      "messages": [
+        "Esegui azione",
+        "Azione conclusa",
+        "Disattiva",
+        "Attiva"
+      ],
+      "name": "CaldoAction"
+    },
+    {
+      "actionObjectsIDs": [],
+      "className": "ToxAction",
+      "customVariables": {
+        "description": {
+          "value": "Azione quando si ha freddo",
+          "valueType": "String"
+        },
+        "isActive": {
+          "value": 1,
+          "valueType": "Int"
+        },
+        "name": {
+          "value": "FreddoAction",
+          "valueType": "String"
+        }
+      },
+      "description": "Azione quando si ha freddo",
+      "handlers": {
+        "Azione conclusa": [],
+        "Azione da eseguire": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "Spegni",
+              "objectId": 2201
+            },
+            "id": 4083,
+            "id_object_owner": 6569
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "Chiudi",
+              "objectId": 8839
+            },
+            "id": 6134,
+            "id_object_owner": 6569
+          }
+        ]
+      },
+      "id": 6569,
+      "isVirtual": true,
+      "liveProperty": "",
+      "messages": [
+        "Esegui azione",
+        "Azione conclusa",
+        "Disattiva",
+        "Attiva"
+      ],
+      "name": "FreddoAction"
+    },
+    {
+      "actionObjectsIDs": [
+        5669,
+        1125,
+        8159,
+        551,
+        2108,
+        8598,
+        9075
+      ],
+      "className": "ToxAction",
+      "customVariables": {
+        "description": {
+          "value": "Quando l\u2019allarme suona",
+          "valueType": "String"
+        },
+        "isActive": {
+          "value": 1,
+          "valueType": "Int"
+        },
+        "name": {
+          "value": "AllertaAction",
+          "valueType": "String"
+        }
+      },
+      "description": "Quando l\u2019allarme suona",
+      "handlers": {
+        "Azione conclusa": [],
+        "Azione da eseguire": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "activate",
+              "objectId": 551
+            },
+            "id": 6998,
+            "id_object_owner": 4920
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "activate",
+              "objectId": 1125
+            },
+            "id": 589,
+            "id_object_owner": 4920
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "activate",
+              "objectId": 5669
+            },
+            "id": 7498,
+            "id_object_owner": 4920
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "activate",
+              "objectId": 9075
+            },
+            "id": 5573,
+            "id_object_owner": 4920
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "activate",
+              "objectId": 8598
+            },
+            "id": 1110,
+            "id_object_owner": 4920
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "Attiva",
+              "objectId": 2108
+            },
+            "id": 1767,
+            "id_object_owner": 4920
+          }
+        ]
+      },
+      "id": 4920,
+      "isVirtual": true,
+      "liveProperty": "",
+      "messages": [
+        "Esegui azione",
+        "Azione conclusa",
+        "Disattiva",
+        "Attiva"
+      ],
+      "name": "AllertaAction"
+    },
+    {
+      "className": "WeatherChecker",
+      "customVariables": {
+        "description": {
+          "value": "Tempo atmosferico preso da Internet",
+          "valueType": "String"
+        },
+        "location_temperatura": {
+          "value": "Brescia",
+          "valueType": "String"
+        },
+        "name": {
+          "value": "Tempo",
+          "valueType": "String"
+        }
+      },
+      "description": "Tempo atmosferico preso da Internet",
+      "handlers": {
+        "Nebbia": [],
+        "Neve": [],
+        "Nuvoloso": [],
+        "Pioggia": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "activate",
+              "objectId": 8598
+            },
+            "id": 8247,
+            "id_object_owner": 9806
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "deactivate",
+              "objectId": 9075
+            },
+            "id": 2847,
+            "id_object_owner": 9806
+          }
+        ],
+        "Pioviggino": [],
+        "Qualsiasi": [],
+        "Sereno": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "activate",
+              "objectId": 9075
+            },
+            "id": 2754,
+            "id_object_owner": 9806
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "deactivate",
+              "objectId": 8598
+            },
+            "id": 8624,
+            "id_object_owner": 9806
+          }
+        ],
+        "Temporali": []
+      },
+      "id": 9806,
+      "isVirtual": true,
+      "liveProperty": "Sereno",
+      "messages": [
+        "Sereno",
+        "Controlla il tempo",
+        "Pioggia"
+      ],
+      "name": "Tempo"
     }
   ]
 }

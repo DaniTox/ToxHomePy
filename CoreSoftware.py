@@ -431,7 +431,7 @@ class ToxAction(VirtualObject):
 
         self.messages = {
             "Esegui azione" : self.execute,
-            "Azione conclusa" : self.finish
+            "Azione conclusa" : self.finish,
             "Attiva": self.activate,
             "Disattiva" : self.deactivate
         }
@@ -536,7 +536,9 @@ class WeatherChecker(VirtualObject):
         self.customVariables["location_temperatura"] = ToxVariable("String", None)
 
         self.messages = {
-            "Controlla il tempo" : self.checkWeather
+            "Controlla il tempo" : self.checkWeather,
+            "Sereno" : self.sereno,
+            "Pioggia" : self.pioggia
         }
 
         self.handlers = {
@@ -549,6 +551,12 @@ class WeatherChecker(VirtualObject):
             "Sereno" : list(),
             "Qualsiasi" : list()
         }
+
+    def sereno(self):
+        self.executeHandlers("Sereno")
+
+    def pioggia(self):
+        self.executeHandlers("Pioggia")
 
     def fetchWeatherFromAPI(self, isLive = False):
         if isLive == False:
@@ -759,8 +767,10 @@ class RealTemperature(ConcreteObject):
         self.customVariables["temperatura"] = ToxVariable("Int", None)
 
         self.handlers = {
-            "Condizione verificata" : list()
+            "Condizione verificata" : list(),
+            "Codizione non verificata" : list()
         }
+
 
     def setValueForKey(self, value, key):
         if key == "pin" and value != None:
@@ -793,7 +803,8 @@ class InternetTemperature(VirtualObject):
         }
 
         self.handlers = {
-            "Condizione verificata" : list()
+            "Condizione verificata" : list(),
+            "Condizione non verificata" : list()
         }
 
     def fetchTemperatureFromAPI(self):
@@ -832,12 +843,18 @@ class InternetTemperature(VirtualObject):
         if operator == ">":
             if curr_temperature > condition_temperature:
                 self.executeHandlers("Condizione verificata")
+            else:
+                self.executeHandlers("Condizione non verificata")
         elif operator == "<":
             if curr_temperature < condition_temperature:
                 self.executeHandlers("Condizione verificata")
+            else:
+                self.executeHandlers("Condizione non verificata")
         elif operator == "=":
             if curr_temperature == condition_temperature:
                 self.executeHandlers("Condizione verificata")
+            else:
+                self.executeHandlers("Condizione non verificata")
         else:
             return
 
@@ -857,12 +874,16 @@ class NumericalCondition(VirtualObject):
         self.customVariables["condizione"] = ToxVariable("String", None)
 
         self.messages = {
-            "Controllo condizione" : self.eseguiAzioni
+            "Controllo condizione" : self.eseguiAzioni,
+            "Azzera" : self.azzera
         }
 
         self.handlers = {
             "Condizione verificata" : list()
         }
+
+    def azzera(self):
+        self.setValueForKey(0, "variabile")
 
     def eseguiAzioni(self):
         current_var_value = self.customVariables["variabile"].value
@@ -1017,6 +1038,60 @@ class Lampada(ConcreteObject):
     def class_():
         return "Lampada"
         
+class Ventola(ConcreteObject):
+    def __init__(self, autoID = True):
+        ConcreteObject.__init__(self, autoID)
+        self.className = "Ventola"
+
+        self.handlers = {
+            "Accesa" : list(),
+            "Spenta" : list()
+        }
+
+        self.messages = {
+            "Accendi" : self.accendi,
+            "Spegni" : self.spegni
+        }
+
+        self.isOn = False
+    
+    
+    def update(self, value):
+        if value == None:
+            return
+        elif value == 0:
+            self.isOn = False
+        elif value == 1:
+            self.isOn = True
+        else:
+            return 
+
+
+    def accendi(self):
+        if self.isOn == False:
+            pin = self.customVariables["pin"].value
+            if pin != None:
+                msg = ToxSerialMessage.create(SerialMessageType.ACCENSIONE, pin)
+                ToxSerial.shared().addToQueue(msg)
+            self.executeHandlers("Accesa")
+
+    def spegni(self):
+        if self.isOn == True:
+            pin = self.customVariables["pin"].value
+            if pin != None:
+                msg = ToxSerialMessage.create(SerialMessageType.SPEGNIMENTO, pin)
+                ToxSerial.shared().addToQueue(msg)
+            self.executeHandlers("Spenta")
+
+
+    def live(self):
+        self.liveProperty = "Sta girando" if self.isOn else "Ferma"
+
+    @staticmethod
+    def class_():
+        return "Ventola"
+
+
 class Buzzer(ConcreteObject):
     def __init__(self, autoID=True):
         ConcreteObject.__init__(self, autoID)
@@ -1410,7 +1485,8 @@ class ToxMain:
             Porta.class_(),
             TimeCondition.class_(),
             Repeater.class_(),
-            Tapparelle.class_()
+            Tapparelle.class_(),
+            Ventola.class_()
         ]
         self.isTesting = False
         #self.generateObjectsHandlers()

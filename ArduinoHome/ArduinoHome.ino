@@ -7,7 +7,7 @@ char* objects[69];
 
 
 const int stepsPerRevolution = 512;
-const int MAXSTEPS = 2000;
+const int MAXSTEPS = 3000;
 Stepper stepper(stepsPerRevolution,8,10,9,11);
 
 int motorMode = -1;
@@ -329,7 +329,7 @@ void writeHighPin(int pin) {
             servo.attach(pin);
             float pos;
             
-            for (pos = 70; pos > 25; pos-=2.5) {
+            for (pos = 70; pos > 20; pos-=2.5) {
               servo.write(pos);
               delay(10);
             }
@@ -362,7 +362,7 @@ void writeLowPin(int pin) {
             
             float pos;
             
-            for (pos = 25; pos < 70; pos+=2.5) {
+            for (pos = 20; pos < 70; pos+=2.5) {
               servo.write(pos);
               delay(10);
             }
