@@ -149,7 +149,7 @@
       "id": 2108,
       "isOn": false,
       "isVirtual": false,
-      "liveProperty": "Spento",
+      "liveProperty": "",
       "messages": [
         "Disattiva",
         "Attiva"
@@ -184,7 +184,7 @@
       "id": 551,
       "isOn": false,
       "isVirtual": false,
-      "liveProperty": "Spenta",
+      "liveProperty": "",
       "messages": [
         "deactivate",
         "activate"
@@ -219,7 +219,7 @@
       "id": 4332,
       "isOpen": false,
       "isVirtual": false,
-      "liveProperty": "Chiusa",
+      "liveProperty": "",
       "messages": [
         "Chiudi",
         "Apri"
@@ -252,9 +252,9 @@
         "Chiuse": []
       },
       "id": 8839,
-      "isOpen": true,
+      "isOpen": false,
       "isVirtual": false,
-      "liveProperty": "Aperte",
+      "liveProperty": "",
       "messages": [
         "Chiudi",
         "Apri"
@@ -344,7 +344,7 @@
       "hasBeenAlerted": false,
       "id": 8159,
       "isVirtual": false,
-      "liveProperty": "[Allarme disattiva] - Movimento rilevato...",
+      "liveProperty": "",
       "messages": [
         "Attiva Allarme",
         "Disattiva Allarme"
@@ -397,15 +397,6 @@
               "objectId": 8839
             },
             "id": 6012,
-            "id_object_owner": 9185
-          },
-          {
-            "args": null,
-            "function": {
-              "functionName": "activate",
-              "objectId": 551
-            },
-            "id": 6079,
             "id_object_owner": 9185
           },
           {
@@ -579,7 +570,7 @@
       },
       "id": 3897,
       "isVirtual": false,
-      "liveProperty": "25\u00b0 C",
+      "liveProperty": "",
       "messages": [],
       "name": "Temperatura Camera"
     },
@@ -611,7 +602,7 @@
       "id": 1125,
       "isOn": false,
       "isVirtual": false,
-      "liveProperty": "Spenta",
+      "liveProperty": "",
       "messages": [
         "deactivate",
         "activate"
@@ -646,7 +637,7 @@
       "id": 5669,
       "isOn": false,
       "isVirtual": false,
-      "liveProperty": "Spenta",
+      "liveProperty": "",
       "messages": [
         "deactivate",
         "activate"
@@ -681,7 +672,7 @@
       "id": 9075,
       "isOn": false,
       "isVirtual": false,
-      "liveProperty": "Spenta",
+      "liveProperty": "",
       "messages": [
         "deactivate",
         "activate"
@@ -716,7 +707,7 @@
       "id": 8598,
       "isOn": false,
       "isVirtual": false,
-      "liveProperty": "Spenta",
+      "liveProperty": "",
       "messages": [
         "deactivate",
         "activate"
@@ -1010,7 +1001,7 @@
       "hasBeenAlerted": true,
       "id": 8419,
       "isVirtual": false,
-      "liveProperty": "[Allarme disattiva] - Nessun movimento",
+      "liveProperty": "",
       "messages": [
         "Attiva Allarme",
         "Disattiva Allarme"
@@ -1061,7 +1052,7 @@
       "hasBeenAlerted": false,
       "id": 668,
       "isVirtual": false,
-      "liveProperty": "[Allarme disattiva] - Movimento rilevato...",
+      "liveProperty": "",
       "messages": [
         "Attiva Allarme",
         "Disattiva Allarme"
@@ -1285,7 +1276,7 @@
       "id": 2201,
       "isOn": false,
       "isVirtual": false,
-      "liveProperty": "Ferma",
+      "liveProperty": "",
       "messages": [
         "Accendi",
         "Spegni"
@@ -1360,12 +1351,32 @@
       },
       "description": "Asd",
       "handlers": {
-        "Condizione non verificata": [],
-        "Condizione verificata": []
+        "Condizione non verificata": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "Spegni",
+              "objectId": 2201
+            },
+            "id": 3098,
+            "id_object_owner": 4721
+          }
+        ],
+        "Condizione verificata": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "Accendi",
+              "objectId": 2201
+            },
+            "id": 4743,
+            "id_object_owner": 4721
+          }
+        ]
       },
       "id": 4721,
       "isVirtual": true,
-      "liveProperty": "13\u00b0 C",
+      "liveProperty": "",
       "messages": [
         "Controlla la temperatura"
       ],
@@ -1383,7 +1394,7 @@
           "valueType": "String"
         },
         "secondi": {
-          "value": 60,
+          "value": 10,
           "valueType": "Int"
         }
       },
@@ -1637,19 +1648,10 @@
           {
             "args": null,
             "function": {
-              "functionName": "activate",
-              "objectId": 8598
+              "functionName": "Esegui azione",
+              "objectId": 5983
             },
-            "id": 8247,
-            "id_object_owner": 9806
-          },
-          {
-            "args": null,
-            "function": {
-              "functionName": "deactivate",
-              "objectId": 9075
-            },
-            "id": 2847,
+            "id": 4813,
             "id_object_owner": 9806
           }
         ],
@@ -1659,19 +1661,10 @@
           {
             "args": null,
             "function": {
-              "functionName": "activate",
-              "objectId": 9075
+              "functionName": "Esegui azione",
+              "objectId": 2225
             },
-            "id": 2754,
-            "id_object_owner": 9806
-          },
-          {
-            "args": null,
-            "function": {
-              "functionName": "deactivate",
-              "objectId": 8598
-            },
-            "id": 8624,
+            "id": 6882,
             "id_object_owner": 9806
           }
         ],
@@ -1679,13 +1672,117 @@
       },
       "id": 9806,
       "isVirtual": true,
-      "liveProperty": "Sereno",
+      "liveProperty": "",
       "messages": [
         "Sereno",
         "Controlla il tempo",
         "Pioggia"
       ],
       "name": "Tempo"
+    },
+    {
+      "actionObjectsIDs": [],
+      "className": "ToxAction",
+      "customVariables": {
+        "description": {
+          "value": "Azione da eseguire quando piove",
+          "valueType": "String"
+        },
+        "isActive": {
+          "value": 1,
+          "valueType": "Int"
+        },
+        "name": {
+          "value": "PioggiaAction",
+          "valueType": "String"
+        }
+      },
+      "description": "Azione da eseguire quando piove",
+      "handlers": {
+        "Azione conclusa": [],
+        "Azione da eseguire": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "Chiudi",
+              "objectId": 8839
+            },
+            "id": 3713,
+            "id_object_owner": 5983
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "Chiudi",
+              "objectId": 4332
+            },
+            "id": 3832,
+            "id_object_owner": 5983
+          }
+        ]
+      },
+      "id": 5983,
+      "isVirtual": true,
+      "liveProperty": "",
+      "messages": [
+        "Esegui azione",
+        "Azione conclusa",
+        "Disattiva",
+        "Attiva"
+      ],
+      "name": "PioggiaAction"
+    },
+    {
+      "actionObjectsIDs": [],
+      "className": "ToxAction",
+      "customVariables": {
+        "description": {
+          "value": "Azione quando c\u2019\u00e8 il sole",
+          "valueType": "String"
+        },
+        "isActive": {
+          "value": 1,
+          "valueType": "Int"
+        },
+        "name": {
+          "value": "SoleggiatoAction",
+          "valueType": "String"
+        }
+      },
+      "description": "Azione quando c\u2019\u00e8 il sole",
+      "handlers": {
+        "Azione conclusa": [],
+        "Azione da eseguire": [
+          {
+            "args": null,
+            "function": {
+              "functionName": "Apri",
+              "objectId": 4332
+            },
+            "id": 9039,
+            "id_object_owner": 2225
+          },
+          {
+            "args": null,
+            "function": {
+              "functionName": "Apri",
+              "objectId": 8839
+            },
+            "id": 178,
+            "id_object_owner": 2225
+          }
+        ]
+      },
+      "id": 2225,
+      "isVirtual": true,
+      "liveProperty": "",
+      "messages": [
+        "Esegui azione",
+        "Azione conclusa",
+        "Disattiva",
+        "Attiva"
+      ],
+      "name": "SoleggiatoAction"
     }
   ]
 }
