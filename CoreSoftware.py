@@ -2427,7 +2427,7 @@ class ToxSocketServer:
                 "code" : "OK",
                 "response_objects" : liveObjects
             }
-            conn.send(json.dumps(returnDict))
+            conn.send(bytes(json.dumps(returnDict), encoding="utf-8"))
         #conn.send("Scemotto! Hide and Seek\n")
         conn.close()
 
