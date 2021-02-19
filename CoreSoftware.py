@@ -7,14 +7,14 @@ import inspect
 from enum import Enum
 import time
 import serial
-from thread import *
+from _thread import *
 from collections import deque
 import sys
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
-from urlparse import urlparse, parse_qs
+from http.server import BaseHTTPRequestHandler, HTTPServer
+from urllib.parse import urlparse, parse_qs
 import socket
 import traceback
-from weather import Weather, Unit
+#from weather import Weather, Unit
 import types
 import pyowm
 from datetime import datetime
@@ -46,7 +46,7 @@ class ToxUtility:
 
     @staticmethod
     def isPrimitive(obj):
-        primitives = (int, str, float, long, types.NoneType, unicode, basestring)
+        primitives = (int, str, float, type(None), bytes)
         return isinstance(obj, primitives)
 
     @staticmethod
@@ -1783,7 +1783,7 @@ class ToxSerialMessage:
 
         prefix = ""
         suffix = ""
-        if type_ < 10:
+        if type_.value < 10:
             prefix = "0"
         prefix += str(type_)
         middle = str(0) #middle number is unused at this moment
@@ -2087,7 +2087,7 @@ class ToxSocketServer:
             }
             #print(str(arr))
             json_str = json.dumps(returnDict)
-            conn.send(json_str)
+            conn.send(bytes(json_str, encoding="utf-8"))
             print("Oggetti fetchati con successo!")
         elif requestType == "remove_object":
             if "object_id" not in requestBody:
@@ -2271,7 +2271,7 @@ class ToxSocketServer:
                 "code" : "OK",
                 "response_objects" : requiredDict
             }
-            conn.send(json.dumps(returnDict))
+            conn.send(bytes(json.dumps(returnDict), encoding="utf-8"))
             print("Handlers fetchati con successo!")
         elif requestType == "change_properties_values":
             if "obj_id" not in requestBody:
@@ -2316,7 +2316,7 @@ class ToxSocketServer:
                 "code" : "OK",
                 "response_objects" : actions
             }
-            conn.send(json.dumps(returnDict))
+            conn.send(bytes(json.dumps(returnDict), encoding="utf-8"))
             print("Azioni fetchate con successo!")
         elif requestType == "remove_object_from_action":
             if "action_id" not in requestBody:
